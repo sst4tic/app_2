@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>540331566050-4pa999srejv28iku5d4kpjn37nj0edo9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.540331566050-4pa999srejv28iku5d4kpjn37nj0edo9</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDrC5JY8s6BmvwFbO-lflMyWCYEOEDcKHI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>540331566050</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.yiwumart</string>
+	<key>PROJECT_ID</key>
+	<string>yiwumart-53257</string>
+	<key>STORAGE_BUCKET</key>
+	<string>yiwumart-53257.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:540331566050:ios:39fe61a9485d783f554fbb</string>
+</dict>
+</plist>
