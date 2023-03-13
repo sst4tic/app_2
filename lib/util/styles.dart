@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'constants.dart';
 
 final darkTheme = ThemeData(
-
   primaryColor: Colors.black,
   accentColor: ColorStyles.accentColor,
   canvasColor: Colors.white,
@@ -13,7 +12,7 @@ final darkTheme = ThemeData(
   scaffoldBackgroundColor: ColorStyles.bodyColorDark,
   brightness: Brightness.dark,
   progressIndicatorTheme: const ProgressIndicatorThemeData(
-    color: Colors.black,
+    color: Colors.white,
   ),
   appBarTheme: AppBarTheme(
     titleTextStyle: const TextStyle(
@@ -61,6 +60,32 @@ final darkTheme = ThemeData(
     errorBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: Colors.red, width: 1),
       borderRadius: BorderRadius.circular(18),
+    ),
+  ),
+    expansionTileTheme: const ExpansionTileThemeData(
+      textColor: Colors.white,
+      iconColor: Colors.grey
+      // collapsedTextColor: Colors.white
+    ),
+  textButtonTheme: TextButtonThemeData(
+    style: ButtonStyle(
+      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      textStyle: MaterialStateProperty.all<TextStyle>(const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      )),
+    ),
+  ),
+  tabBarTheme: TabBarTheme(
+    labelColor: Colors.white,
+    unselectedLabelColor: Colors.grey,
+    indicator: BoxDecoration(
+      borderRadius: const BorderRadius.all(
+        Radius.circular(10.0),
+      ),
+      color: Colors.grey[800]!,
+    ),
+    labelStyle: const TextStyle(
     ),
   ),
 );
@@ -124,6 +149,31 @@ final lightTheme = ThemeData(
       borderRadius: BorderRadius.circular(18),
     ),
   ),
+  expansionTileTheme: const ExpansionTileThemeData(
+    collapsedTextColor: ColorStyles.primaryColor,
+      textColor: ColorStyles.primaryColor,
+      iconColor: Colors.grey
+    // collapsedTextColor: Colors.white
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: ButtonStyle(
+      foregroundColor: MaterialStateProperty.all<Color>(ColorStyles.primaryColor),
+      textStyle: MaterialStateProperty.all<TextStyle>(const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      )),
+    ),
+  ),
+  tabBarTheme:  const TabBarTheme(
+    labelColor: Colors.white,
+    unselectedLabelColor: Colors.grey,
+    indicator: BoxDecoration(
+      borderRadius: BorderRadius.all(
+        Radius.circular(10.0),
+      ),
+      color: ColorStyles.primaryColor,
+    ),
+  ),
 );
 
 class TextStyles {
@@ -148,7 +198,7 @@ class BagButtonStyle extends ButtonStyle {
   BagButtonStyle({required BuildContext context,
     required isLoaded,
     required selectedIndex,
-    required index})
+     index})
       : super(
       elevation: MaterialStateProperty.all(0),
       fixedSize: MaterialStateProperty.all(Constants.USER_TOKEN != ''
@@ -162,6 +212,24 @@ class BagButtonStyle extends ButtonStyle {
           .width, 33)),
       backgroundColor: MaterialStateProperty.all(
         isLoaded && selectedIndex == index
+            ? Colors.green
+            : ColorStyles.primaryColor,
+      ),
+      shape: BorderStyles.buttonBorder);
+}
+
+class BagButtonItemStyle extends ButtonStyle {
+  BagButtonItemStyle({required BuildContext context,
+    required isLoaded,
+    index})
+      : super(
+      elevation: MaterialStateProperty.all(0),
+      fixedSize: MaterialStateProperty.all(Size(MediaQuery
+          .of(context)
+          .size
+          .width * 0.43, 33.h)),
+      backgroundColor: MaterialStateProperty.all(
+        isLoaded
             ? Colors.green
             : ColorStyles.primaryColor,
       ),

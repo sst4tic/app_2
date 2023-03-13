@@ -7,6 +7,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:yiwumart/screens/purchase_history.dart';
 import 'package:yiwumart/screens/user_profile_scaffold.dart';
 import '../util/constants.dart';
+import 'auth_home_screen.dart';
 import 'home_screen.dart';
 import 'package:yiwumart/screens/shopping_bag.dart';
 import 'package:yiwumart/catalog_screens/catalog_screen.dart';
@@ -111,10 +112,16 @@ class MainScreenState extends State<MainScreen> {
           tabBuilder: (BuildContext context, int index) {
             switch (index) {
               case 0:
-                return CupertinoTabView(
-                  navigatorKey: tabNavKeys[index],
-                  builder: (BuildContext context) => const HomePage(),
-                );
+                return
+                  CupertinoTabView(
+                    navigatorKey: tabNavKeys[index],
+                    builder: (BuildContext context) {
+                      return CupertinoPageScaffold(
+                        resizeToAvoidBottomInset: false,
+                        child: Constants.USER_TOKEN != '' ?  const AuthHomePage() : const HomePage(),
+                      );
+                    },
+                  );
               case 1:
                 return CupertinoTabView(
                   navigatorKey: tabNavKeys[index],

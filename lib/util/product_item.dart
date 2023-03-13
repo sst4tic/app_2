@@ -1,29 +1,35 @@
-class Product {
-  Product({
+class ProductItem {
+  ProductItem({
     required this.id,
     required this.name,
     this.categoryName,
+    required this.sku,
     required this.price,
+    this.description,
     required this.is_favorite,
-    required this.link,
     this.media,
+    required this.availability,
   });
   late final int id;
   late final String name;
   String? categoryName;
+  late final String sku;
   late final String price;
-   bool? is_favorite;
-  late final String link;
+  String? description;
+  late final bool is_favorite;
   List<Media>? media;
+  late final String availability;
 
-  Product.fromJson(Map<String, dynamic> json){
+  ProductItem.fromJson(Map<String, dynamic> json){
     id = json['id'];
     name = json['name'];
     categoryName = json['category_name'];
+    sku = json['sku'];
     price = json['price'].toString();
+    description = json['description'];
     is_favorite = json['is_favorite'];
-    link = json['link'];
     media = (json["media"] as List?)?.map((a) => Media.fromJson(a)).toList() ?? [];
+    availability = json['availability'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -31,10 +37,41 @@ class Product {
     data['id'] = id;
     data['name'] = name;
     data['category_name'] = categoryName;
+    data['sku'] = sku;
+    data['price'] = price;
+    data['description'] = description;
     data['media'] = media?.map((e)=>e.toJson()).toList();
     return data;
   }
 }
+
+// class Availability {
+//   Availability({
+//     required this.id,
+//     required this.productId,
+//     required this.warehouseId,
+//     required this.qty,
+//   });
+//   late final int id;
+//   late final int productId;
+//   late final int warehouseId;
+//   late final int qty;
+//
+//   Availability.fromJson(Map<String, dynamic> json){
+//     id = json['id'];
+//     productId = json['product_id'];
+//     warehouseId = json['warehouse_id'];
+//     qty = json['qty'];
+//   }
+//   Map<String, dynamic> toJson() {
+//     final data = <String, dynamic>{};
+//     data['id'] = id;
+//     data['product_id'] = productId;
+//     data['warehouse_id'] = warehouseId;
+//     data['qty'] = qty;
+//     return data;
+//   }
+// }
 
 class Media {
   Media({
@@ -67,12 +104,12 @@ class Media {
 
 class Links {
   Links({
- this.s3,
- this.cdn,
+    this.s3,
+    this.cdn,
     required this.local,
   });
- int? s3;
- int? cdn;
+  int? s3;
+  int? cdn;
   late final Local local;
 
   Links.fromJson(Map<String, dynamic> json){
@@ -113,27 +150,27 @@ class Local {
 
 class Thumbnails {
   Thumbnails({
-  required this.s150,
-  required this.s350,
-  required this.s750,
-});
-late final String s150;
-late final String s350;
-late final String s750;
+    required this.s150,
+    required this.s350,
+    required this.s750,
+  });
+  late final String s150;
+  late final String s350;
+  late final String s750;
 
-Thumbnails.fromJson(Map<String, dynamic> json){
-s150 = json['150'];
-s350 = json['350'];
-s750 = json['750'];
-}
+  Thumbnails.fromJson(Map<String, dynamic> json){
+    s150 = json['150'];
+    s350 = json['350'];
+    s750 = json['750'];
+  }
 
-Map<String, dynamic> toJson() {
-  final data = <String, dynamic>{};
-  data['150'] = s150;
-  data['350'] = s350;
-  data['750'] = s750;
-  return data;
-}
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['150'] = s150;
+    data['350'] = s350;
+    data['750'] = s750;
+    return data;
+  }
 }
 
 

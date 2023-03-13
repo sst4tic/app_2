@@ -1,35 +1,62 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yiwumart/catalog_screens/catalog_item.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
 import 'package:yiwumart/screens/search_result.dart';
+import 'package:yiwumart/util/product.dart';
 import '../catalog_screens/product_screen.dart';
 import '../util/function_class.dart';
 import '../util/search.dart';
 
 class SearchModel extends SearchDelegate {
+  final Set<String> _history = {};
+
+  SearchModel() {
+    _loadHistory();
+  }
+
+  _loadHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final history = prefs.getStringList('search_history');
+    if (history != null) {
+      _history.addAll(history);
+    }
+  }
+
+  _saveHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('search_history', _history.toSet().toList());
+  }
+
   @override
   ThemeData appBarTheme(BuildContext context) {
     return super.appBarTheme(context).copyWith(
-      appBarTheme: super.appBarTheme(context).appBarTheme.copyWith(
-        elevation: 0.0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
-    );
+          appBarTheme: super.appBarTheme(context).appBarTheme.copyWith(
+                elevation: 0.0,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+              ),
+        );
   }
+
   @override
   String get searchFieldLabel => 'Поиск';
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
-      query != '' ? IconButton(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        icon: const Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ) : Container(),
+      query != ''
+          ? IconButton(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                query = '';
+              },
+            )
+          : Container(),
     ];
   }
 
@@ -40,6 +67,7 @@ class SearchModel extends SearchDelegate {
       highlightColor: Colors.transparent,
       icon: const Icon(Icons.arrow_back_ios),
       onPressed: () {
+        _saveHistory();
         Navigator.pop(context);
       },
     );
@@ -52,24 +80,21 @@ class SearchModel extends SearchDelegate {
         color: Theme.of(context).scaffoldBackgroundColor,
       );
     }
+    if (query.trim().isNotEmpty) {
+      _history.add(query);
+    }
+    SharedPreferences.getInstance().then((prefs) {
+      final jsonHistory = json.encode(_history.toList());
+      prefs.setString("history", jsonHistory);
+    });
     return FutureBuilder<Search>(
         future: Func.searchProducts(query),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  SizedBox(
-                      height: 300,
-                      child: buildSearchShimmer()),
-                  buildCatalogShimmer()
-                ],
-              ),
-            );
+            return buildSearchShimmer();
           } else if (snapshot.hasData) {
             final search = snapshot.data!;
-            if(search.products.total == 0 && search.categories.total == 0){
+            if (search.products.total == 0 && search.categories.total == 0) {
               return Center(
                 child: Text(
                   'Ничего не найдено',
@@ -84,57 +109,92 @@ class SearchModel extends SearchDelegate {
           } else {
             return const Center(
                 child: Text(
-                  "Ничего не найдено",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                ));
+              "Ничего не найдено",
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ));
           }
         });
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    if (query.isEmpty) {
-      return Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-      );
-    }
-    return FutureBuilder<Search>(
-        future: Func.searchProducts(query),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                  children: [
-                    SizedBox(
-                      height: 300,
-                        child: buildSearchShimmer()),
-                    buildCatalogShimmer()
-                  ],
-              ),
-            );
-          } else if (snapshot.hasData) {
-            final search = snapshot.data!;
-            if(search.products.total == 0 && search.categories.total == 0){
-              return Center(
-                child: Text(
-                  'Ничего не найдено',
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w500,
+    return StatefulBuilder(builder: (context, setState) {
+      return Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          _history.isNotEmpty
+              ? Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                  width: double.infinity,
+                  height: 40.h,
+                  color: Theme.of(context).colorScheme.secondary,
+                  child: Row(
+                    children: [
+                      Text(
+                        'История поиска',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                          style: ButtonStyle(
+                            overlayColor:
+                                MaterialStateProperty.all(Colors.transparent),
+                            padding: MaterialStateProperty.all(EdgeInsets.zero),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _history.clear();
+                              _saveHistory();
+                            });
+                          },
+                          child: Text(
+                            'Очистить',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )),
+                    ],
                   ),
-                ),
-              );
-            }
-            return buildFuture(search, context);
-          } else {
-            return const Center(
-                child: Text(
-              "Произошла ошибка",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ));
-          }
-        });
+                )
+              : Container(),
+          Expanded(
+            child: ListView.separated(
+              itemCount: _history.toSet().toList().length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(_history.toList()[index]),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        final value = _history.toList()[index];
+                        _history.remove(value);
+                        _saveHistory();
+                      });
+                    },
+                  ),
+                  onTap: () {
+                    query = _history.toSet().toList()[index];
+                    showResults(context);
+                  },
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(
+                height: 0,
+                thickness: 1,
+              ),
+            ),
+          ),
+        ],
+      );
+    });
   }
 
   Widget buildProduct(List search) => GridView.builder(
@@ -155,9 +215,14 @@ class SearchModel extends SearchDelegate {
                   context,
                   MaterialPageRoute(
                       builder: (context) => ProductScreen(
-                        name: searchItem.name,
-                        link: searchItem.link,
-                      )));
+                            product: Product(
+                                id: searchItem.id,
+                                name: searchItem.name,
+                                price: searchItem.price,
+                                is_favorite: null,
+                                link: searchItem.link,
+                            ),
+                          )));
             },
             child: Container(
               padding: REdgeInsets.only(left: 8, right: 8, top: 6),
@@ -167,21 +232,21 @@ class SearchModel extends SearchDelegate {
               child: Column(
                 children: <Widget>[
                   InkWell(
-                    child:
-                    Center(
+                    child: Center(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
                           photo != null
                               ? 'https://cdn.yiwumart.org/$photo'
                               : 'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
-                          errorBuilder: (BuildContext context,
-                              Object exception, StackTrace? stackTrace) {
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace? stackTrace) {
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(
-                                  'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
-                                height: MediaQuery.of(context).size.height * 0.195,
+                                'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
+                                height:
+                                    MediaQuery.of(context).size.height * 0.195,
                               ),
                             );
                           },
@@ -191,7 +256,6 @@ class SearchModel extends SearchDelegate {
                     ),
                   ),
                   const Spacer(),
-                  // SizedBox(height: 5.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -235,28 +299,27 @@ class SearchModel extends SearchDelegate {
           decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(8))),
           child: Card(
+            color: Theme.of(context).colorScheme.secondary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
             elevation: 0,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 5, bottom: 5),
-              child: ListTile(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CatalogItems(id: searchItem.id, name: searchItem.name)));
-                },
-                title: Text(
-                  searchItem.name,
-                  style: const TextStyle(
-                      fontSize: 13, fontWeight: FontWeight.bold),
-                ),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                ),
+            child: ListTile(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CatalogItems(
+                            id: searchItem.id, name: searchItem.name)));
+              },
+              title: Text(
+                searchItem.name,
+                style:
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+              ),
+              trailing: const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
               ),
             ),
           ),
@@ -271,46 +334,65 @@ class SearchModel extends SearchDelegate {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Найдено ${search.products.total} товаров',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(
-                  height: 10
-                ),
-                SizedBox(
-                    height: 225.h, child: buildProduct(search.products.items)),
-                SizedBox(height: 10.h),
-                Center(
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SearchResult(
-                                      query: query,
-                                    )));
-                      },
-                      style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width, 35.h)),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0)),
-                        ),
-                      ),
-                      child: const Text(
-                        'Показать найденные товары',
-                        style: TextStyle(color: Colors.white, fontSize: 17),
-                      )),
+                Container(
+                  child: search.products.total != 0
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Найдено ${search.products.total} товаров',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            const SizedBox(height: 10),
+                            SizedBox(
+                                height: 225.h,
+                                child: buildProduct(search.products.items)),
+                            SizedBox(height: 10.h),
+                            Center(
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SearchResult(
+                                                  query: query,
+                                                )));
+                                  },
+                                  style: ButtonStyle(
+                                    minimumSize: MaterialStateProperty.all(Size(
+                                        MediaQuery.of(context).size.width,
+                                        35.h)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0)),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Показать найденные товары',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 17),
+                                  )),
+                            ),
+                          ],
+                        )
+                      : Center(
+                          child: Text(
+                          'Товары не найдены',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        )),
                 ),
                 SizedBox(height: 10.h),
                 search.categories.items.isEmpty
-                    ? Container() : const Text(
-                  'Категории',
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,),
-                ),
+                    ? Container()
+                    : const Text(
+                        'Категории',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                 SizedBox(height: 10.h),
                 search.categories.items.isEmpty
                     ? Container()

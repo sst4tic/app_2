@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/catalog_screens/product_screen.dart';
@@ -89,8 +90,8 @@ class _CatalogItemsState extends State<CatalogItems> {
 
   Future<List<Product>> getProducts([orderby = '', filter = '']) async {
     var url =
-        '${Constants.API_URL_DOMAIN}action=catalog&category_id=$id&page=$page&token=${Constants.USER_TOKEN}&orderby=$orderby&$filter';
-    final response = await http.get(Uri.parse(url));
+        '${Constants.API_URL_DOMAIN}action=catalog&category_id=$id&page=$page&orderby=$orderby&$filter';
+    final response = await http.get(Uri.parse(url), headers: {Constants.header: Constants.bearer});
     final body = jsonDecode(response.body);
     if (response.statusCode == 200) {
       setState(() {
@@ -174,6 +175,7 @@ class _CatalogItemsState extends State<CatalogItems> {
 
   @override
   Widget build(BuildContext context) {
+    print(_isFavLoading);
     return Scaffold(
       appBar: AppBar(
         title: Text(name!),
@@ -235,17 +237,25 @@ class _CatalogItemsState extends State<CatalogItems> {
                 (BuildContext context, int index) {
               final media =
                   product[index].media?.map((e) => e.toJson()).toList();
-              final photo = media?[0]['links']['local']['thumbnails']['350'];
-              final productItem = product[index];
+              final photo = media!.isEmpty ? 'storage/warehouse/products/images/no-image-ru.jpg' : media[0]['links']['local']['thumbnails']['350'];
+              var productItem = product[index];
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => ProductScreen(
-                                name: productItem.name,
-                                link: productItem.link,
-                              )));
+                      CupertinoPageRoute(
+                          builder: (context) =>
+                              ProductScreen(product: productItem)))
+                      .then((product) => {
+                    if (product != null) {
+                      setState(() {
+                        productItem.is_favorite = product.is_favorite;
+                        product.is_favorite
+                            ? _isFavLoading.add(index)
+                            : _isFavLoading.remove(index);
+                      })
+                    }
+                  });
                 },
                 child: Container(
                   padding: REdgeInsets.only(left: 7, right: 7, top: 6),
@@ -259,9 +269,7 @@ class _CatalogItemsState extends State<CatalogItems> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
-                              media != null
-                                  ? 'https://cdn.yiwumart.org/$photo'
-                                  : 'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
+                              'https://cdn.yiwumart.org/$photo',
                               errorBuilder: (BuildContext context,
                                   Object exception, StackTrace? stackTrace) {
                                 return ClipRRect(
@@ -316,8 +324,7 @@ class _CatalogItemsState extends State<CatalogItems> {
                               splashColor: Colors.transparent,
                               icon: Icon(
                                 _isFavLoading.contains(index) ||
-                                        productItem.is_favorite!
-                                    ? Icons.favorite
+                                        productItem.is_favorite!? Icons.favorite
                                     : Icons.favorite_border,
                                 color: Colors.red,
                               ),
@@ -332,12 +339,11 @@ class _CatalogItemsState extends State<CatalogItems> {
                                   productId: productItem.id,
                                   index: index,
                                   onAdded: () {
-                                    setState(() => _isFavLoading.add(index));
+                                      setState(() => _isFavLoading.add(index));
+
                                   },
                                   onRemoved: () {
-                                    setState(() {
-                                      _isFavLoading.remove(index);
-                                    });
+                                      setState(() => _isFavLoading.remove(index));
                                   },
                                 );
                               },
@@ -404,6 +410,8 @@ class _CatalogItemsState extends State<CatalogItems> {
                             ),
                             const Text(
                               'Фильтры',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             TextButton(
                                 onPressed: () {
@@ -622,6 +630,7 @@ class _CatalogItemsState extends State<CatalogItems> {
                                 }).join('&');
                                 filters = encodedString;
                                 page = 1;
+                                hasMore = true;
                                 list.clear();
                                 productFuture = getProducts(val, filters);
                               });

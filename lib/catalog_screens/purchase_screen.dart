@@ -5,7 +5,7 @@ import '../screens/main_screen.dart';
 import '../util/constants.dart';
 
 class PurchaseScreen extends StatefulWidget {
-   const PurchaseScreen({Key? key, required this.link}) : super(key: key);
+  const PurchaseScreen({Key? key, required this.link}) : super(key: key);
   final String link;
 
   @override
@@ -17,26 +17,34 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.link);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Оформление заказа',
+        title: const Text(
+          'Оформление заказа',
         ),
         centerTitle: false,
       ),
       body: SafeArea(
-        child:
-        Stack(
+        child: Stack(
           children: [
             WebView(
               onPageFinished: (url) {
-                if(mounted) {
+                if (mounted) {
                   setState(() {
                     isLoading = false;
                   });
                 }
               },
+              onWebViewCreated: (WebViewController webViewController) {
+                webViewController.loadUrl(
+                  '${widget.link}',
+                  headers: {
+                    Constants.header: Constants.bearer,
+                  },
+                );
+              },
               javascriptMode: JavascriptMode.unrestricted,
-              initialUrl: '${widget.link}?token=${Constants.USER_TOKEN}',
               javascriptChannels: {
                 JavascriptChannel(
                   name: 'WebViewMessage',
@@ -50,8 +58,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
             ),
             Visibility(
               visible: isLoading,
-              child: Positioned.fill(
-                  child: buildPurchaseShimmer(context)),
+              child: Positioned.fill(child: buildPurchaseShimmer(context)),
             )
           ],
         ),

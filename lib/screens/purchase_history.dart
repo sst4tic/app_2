@@ -1,11 +1,8 @@
-
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:yiwumart/screens/order_detail_screen.dart';
-import 'package:yiwumart/util/constants.dart';
-
+import '../models/build_order.dart';
 import '../models/shimmer_model.dart';
-
+import '../util/function_class.dart';
+import '../util/order_list.dart';
 
 class PurchaseHistory extends StatefulWidget {
   const PurchaseHistory({Key? key}) : super(key: key);
@@ -16,54 +13,37 @@ class PurchaseHistory extends StatefulWidget {
 
 class _PurchaseHistoryState extends State<PurchaseHistory> {
   bool isLoading = true;
+  late Future<List<OrderList>> orderFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    orderFuture = Func().getOrders();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: const Text(
-          'История покупок',
+        appBar: AppBar(
+          centerTitle: false,
+          title: const Text(
+            'История покупок',
+          ),
         ),
-      ),
-      body:
-      SafeArea(
-        child: Stack(
-          children: [
-            WebView(
-              onPageFinished: (url) {
-                if(mounted) {
-                  setState(() {
-                    isLoading = false;
-                  });
+        body: Container(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: FutureBuilder<List<OrderList>>(
+              future: orderFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return buildPurchaseHistoryShimmer(context);
+                } else if (snapshot.hasData) {
+                  final order = snapshot.data!;
+                  return buildOrder(order);
+                } else {
+                  return const Text("No widget to build");
                 }
-              },
-              javascriptChannels: {
-                JavascriptChannel(
-                  name: 'WebViewMessage',
-                  onMessageReceived: (JavascriptMessage message) {
-                    if(message.message != '') {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OrderDetails(
-                                      url: message.message,
-                              )));
-                    }
-                  },
-                )
-              },
-              javascriptMode: JavascriptMode.unrestricted,
-              initialUrl: '${Constants.BASE_URL_DOMAIN}/my/orders?token=${Constants.USER_TOKEN}',
-            ),
-            Visibility(
-              visible: isLoading,
-              child: Positioned.fill(
-                  child: buildPurchaseHistoryShimmer(context)),
-            )
-          ]
-        ),
-      ),
-    );
+              }),
+        ));
   }
 }

@@ -40,7 +40,14 @@ class _EditProfileState extends State<EditProfile> {
                 }
               },
             javascriptMode: JavascriptMode.unrestricted,
-            initialUrl: '${Constants.BASE_URL_DOMAIN}/my/edit?token=${Constants.USER_TOKEN}',
+              onWebViewCreated: (WebViewController webViewController) {
+                webViewController.loadUrl(
+                  '${Constants.BASE_URL_DOMAIN}/my/edit',
+                  headers: {
+                    Constants.header: Constants.bearer,
+                  },
+                );
+              },
             javascriptChannels: {
               JavascriptChannel(
                 name: 'WebViewMessage',

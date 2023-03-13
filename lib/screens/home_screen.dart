@@ -1,11 +1,8 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/catalog_screens/catalog_item.dart';
 import 'package:yiwumart/models/search_model.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
-import 'package:yiwumart/screens/notification_screen.dart';
 import 'package:yiwumart/util/function_class.dart';
 import 'package:yiwumart/util/popular_catalog.dart';
 import '../catalog_screens/product_screen.dart';
@@ -26,7 +23,6 @@ class _HomePageState extends State<HomePage> {
   var _isLoaded = false;
   int selectedIndex = -1;
   bool favClick = false;
-  final Set<int> _isFavLoading = {};
   late Future<List<PopularCategories>> popularCategoriesFuture;
   late Future<List<Product>> productFuture;
   TextEditingController searchController = TextEditingController();
@@ -40,76 +36,61 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(Constants.bearer);
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            elevation: 0,
-            floating: true,
-            pinned: true,
-            snap: false,
-            centerTitle: false,
-            title:SvgPicture.asset(
-              'assets/img/logo.svg',
-              height: 15.h,
-            ),
-            actions: [
-              if (Constants.USER_TOKEN != '')
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const NotificationScreen()));
-                  },
-                  icon: const Icon(
-                    CupertinoIcons.bell_fill,
-                  ),
-                ),
-            ],
-            bottom: AppBar(
-              titleSpacing: 10,
               elevation: 0,
-              title: Padding(
-                padding: const EdgeInsets.only(
-                  top: 10,
-                  bottom: 10,
-                ),
-                child:
-                Container(
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: TextField(
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      hintText: 'Поиск',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      ),
-                      filled: true,
-                      fillColor: Theme.of(context).scaffoldBackgroundColor,
-                      contentPadding: const EdgeInsets.all(8),
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: Colors.transparent),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: Colors.transparent),
-                      ),
-                    ),
-                    onTap: () {
-                      showSearch(context: context, delegate: SearchModel());
-                    },
-                  ),
-                ),
+              floating: true,
+              pinned: true,
+              snap: false,
+              centerTitle: false,
+              title: SvgPicture.asset(
+                'assets/img/logo.svg',
+                height: 15.h,
               ),
-            )
-          ),
+              bottom: AppBar(
+                titleSpacing: 10,
+                elevation: 0,
+                title: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: TextField(
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        hintText: 'Поиск',
+                        hintStyle: const TextStyle(color: Colors.grey),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.grey,
+                        ),
+                        filled: true,
+                        fillColor: Theme.of(context).scaffoldBackgroundColor,
+                        contentPadding: const EdgeInsets.all(8),
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(color: Colors.transparent),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(color: Colors.transparent),
+                        ),
+                      ),
+                      onTap: () {
+                        showSearch(context: context, delegate: SearchModel());
+                      },
+                    ),
+                  ),
+                ),
+              )),
           SliverList(
             delegate: SliverChildListDelegate(
               [
@@ -179,7 +160,8 @@ class _HomePageState extends State<HomePage> {
                                         ElevatedButton(
                                           onPressed: () {
                                             setState(() {
-                                              productFuture = Func.getProducts();
+                                              productFuture =
+                                                  Func.getProducts();
                                             });
                                           },
                                           child: const Text('Повторить'),
@@ -289,22 +271,24 @@ class _HomePageState extends State<HomePage> {
         itemCount: product.length,
         itemBuilder: (context, index) {
           final productItem = product[index];
-          final media = product[index].media?.map((e) => e.toJson()).toList();
-          final photo = media?[0]['links']['local']['thumbnails']['350'];
+          final media =
+              product[index].media?.map((e) => e.toJson()).toList() ?? [];
+          final photo = media.isEmpty
+              ? 'storage/warehouse/products/images/no-image-ru.jpg'
+              : media[0]['links']['local']['thumbnails']['350'];
           return GestureDetector(
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ProductScreen(
-                            name: productItem.name,
-                            link: productItem.link,
+                            product: productItem,
                           )));
             },
             child: Container(
               padding: REdgeInsets.only(left: 7, right: 7, top: 6),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
+                  color: Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadius.circular(8)),
               child: Column(
                 children: <Widget>[
@@ -313,7 +297,7 @@ class _HomePageState extends State<HomePage> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
-                          media != null
+                          photo != null
                               ? 'https://cdn.yiwumart.org/$photo'
                               : 'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
                           errorBuilder: (BuildContext context, Object exception,
@@ -321,8 +305,9 @@ class _HomePageState extends State<HomePage> {
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(
-                                  'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
-                                height: MediaQuery.of(context).size.height * 0.195,
+                                'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
+                                height:
+                                    MediaQuery.of(context).size.height * 0.195,
                               ),
                             );
                           },
@@ -359,44 +344,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   const Spacer(),
-                  if (Constants.USER_TOKEN != '')
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildButton(index, productItem.id),
-                        IconButton(
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          icon: Icon(
-                            _isFavLoading.contains(index) ||
-                                productItem.is_favorite!
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: Colors.red,
-                          ),
-                          onPressed: () {
-                            if (productItem.is_favorite!) {
-                              setState(() {
-                                productItem.is_favorite =
-                                !productItem.is_favorite!;
-                              });
-                            }
-                            Func().addToFav(productId: productItem.id, index: index,
-                              onAdded: () {
-                                setState(() => _isFavLoading.add(index));
-                              },
-                              onRemoved: () {
-                                setState(() {
-                                  _isFavLoading.remove(index);
-                                });
-                              },
-                            );
-                          },
-                        )
-                      ],
-                    )
-                  else
-                    buildButton(index, productItem.id),
+                  buildButton(index, productItem.id),
                 ],
               ),
             ),
@@ -407,19 +355,19 @@ class _HomePageState extends State<HomePage> {
   Widget buildButton(index, id) => ElevatedButton.icon(
       icon: _isLoading && selectedIndex == index
           ? Container(
-        width: 16,
-        height: 16,
-        padding: const EdgeInsets.all(1.0),
-        child: const CircularProgressIndicator(
-          color: Colors.white,
-          strokeWidth: 3,
-        ),
-      )
+              width: 16,
+              height: 16,
+              padding: const EdgeInsets.all(1.0),
+              child: const CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 3,
+              ),
+            )
           : Icon(
-          _isLoaded && selectedIndex == index
-              ? Icons.done
-              : Icons.shopping_basket,
-          size: 16),
+              _isLoaded && selectedIndex == index
+                  ? Icons.done
+                  : Icons.shopping_basket,
+              size: 16),
       onPressed: () {
         setState(() {
           _isLoading = true;
@@ -441,15 +389,20 @@ class _HomePageState extends State<HomePage> {
               _isLoaded = false;
             });
           },
-        ).then((value) {
+        )
+            .then((value) {
           Future.delayed(const Duration(seconds: 2))
               .then((value) => setState(() {
-            _isLoading = false;
-            _isLoaded = false;
-          }));
+                    _isLoading = false;
+                    _isLoaded = false;
+                  }));
         });
       },
-      style: BagButtonStyle(context: context, isLoaded: _isLoaded, selectedIndex: selectedIndex, index: index),
+      style: BagButtonStyle(
+          context: context,
+          isLoaded: _isLoaded,
+          selectedIndex: selectedIndex,
+          index: index),
       label: Text(
         _isLoaded && selectedIndex == index ? 'Добавлен' : 'В корзину',
         style: const TextStyle(fontSize: 11),

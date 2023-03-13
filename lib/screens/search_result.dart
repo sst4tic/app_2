@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
@@ -104,7 +103,7 @@ class _SearchResultState extends State<SearchResult> {
                 (BuildContext context, int index) {
               final media =
               product[index].media?.map((e) => e.toJson()).toList();
-              final photo = media?[0]['links']['local']['thumbnails']['350'];
+              final photo = media!.isEmpty ? 'storage/warehouse/products/images/no-image-ru.jpg' : media[0]['links']['local']['thumbnails']['350'];
               final productItem = product[index];
               return GestureDetector(
                 onTap: () {
@@ -112,8 +111,7 @@ class _SearchResultState extends State<SearchResult> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ProductScreen(
-                            name: productItem.name,
-                            link: productItem.link,
+                            product: productItem,
                           )));
                 },
                 child: Container(
@@ -127,7 +125,7 @@ class _SearchResultState extends State<SearchResult> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
-                              media != null
+                              media.isNotEmpty
                                   ? 'https://cdn.yiwumart.org/$photo'
                                   : 'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
                               errorBuilder: (BuildContext context,
@@ -183,8 +181,7 @@ class _SearchResultState extends State<SearchResult> {
                               splashColor: Colors.transparent,
                               icon: Icon(
                                 _isFavLoading.contains(index) ||
-                                    productItem.is_favorite!
-                                    ? Icons.favorite
+                                    productItem.is_favorite!? Icons.favorite
                                     : Icons.favorite_border,
                                 color: Colors.red,
                               ),

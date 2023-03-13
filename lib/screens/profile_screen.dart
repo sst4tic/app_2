@@ -9,8 +9,8 @@ import 'package:http/http.dart' as http;
 import '../models/build_user.dart';
 import '../models/shimmer_model.dart';
 import '../util/constants.dart';
+import '../util/function_class.dart';
 import '../util/user.dart';
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
@@ -29,8 +29,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   static Future<User> getUser() async {
     var url =
-        '${Constants.API_URL_DOMAIN}action=user_profile&token=${Constants.USER_TOKEN}';
-    final response = await http.get(Uri.parse(url));
+        '${Constants.API_URL_DOMAIN}action=user_profile';
+    final response = await http.get(Uri.parse(url), headers: {Constants.header: Constants.bearer});
     final body = jsonDecode(response.body);
     return User.fromJson(body['data']);
   }
@@ -215,9 +215,11 @@ class _ProfilePageState extends State<ProfilePage> {
               onTap: () async {
                 setState(() {
                   Constants.USER_TOKEN = '';
+                  Constants.bearer = '';
                 });
                 SharedPreferences pref = await SharedPreferences.getInstance();
-                await pref.clear();
+                pref.remove('login');
+                Func().getFirebaseToken();
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => const Login()),
                     (route) => false);

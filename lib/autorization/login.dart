@@ -142,7 +142,6 @@ class _LoginState extends State<Login> {
                                 color: Colors.grey,
                               ),
                             ),
-                            // validator: _validatePassword,
                           ),
                           const SizedBox(height: 20),
                           Expanded(
@@ -156,7 +155,10 @@ class _LoginState extends State<Login> {
                                       borderRadius: BorderRadius.circular(18.0)),
                                 ),
                               ),
-                              onPressed: _submitForm,
+                              onPressed: () {
+                                _submitForm();
+                                Func().getFirebaseToken();
+                              },
                               child: const Text(
                                 'Войти',
                                 style: TextStyle(fontSize: 18),
@@ -178,7 +180,13 @@ class _LoginState extends State<Login> {
           .get('${Constants.API_URL_DOMAIN}action=auth&', queryParameters: {
         "email": _emailController.text,
         "password": _passController.text
-      });
+      },
+      // options: Options(
+      //   headers: {
+      //     Constants.header: Constants.USER_TOKEN,
+      //   },
+      // )
+      );
 
       return response;
     } on DioError catch (e) {
@@ -201,7 +209,10 @@ class _LoginState extends State<Login> {
   void pageRoute(String token) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setString('login', token);
-    Constants.USER_TOKEN = pref.getString('login') ?? '';
+    setState(() {
+      Constants.USER_TOKEN = pref.getString('login') ?? '';
+      Constants.bearer = 'Bearer ${pref.getString('login') ?? ''}';
+    });
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const ProfilePage()));
   }

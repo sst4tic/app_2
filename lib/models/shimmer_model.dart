@@ -22,8 +22,13 @@ class ShimmerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Shimmer.fromColors(
-        baseColor: MediaQuery.of(context).platformBrightness == Brightness.light ? ColorStyles.lightShimmerBaseColor : ColorStyles.darkShimmerBaseColor,
-        highlightColor: MediaQuery.of(context).platformBrightness == Brightness.light ? ColorStyles.lightShimmerHighlightColor : ColorStyles.darkShimmerHighlightColor,
+        baseColor: MediaQuery.of(context).platformBrightness == Brightness.light
+            ? ColorStyles.lightShimmerBaseColor
+            : ColorStyles.darkShimmerBaseColor,
+        highlightColor:
+            MediaQuery.of(context).platformBrightness == Brightness.light
+                ? ColorStyles.lightShimmerHighlightColor
+                : ColorStyles.darkShimmerHighlightColor,
         period: const Duration(milliseconds: 800),
         child: Container(
           width: width,
@@ -41,8 +46,9 @@ Widget buildGridShimmer() => GridView.builder(
       itemCount: 10,
       itemBuilder: (BuildContext context, int index) {
         return Container(
+          margin: const EdgeInsets.only(top: 10),
           padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
-          decoration:  BoxDecoration(
+          decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.secondary,
             borderRadius: const BorderRadius.all(Radius.circular(8)),
           ),
@@ -85,21 +91,22 @@ Widget buildGridShimmer() => GridView.builder(
       },
     );
 
-Widget buildSearchShimmer() => GridView.builder(
+Widget buildSearchCatShimmer() => GridView.builder(
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
-          childAspectRatio: 47.w / 23.5.h,
+          childAspectRatio: 45.w / 23.5.h,
           crossAxisSpacing: 10.w,
-          mainAxisSpacing: 10.h),
+          mainAxisSpacing: 1.h),
       itemCount: 4,
       itemBuilder: (BuildContext context, int index) {
         return Container(
           padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
-          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
           decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+            color: Theme.of(context).colorScheme.secondary,
           ),
           child: Column(
             children: const [
@@ -125,6 +132,38 @@ Widget buildSearchShimmer() => GridView.builder(
       },
     );
 
+Widget buildSearchShimmer() => SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 10.h,
+          ),
+          Container(
+              padding: const EdgeInsets.only(left: 15, right: 15, bottom: 5),
+              child: ShimmerWidget.rectangular(
+                height: 15.h,
+                width: 150.w,
+              )),
+          SizedBox(height: 300, child: buildSearchCatShimmer()),
+          SizedBox(
+            height: 5.h,
+          ),
+          Container(
+              padding: const EdgeInsets.only(left: 15, right: 15),
+              child: ShimmerWidget.rectangular(height: 35.h)),
+          Container(
+              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+              child: ShimmerWidget.rectangular(
+                height: 20.h,
+                width: 120.w,
+              )),
+          buildCatalogShimmer(physics: const NeverScrollableScrollPhysics()),
+        ],
+      ),
+    );
+
 Widget buildHorizontalShimmer() => ListView.builder(
     padding: const EdgeInsets.only(left: 10),
     scrollDirection: Axis.horizontal,
@@ -148,7 +187,8 @@ Widget buildHorizontalShimmer() => ListView.builder(
       );
     });
 
-Widget buildCatalogShimmer() => ListView.builder(
+Widget buildCatalogShimmer({physics}) => ListView.builder(
+    physics: physics,
     shrinkWrap: true,
     itemCount: 10,
     itemBuilder: (context, index) {
@@ -177,12 +217,44 @@ Widget buildCatalogShimmer() => ListView.builder(
       );
     });
 
+Widget buildNotificationsShimmer({physics}) => ListView.builder(
+    physics: physics,
+    shrinkWrap: true,
+    itemCount: 10,
+    padding: const EdgeInsets.all(8),
+    itemBuilder: (context, index) {
+      return Container(
+        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Theme.of(context).colorScheme.secondary,
+        ),
+        height: 75,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                ShimmerWidget.rectangular(height: 20, width: 130),
+                const Spacer(),
+                ShimmerWidget.rectangular(height: 20, width: 110),
+              ],
+            ),
+            ShimmerWidget.rectangular(height: 20, width: 100),
+          ],
+        ),
+      );
+    });
+
 Widget buildExpandableShimmer() => ListView.builder(
     shrinkWrap: true,
     itemCount: 10,
     itemBuilder: (context, index) {
       return Column(children: [
         Card(
+          color: Theme.of(context).colorScheme.secondary,
           margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(0),
@@ -287,35 +359,96 @@ Widget buildNewCatalogShimmer(context) => Column(
 Widget buildCartShimmer(context) => SafeArea(
       child: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
-        padding: const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 5),
+        // padding: const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ShimmerWidget.rectangular(height: 345.h),
             ShimmerWidget.rectangular(
-                height: MediaQuery.of(context).size.height * 0.45),
-            SizedBox(
-              height: 15.h,
-            ),
-            ShimmerWidget.rectangular(height: 40.h),
+                height: MediaQuery.of(context).size.height * 0.4),
             SizedBox(
               height: 10.h,
             ),
-            ShimmerWidget.rectangular(
-              height: 25.h,
-              width: 220,
+            Container(
+              color: Theme.of(context).colorScheme.secondary,
+              padding: const EdgeInsets.all(10),
+              height: 90.h,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ShimmerWidget.rectangular(height: 20.h),
+                  SizedBox(
+                    height: 7.h,
+                  ),
+                  ShimmerWidget.rectangular(
+                    height: 15.h,
+                    width: 220,
+                  ),
+                  SizedBox(
+                    height: 7.h,
+                  ),
+                  ShimmerWidget.rectangular(
+                    height: 20.h,
+                    width: 100,
+                  ),
+                ],
+              ),
             ),
             SizedBox(
-              height: 7.h,
+              height: 10.h,
             ),
-            ShimmerWidget.rectangular(
-              height: 25.h,
-              width: 100,
+            Container(
+              color: Theme.of(context).colorScheme.secondary,
+              padding: const EdgeInsets.all(10),
+              height: 105.h,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ShimmerWidget.rectangular(
+                    height: 22.h,
+                    width: 150,
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ShimmerWidget.rectangular(
+                        height: 20.h,
+                        width: 130,
+                      ),
+                      const SizedBox(width: 70,),
+                      ShimmerWidget.rectangular(
+                        height: 20.h,
+                        width: 100,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ShimmerWidget.rectangular(
+                        height: 20.h,
+                        width: 100,
+                      ),
+                      const SizedBox(width: 100,),
+                      ShimmerWidget.rectangular(
+                        height: 20.h,
+                        width: 100,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             const Spacer(),
             Padding(
-                padding: const EdgeInsets.only(left: 5, right: 5),
-                child: ShimmerWidget.rectangular(height: 35.h)),
+              padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+              child: ShimmerWidget.rectangular(height: 33.h),
+            ),
           ],
         ),
       ),
@@ -437,8 +570,7 @@ Widget buildBagCartShimmer(int count) => ListView.separated(
 Widget buildPurchaseHistoryShimmer(context) => Container(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: ListView.builder(
-          padding:
-               REdgeInsets.only(left: 10, right: 10, top: 5, bottom: 10),
+          padding: REdgeInsets.only(left: 10, right: 10, top: 5, bottom: 10),
           shrinkWrap: true,
           itemCount: 10,
           itemBuilder: (context, index) {
@@ -546,10 +678,9 @@ Widget buildEditShimmer(context) => Container(
     );
 
 Widget buildPurchaseShimmer(context) => Container(
-      color: ColorStyles.bodyColor,
-      padding:  REdgeInsets.all(10),
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: REdgeInsets.all(10),
       child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             height: 35.h,
@@ -570,8 +701,8 @@ Widget buildPurchaseShimmer(context) => Container(
           ),
           const Divider(height: 0, thickness: 1),
           Container(
+              color: Theme.of(context).colorScheme.secondary,
               padding: REdgeInsets.only(left: 10, right: 10, top: 20),
-              color: Colors.white,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -607,9 +738,9 @@ Widget buildPurchaseShimmer(context) => Container(
               )),
           const Divider(height: 0, thickness: 1),
           Container(
+            color: Theme.of(context).colorScheme.secondary,
             padding:
                 const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-            color: Colors.white,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -665,7 +796,6 @@ Widget buildDetailShimmer(context) => Container(
       color: Theme.of(context).scaffoldBackgroundColor,
       padding: const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 10),
       child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Card(
             margin: const EdgeInsets.only(bottom: 12.5),
@@ -752,7 +882,7 @@ Widget buildDetailShimmer(context) => Container(
               actions: [
                 Container(
                   padding:
-                  const EdgeInsets.only(right: 10, top: 10, bottom: 10),
+                      const EdgeInsets.only(right: 10, top: 10, bottom: 10),
                   height: 15.h,
                   child: const ShimmerWidget.rectangular(
                     height: 1,

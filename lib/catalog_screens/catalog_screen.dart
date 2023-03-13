@@ -84,10 +84,7 @@ class _CatalogPageState extends State<CatalogPage> {
         ),
         centerTitle: false,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: FutureBuilder(
+      body: FutureBuilder(
                 future: cacheCatalog,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -99,9 +96,6 @@ class _CatalogPageState extends State<CatalogPage> {
                     return const Text("No widget to build");
                   }
                 }),
-          )
-        ],
-      ),
     );
   }
 

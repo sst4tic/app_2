@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/catalog_screens/product_screen.dart';
@@ -29,10 +30,10 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
 
   static Future<List<Product>> getFavorites() async {
     var url =
-        '${Constants.API_URL_DOMAIN}action=favorite_list&token=${Constants.USER_TOKEN}';
-    final response = await http.get(Uri.parse(url));
+        '${Constants.API_URL_DOMAIN}action=favorite_list';
+    final response = await http.get(Uri.parse(url), headers: {Constants.header: Constants.bearer});
     final body = jsonDecode(response.body);
-    return List.from(body['data'].map!((e) => Product.fromJson(e)).toList());
+    return List.from(body['data']?.map!((e) => Product.fromJson(e)).toList());
   }
 
   @override
@@ -79,17 +80,25 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                 (BuildContext context, int index) {
               final media =
                   product[index].media?.map((e) => e.toJson()).toList();
-              final photo = media?[0]['links']['local']['thumbnails']['350'];
+              final photo = media!.isEmpty ? 'storage/warehouse/products/images/no-image-ru.jpg' : media[0]['links']['local']['thumbnails']['350'];
               final productItem = product[index];
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => ProductScreen(
-                                name: productItem.name,
-                                link: productItem.link,
-                              )));
+                      CupertinoPageRoute(
+                          builder: (context) =>
+                              ProductScreen(product: productItem)))
+                      .then((product) => {
+                    if (product != null) {
+                      setState(() {
+                        productItem.is_favorite = product.is_favorite;
+                        product.is_favorite
+                            ? _isFavLoading.add(index)
+                            : _isFavLoading.remove(index);
+                      })
+                    }
+                  });
                 },
                 child: Container(
                   padding: REdgeInsets.only(left: 7, right: 7, top: 6),
@@ -103,7 +112,7 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
-                              media != null
+                              media.isNotEmpty
                                   ? 'https://cdn.yiwumart.org/$photo'
                                   : 'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
                               errorBuilder: (BuildContext context,
@@ -134,7 +143,6 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                           ),
                         ],
                       ),
-                      // SizedBox(height: 4.h),
                       const Spacer(),
                       Row(
                         children: [
@@ -161,8 +169,7 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                               splashColor: Colors.transparent,
                               icon: Icon(
                                 _isFavLoading.contains(index) ||
-                                        productItem.is_favorite!
-                                    ? Icons.favorite
+                                        productItem.is_favorite!? Icons.favorite
                                     : Icons.favorite_border,
                                 color: Colors.red,
                               ),
