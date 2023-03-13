@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/catalog_screens/product_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:yiwumart/models/bag_button_model.dart';
 import '../models/shimmer_model.dart';
 import '../util/constants.dart';
 import '../util/function_class.dart';
@@ -18,8 +19,6 @@ class FavoriteProducts extends StatefulWidget {
 }
 
 class _FavoriteProductsState extends State<FavoriteProducts> {
-  var _isLoading = false;
-  var _isLoaded = false;
   int selectedIndex = -1;
   int page = 1;
   bool hasMore = true;
@@ -159,11 +158,10 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                         ],
                       ),
                       const Spacer(),
-                      if (Constants.USER_TOKEN != '')
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            buildButton(index, productItem.id),
+                            BagButton(index: index, id: productItem.id),
                             IconButton(
                               highlightColor: Colors.transparent,
                               splashColor: Colors.transparent,
@@ -196,8 +194,6 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                             )
                           ],
                         )
-                      else
-                        buildButton(index, productItem.id),
                     ],
                   ),
                 ),
@@ -207,56 +203,4 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
           Func.sizedGrid,
         ],
       );
-
-  Widget buildButton(index, id) => ElevatedButton.icon(
-      icon: _isLoading && selectedIndex == index
-          ? Container(
-        width: 16,
-        height: 16,
-        padding: const EdgeInsets.all(1.0),
-        child: const CircularProgressIndicator(
-          color: Colors.white,
-          strokeWidth: 3,
-        ),
-      )
-          : Icon(
-          _isLoaded && selectedIndex == index
-              ? Icons.done
-              : Icons.shopping_basket,
-          size: 16),
-      onPressed: () {
-        setState(() {
-          _isLoading = true;
-          selectedIndex = index;
-        });
-        Func()
-            .addToBag(
-          productId: id,
-          context: context,
-          onSuccess: () {
-            setState(() {
-              _isLoaded = true;
-              _isLoading = false;
-            });
-          },
-          onFailure: () {
-            setState(() {
-              _isLoading = false;
-              _isLoaded = false;
-            });
-          },
-        ).then((value) {
-          Future.delayed(const Duration(seconds: 2))
-              .then((value) => setState(() {
-            _isLoading = false;
-            _isLoaded = false;
-          }));
-        });
-      },
-      style: BagButtonStyle(context: context, isLoaded: _isLoaded, selectedIndex: selectedIndex, index: index),
-      label: Text(
-        _isLoaded && selectedIndex == index ? 'Добавлен' : 'В корзину',
-        style: const TextStyle(fontSize: 11),
-        textAlign: TextAlign.center,
-      ));
 }

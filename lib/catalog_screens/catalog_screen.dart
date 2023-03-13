@@ -1,13 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/util/catalog.dart';
-import 'package:http/http.dart' as http;
-
+import 'package:yiwumart/util/function_class.dart';
 import '../models/search_model.dart';
 import '../models/shimmer_model.dart';
-import '../util/constants.dart';
 import 'expandable_categories.dart';
 
 class CatalogPage extends StatefulWidget {
@@ -20,17 +16,12 @@ class CatalogPage extends StatefulWidget {
 class _CatalogPageState extends State<CatalogPage> {
   late Future<List<Catalog>> cacheCatalog;
 
-  Future<List<Catalog>> getCatalog() async {
-    var url = '${Constants.API_URL_DOMAIN}action=categories';
-    final response = await http.get(Uri.parse(url));
-    final body = jsonDecode(response.body);
-    final catalog = body['data'].map<Catalog>(Catalog.fromJson).toList();
-    return catalog;
-  }
+
+
 
   @override
   void initState() {
-    cacheCatalog = getCatalog();
+    cacheCatalog = Func().getCatalog();
     super.initState();
   }
 

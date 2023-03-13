@@ -10,6 +10,7 @@ import 'package:yiwumart/util/product.dart';
 import 'package:yiwumart/util/product_item.dart';
 import 'package:yiwumart/util/search.dart';
 import '../screens/main_screen.dart';
+import 'catalog.dart';
 import 'constants.dart';
 import 'notification.dart';
 import 'order_detail.dart';
@@ -24,6 +25,15 @@ class Func {
     return body['data']
         .map<PopularCategories>(PopularCategories.fromJson)
         .toList();
+  }
+
+  // func for getting catalog
+  Future<List<Catalog>> getCatalog() async {
+    var url = '${Constants.API_URL_DOMAIN}action=categories';
+    final response = await http.get(Uri.parse(url));
+    final body = jsonDecode(response.body);
+    final catalog = body['data'].map<Catalog>(Catalog.fromJson).toList();
+    return catalog;
   }
 
   // func for getting products
@@ -183,7 +193,7 @@ class Func {
       FirebaseMessaging.instance.getToken().then((value) async {
         var url =
             '${Constants.API_URL_DOMAIN}action=fcm_device_token_post&fcm_device_token=$value';
-        http.Response response = await http.get(Uri.parse(url), headers: {
+       await http.get(Uri.parse(url), headers: {
           Constants.header: 'Bearer ${Constants.USER_TOKEN}',
         });
       });

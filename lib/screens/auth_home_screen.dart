@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/catalog_screens/catalog_item.dart';
+import 'package:yiwumart/models/bag_button_model.dart';
 import 'package:yiwumart/models/search_model.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
 import 'package:yiwumart/screens/notification_screen.dart';
@@ -20,8 +21,6 @@ class AuthHomePage extends StatefulWidget {
 }
 
 class _AuthHomePageState extends State<AuthHomePage> {
-  var _isLoading = false;
-  var _isLoaded = false;
   int selectedIndex = -1;
   bool favClick = false;
   final Set<int> _isFavLoading = {};
@@ -410,7 +409,7 @@ class _AuthHomePageState extends State<AuthHomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      buildButton(index, productItem.id),
+                      BagButton(index: index, id: productItem.id),
                       IconButton(
                         highlightColor: Colors.transparent,
                         splashColor: Colors.transparent,
@@ -450,61 +449,4 @@ class _AuthHomePageState extends State<AuthHomePage> {
           );
         },
       );
-
-  Widget buildButton(index, id) => ElevatedButton.icon(
-      icon: _isLoading && selectedIndex == index
-          ? Container(
-              width: 16,
-              height: 16,
-              padding: const EdgeInsets.all(1.0),
-              child: const CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 3,
-              ),
-            )
-          : Icon(
-              _isLoaded && selectedIndex == index
-                  ? Icons.done
-                  : Icons.shopping_basket,
-              size: 16),
-      onPressed: () {
-        setState(() {
-          _isLoading = true;
-          selectedIndex = index;
-        });
-        Func()
-            .addToBag(
-          productId: id,
-          context: context,
-          onSuccess: () {
-            setState(() {
-              _isLoaded = true;
-              _isLoading = false;
-            });
-          },
-          onFailure: () {
-            setState(() {
-              _isLoading = false;
-              _isLoaded = false;
-            });
-          },
-        )
-            .then((value) {
-          Future.delayed(const Duration(seconds: 2))
-              .then((value) => setState(() {
-                    _isLoading = false;
-                    _isLoaded = false;
-                  }));
-        });
-      },
-      style: BagButtonStyle(
-          context: context,
-          isLoaded: _isLoaded,
-          selectedIndex: selectedIndex,
-          index: index),
-      label: Text(
-        _isLoaded && selectedIndex == index ? 'Добавлен' : 'В корзину',
-        style: const TextStyle(fontSize: 11),
-        textAlign: TextAlign.center,
-      ));
 }

@@ -7,6 +7,7 @@ import 'package:yiwumart/models/shimmer_model.dart';
 import 'package:yiwumart/util/function_class.dart';
 import 'package:yiwumart/util/product.dart';
 import 'package:http/http.dart' as http;
+import '../models/bag_button_model.dart';
 import '../models/filter_sliverlist.dart';
 import '../util/constants.dart';
 import '../util/styles.dart';
@@ -35,8 +36,6 @@ class _CatalogItemsState extends State<CatalogItems> {
   var filters;
   var filterValues = {};
   var filterDefaultValues = {};
-  var _isLoading = false;
-  var _isLoaded = false;
   int selectedIndex = -1;
   List<Product> list = [];
   ScrollController sController = ScrollController();
@@ -318,7 +317,7 @@ class _CatalogItemsState extends State<CatalogItems> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            buildButton(index, productItem.id),
+                            BagButton(index: index, id: productItem.id),
                             IconButton(
                               highlightColor: Colors.transparent,
                               splashColor: Colors.transparent,
@@ -351,7 +350,7 @@ class _CatalogItemsState extends State<CatalogItems> {
                           ],
                         )
                       else
-                        buildButton(index, productItem.id),
+                        BagButton(index: index, id: productItem.id),
                     ],
                   ),
                 ),
@@ -651,56 +650,4 @@ class _CatalogItemsState extends State<CatalogItems> {
               ),
             );
           }));
-
-  Widget buildButton(index, id) => ElevatedButton.icon(
-      icon: _isLoading && selectedIndex == index
-          ? Container(
-        width: 16,
-        height: 16,
-        padding: const EdgeInsets.all(1.0),
-        child: const CircularProgressIndicator(
-          color: Colors.white,
-          strokeWidth: 3,
-        ),
-      )
-          : Icon(
-          _isLoaded && selectedIndex == index
-              ? Icons.done
-              : Icons.shopping_basket,
-          size: 16),
-      onPressed: () {
-        setState(() {
-          _isLoading = true;
-          selectedIndex = index;
-        });
-        Func()
-            .addToBag(
-          productId: id,
-          context: context,
-          onSuccess: () {
-            setState(() {
-              _isLoaded = true;
-              _isLoading = false;
-            });
-          },
-          onFailure: () {
-            setState(() {
-              _isLoading = false;
-              _isLoaded = false;
-            });
-          },
-        ).then((value) {
-          Future.delayed(const Duration(seconds: 2))
-              .then((value) => setState(() {
-            _isLoading = false;
-            _isLoaded = false;
-          }));
-        });
-      },
-      style: BagButtonStyle(context: context, isLoaded: _isLoaded, selectedIndex: selectedIndex, index: index),
-      label: Text(
-        _isLoaded && selectedIndex == index ? 'Добавлен' : 'В корзину',
-        style: const TextStyle(fontSize: 11),
-        textAlign: TextAlign.center,
-      ));
 }
