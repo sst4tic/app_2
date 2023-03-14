@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:yiwumart/util/constants.dart';
 
-import '../autorization/login.dart';
+import '../authorization/login.dart';
 import '../models/shimmer_model.dart';
 
 

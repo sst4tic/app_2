@@ -131,7 +131,6 @@ class Func {
         Constants.header: Constants.bearer,
       },
     );
-    print(response.body);
     dynamic body = jsonDecode(response.body);
     if (body['message'] == 'ADDED') {
       onAdded?.call();
@@ -153,7 +152,6 @@ class Func {
         Constants.header: Constants.bearer,
       },
     );
-    print(response.body);
     dynamic body = jsonDecode(response.body);
     if (body['message'] == 'ADDED') {
       onAdded?.call();

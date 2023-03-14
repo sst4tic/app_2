@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yiwumart/autorization/login.dart';
+import 'package:yiwumart/authorization/login.dart';
 import 'package:yiwumart/screens/profile_screen.dart';
 
 import '../util/constants.dart';

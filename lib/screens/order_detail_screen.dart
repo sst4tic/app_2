@@ -42,7 +42,6 @@ class _OrderDetailsState extends State<OrderDetails> {
             final order = snapshot.data!;
             return buildOrderDetails(details: order, context: context);
           } else {
-            print(snapshot.error);
             return const Text("No widget to build");
           }
         },

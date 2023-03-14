@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:yiwumart/autorization/registration.dart';
+import 'package:yiwumart/authorization/registration.dart';
 import 'package:yiwumart/screens/profile_screen.dart';
 import '../util/constants.dart';
 import '../util/function_class.dart';

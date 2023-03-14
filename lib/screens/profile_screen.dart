@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:yiwumart/autorization/login.dart';
+import 'package:yiwumart/authorization/login.dart';
 import 'package:yiwumart/catalog_screens/favorite_products.dart';
 import 'package:yiwumart/screens/edit_profile.dart';
 import 'package:yiwumart/screens/purchase_history.dart';

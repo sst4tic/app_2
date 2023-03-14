@@ -90,7 +90,8 @@ class _CatalogItemsState extends State<CatalogItems> {
   Future<List<Product>> getProducts([orderby = '', filter = '']) async {
     var url =
         '${Constants.API_URL_DOMAIN}action=catalog&category_id=$id&page=$page&orderby=$orderby&$filter';
-    final response = await http.get(Uri.parse(url), headers: {Constants.header: Constants.bearer});
+    final response = await http
+        .get(Uri.parse(url), headers: {Constants.header: Constants.bearer});
     final body = jsonDecode(response.body);
     if (response.statusCode == 200) {
       setState(() {
@@ -217,15 +218,14 @@ class _CatalogItemsState extends State<CatalogItems> {
         slivers: [
           Func.sizedGrid,
           FilterSliverList(
-              onSortChanged: (value) {
-                setState(() {
-                  val = value.toString();
-                  page = 1;
-                  list.clear();
-                  productFuture =
-                      getProducts(value.toString(), filters);
-                });
-              },
+            onSortChanged: (value) {
+              setState(() {
+                val = value.toString();
+                page = 1;
+                list.clear();
+                productFuture = getProducts(value.toString(), filters);
+              });
+            },
             onFilterClick: () => showFilter(context),
             val: val,
           ),
@@ -236,30 +236,33 @@ class _CatalogItemsState extends State<CatalogItems> {
                 (BuildContext context, int index) {
               final media =
                   product[index].media?.map((e) => e.toJson()).toList();
-              final photo = media!.isEmpty ? 'storage/warehouse/products/images/no-image-ru.jpg' : media[0]['links']['local']['thumbnails']['350'];
+              final photo = media!.isEmpty
+                  ? 'storage/warehouse/products/images/no-image-ru.jpg'
+                  : media[0]['links']['local']['thumbnails']['350'];
               var productItem = product[index];
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (context) =>
-                              ProductScreen(product: productItem)))
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) =>
+                                  ProductScreen(product: productItem)))
                       .then((product) => {
-                    if (product != null) {
-                      setState(() {
-                        productItem.is_favorite = product.is_favorite;
-                        product.is_favorite
-                            ? _isFavLoading.add(index)
-                            : _isFavLoading.remove(index);
-                      })
-                    }
-                  });
+                            if (product != null)
+                              {
+                                setState(() {
+                                  productItem.is_favorite = product.is_favorite;
+                                  product.is_favorite
+                                      ? _isFavLoading.add(index)
+                                      : _isFavLoading.remove(index);
+                                })
+                              }
+                          });
                 },
                 child: Container(
                   padding: REdgeInsets.only(left: 7, right: 7, top: 6),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
+                      color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(8)),
                   child: Column(
                     children: <Widget>[
@@ -323,7 +326,8 @@ class _CatalogItemsState extends State<CatalogItems> {
                               splashColor: Colors.transparent,
                               icon: Icon(
                                 _isFavLoading.contains(index) ||
-                                        productItem.is_favorite!? Icons.favorite
+                                        productItem.is_favorite!
+                                    ? Icons.favorite
                                     : Icons.favorite_border,
                                 color: Colors.red,
                               ),
@@ -338,11 +342,10 @@ class _CatalogItemsState extends State<CatalogItems> {
                                   productId: productItem.id,
                                   index: index,
                                   onAdded: () {
-                                      setState(() => _isFavLoading.add(index));
-
+                                    setState(() => _isFavLoading.add(index));
                                   },
                                   onRemoved: () {
-                                      setState(() => _isFavLoading.remove(index));
+                                    setState(() => _isFavLoading.remove(index));
                                   },
                                 );
                               },
@@ -431,7 +434,7 @@ class _CatalogItemsState extends State<CatalogItems> {
                                     });
                                   });
                                 },
-                                child:  Text(
+                                child: Text(
                                   'Сброс',
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 )),
@@ -501,9 +504,11 @@ class _CatalogItemsState extends State<CatalogItems> {
                                                   floatingLabelBehavior:
                                                       FloatingLabelBehavior
                                                           .always,
-                                                  label:  Text(
+                                                  label: Text(
                                                     'От',
-                                                    style: Theme.of(context).textTheme.bodyLarge,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge,
                                                   ),
                                                   border: OutlineInputBorder(
                                                       borderRadius:
@@ -558,7 +563,9 @@ class _CatalogItemsState extends State<CatalogItems> {
                                                               .always,
                                                       label: Text(
                                                         'До',
-                                                        style: Theme.of(context).textTheme.bodyLarge,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyLarge,
                                                       ),
                                                       border:
                                                           OutlineInputBorder(
@@ -580,7 +587,8 @@ class _CatalogItemsState extends State<CatalogItems> {
                                         ),
                                       ),
                                       RangeSlider(
-                                        activeColor: Theme.of(context).disabledColor,
+                                        activeColor:
+                                            Theme.of(context).disabledColor,
                                         inactiveColor: Colors.grey,
                                         values:
                                             RangeValues(_startValue, _endValue),
