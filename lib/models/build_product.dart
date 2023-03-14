@@ -161,61 +161,6 @@ Widget buildProduct({required ProductItem product, required context}) {
                     ),
             ],
           )),
-
-      // SizedBox(
-      //   height: 305.h,
-      //   child:
-      //   DefaultTabController(
-      //     length: 2,
-      //     child: Column(
-      //       mainAxisSize: MainAxisSize.min,
-      //       children: [
-      //         Container(
-      //           height: 35.h,
-      //           color: Theme.of(context).colorScheme.secondary,
-      //           child: const TabBar(
-      //             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
-      //             tabs: [
-      //               Tab(text: 'О товаре'),
-      //               Tab(text: 'В наличии'),
-      //             ],
-      //           ),
-      //         ),
-      //         Flexible(
-      //           child: TabBarView(
-      //             children: [
-      //               Container(
-      //                   color: Theme.of(context).colorScheme.secondary,
-      //                   padding: const EdgeInsets.symmetric(
-      //                       horizontal: 10.0, vertical: 10.0),
-      //                   child: product.description != null
-      //                       ? Html(data: product.description,
-      //                       shrinkWrap: true,
-      //                       style: {
-      //                           'body': Style(
-      //                             fontSize: FontSize(14.0),
-      //                             color: Theme.of(context).primaryColorLight
-      //                           ),
-      //                         })
-      //                       : const Text(
-      //                           'Описание отсутствует',
-      //                           style: TextStyle(fontSize: 14.0),
-      //                         )),
-      //               Container(
-      //                   color: Theme.of(context).colorScheme.secondary,
-      //                   padding: const EdgeInsets.symmetric(
-      //                       horizontal: 10.0, vertical: 10.0),
-      //                   child: Text(
-      //                     product.availability,
-      //                     style: const TextStyle(fontSize: 14),
-      //                   )),
-      //             ],
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
     ],
   );
 }

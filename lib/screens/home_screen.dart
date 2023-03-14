@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:yiwumart/catalog_screens/catalog_item.dart';
-import 'package:yiwumart/models/bag_button_model.dart';
 import 'package:yiwumart/models/search_model.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
 import 'package:yiwumart/util/function_class.dart';
 import 'package:yiwumart/util/popular_catalog.dart';
-import '../catalog_screens/product_screen.dart';
+import '../models/gridview_model.dart';
+import '../models/popular_categories_model.dart';
 import '../util/constants.dart';
 import '../util/product.dart';
 import '../util/styles.dart';
@@ -112,7 +111,7 @@ class _HomePageState extends State<HomePage> {
                                   return buildHorizontalShimmer();
                                 } else if (snapshot.hasData) {
                                   final data = snapshot.data!;
-                                  return buildCatalog(data);
+                                  return buildPopularCategories(data);
                                 } else {
                                   return Center(
                                       child: Column(
@@ -148,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                                     return buildGridShimmer();
                                   } else if (snapshot.hasData) {
                                     final product = snapshot.data;
-                                    return buildProduct(product!);
+                                    return buildProductsOfDay(product!);
                                   } else {
                                     return Center(
                                         child: Column(
@@ -180,174 +179,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  Widget buildCatalog(List<PopularCategories> categories) => ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        padding: EdgeInsets.zero,
-        itemBuilder: (context, index) {
-          final categoryItem = categories[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CatalogItems(
-                            id: categoryItem.id,
-                            name: categoryItem.name,
-                          )));
-            },
-            child: Container(
-              margin: index == categories.length - 1
-                  ? const EdgeInsets.only(right: 0)
-                  : const EdgeInsets.only(right: 7),
-              width: 150,
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(0))),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                elevation: 0,
-                child: Container(
-                    padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      image: DecorationImage(
-                          image: NetworkImage(categoryItem.image),
-                          fit: BoxFit.cover),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 7, right: 7),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CatalogItems(
-                                            id: categoryItem.id,
-                                            name: categoryItem.name,
-                                          )));
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  const Color.fromRGBO(43, 46, 74, 0.8)),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0)),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 4, bottom: 4),
-                              child: Text(
-                                categoryItem.name,
-                                maxLines: 2,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    )),
-              ),
-            ),
-          );
-        },
-      );
-
-  Widget buildProduct(List<Product> product) => GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: GridDelegateClass.gridDelegate,
-        itemCount: product.length,
-        itemBuilder: (context, index) {
-          final productItem = product[index];
-          final media =
-              product[index].media?.map((e) => e.toJson()).toList() ?? [];
-          final photo = media.isEmpty
-              ? 'storage/warehouse/products/images/no-image-ru.jpg'
-              : media[0]['links']['local']['thumbnails']['350'];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ProductScreen(
-                            product: productItem,
-                          )));
-            },
-            child: Container(
-              padding: REdgeInsets.only(left: 7, right: 7, top: 6),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.circular(8)),
-              child: Column(
-                children: <Widget>[
-                  InkWell(
-                    child: Center(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          photo != null
-                              ? 'https://cdn.yiwumart.org/$photo'
-                              : 'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
-                          errorBuilder: (BuildContext context, Object exception,
-                              StackTrace? stackTrace) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
-                                height:
-                                    MediaQuery.of(context).size.height * 0.195,
-                              ),
-                            );
-                          },
-                          height: MediaQuery.of(context).size.height * 0.195,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${productItem.price} ₸',
-                        style: TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  // SizedBox(height: 4.h),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          '${productItem.name}\n',
-                          textAlign: TextAlign.start,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 12.5.sp, fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  BagButton(index: index, id: productItem.id),
-                ],
-              ),
-            ),
-          );
-        },
-      );
 }

@@ -57,7 +57,6 @@ class _ProductScreenState extends State<ProductScreen> {
       return
         CustomWillPopScope(
         action: () {
-          print('pop');
           Navigator.pop(context, product);
           setState(() {
             product.is_favorite = isFavorite;
