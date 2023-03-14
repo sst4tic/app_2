@@ -6,7 +6,6 @@ import 'package:yiwumart/util/function_class.dart';
 import 'package:yiwumart/util/popular_catalog.dart';
 import '../models/gridview_model.dart';
 import '../models/popular_categories_model.dart';
-import '../util/constants.dart';
 import '../util/product.dart';
 import '../util/styles.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,7 +19,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = -1;
-  bool favClick = false;
   late Future<List<PopularCategories>> popularCategoriesFuture;
   late Future<List<Product>> productFuture;
   TextEditingController searchController = TextEditingController();
@@ -34,7 +32,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(Constants.bearer);
     return Scaffold(
       body: CustomScrollView(
         slivers: [

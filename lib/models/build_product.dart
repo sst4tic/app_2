@@ -8,7 +8,7 @@ Widget buildProduct({required ProductItem product, required context}) {
   final media = product.media!.map((e) => e.toJson()).toList();
   var mediaQuery = MediaQuery.of(context).size;
   return ListView(
-    padding: REdgeInsets.only(bottom: 75),
+    padding: REdgeInsets.only(bottom: 80),
     shrinkWrap: true,
     children: [
       SizedBox(

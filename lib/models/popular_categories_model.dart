@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../catalog_screens/catalog_item.dart';
 import '../util/popular_catalog.dart';
 

@@ -134,7 +134,7 @@ class SearchModel extends SearchDelegate {
                       Text(
                         'История поиска',
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -155,7 +155,7 @@ class SearchModel extends SearchDelegate {
                             'Очистить',
                             style: TextStyle(
                               color: Colors.red,
-                              fontSize: 16.sp,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
                             ),
                           )),
@@ -167,8 +167,9 @@ class SearchModel extends SearchDelegate {
             child: ListView.separated(
               itemCount: _history.toSet().toList().length,
               itemBuilder: (BuildContext context, int index) {
+                var revertHistory = _history.toList().reversed;
                 return ListTile(
-                  title: Text(_history.toList()[index]),
+                  title: Text(revertHistory.toList()[index]),
                   trailing: IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: () {
