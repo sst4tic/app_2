@@ -9,10 +9,10 @@ class ImageList extends StatefulWidget {
   const ImageList({super.key, required this.imageUrls, required this.fullImageUrl});
 
   @override
-  _ImageListState createState() => _ImageListState();
+  ImageListState createState() => ImageListState();
 }
 
-class _ImageListState extends State<ImageList> {
+class ImageListState extends State<ImageList> {
   final _controller = PageController();
   int _currentIndex = 0;
   List<String> _imageUrls = [];

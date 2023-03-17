@@ -2,7 +2,7 @@
 class User {
   final int id;
   final String name;
-  final String surname;
+  String? surname;
   final String fullName;
   final String shortName;
   final String roleName;
@@ -11,7 +11,7 @@ class User {
    User ({
     required this.id,
     required this.name,
-    required this.surname,
+    this.surname,
     required this.fullName,
     required this.shortName,
     required this.roleName,

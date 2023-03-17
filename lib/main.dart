@@ -14,6 +14,7 @@ import 'package:yiwumart/screens/notification_screen.dart';
 import 'package:yiwumart/util/constants.dart';
 import 'package:yiwumart/util/function_class.dart';
 import 'package:yiwumart/util/styles.dart';
+
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -37,8 +38,12 @@ void main() async {
   RemoteMessage? initialMessage =
       await FirebaseMessaging.instance.getInitialMessage();
   if (initialMessage != null) {
-      Future.delayed(const Duration(milliseconds: 100)).then((value) => navKey.currentState !=null ? navKey.currentState!.push(MaterialPageRoute(
-        builder: (context) => const NotificationScreen())) : null);
+    Future.delayed(const Duration(milliseconds: 100)).then((value) => navKey
+                .currentState !=
+            null
+        ? navKey.currentState!.push(
+            MaterialPageRoute(builder: (context) => const NotificationScreen()))
+        : null);
   }
   await _messaging.setForegroundNotificationPresentationOptions(
     alert: true,
@@ -77,9 +82,8 @@ void main() async {
     );
     if (navKey.currentState != null) {
       if (Constants.USER_TOKEN.isNotEmpty) {
-       navKey.currentState!
-            .push(MaterialPageRoute(
-                builder: (context) => const NotificationScreen()));
+        navKey.currentState!.push(MaterialPageRoute(
+            builder: (context) => const NotificationScreen()));
       }
     }
   });
@@ -112,7 +116,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       Constants.USER_TOKEN = pref.getString('login') ?? "";
-      if(Constants.USER_TOKEN.isNotEmpty) {
+      if (Constants.USER_TOKEN.isNotEmpty) {
         Constants.bearer = 'Bearer ${pref.getString('login') ?? ""}';
       }
     });

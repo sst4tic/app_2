@@ -29,8 +29,8 @@ class BuildGridWidgetState extends State<BuildGridWidget> {
       itemCount: widget.products.length,
       itemBuilder: (context, index) {
         final productItem = widget.products[index];
-        final media = widget.products[index].media?.map((e) => e.toJson())
-            .toList();
+        final media =
+            widget.products[index].media?.map((e) => e.toJson()).toList();
         final photo = media!.isEmpty
             ? 'storage/warehouse/products/images/no-image-ru.jpg'
             : media[0]['links']['local']['thumbnails']['350'];
@@ -57,10 +57,7 @@ class BuildGridWidgetState extends State<BuildGridWidget> {
           child: Container(
             padding: REdgeInsets.only(left: 7, right: 7, top: 6),
             decoration: BoxDecoration(
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .secondary,
+                color: Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.circular(8)),
             child: Column(
               children: <Widget>[
@@ -79,17 +76,11 @@ class BuildGridWidgetState extends State<BuildGridWidget> {
                             child: Image.network(
                               'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
                               height:
-                              MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height * 0.195,
+                                  MediaQuery.of(context).size.height * 0.195,
                             ),
                           );
                         },
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.195,
+                        height: MediaQuery.of(context).size.height * 0.195,
                       ),
                     ),
                   ),
@@ -130,7 +121,7 @@ class BuildGridWidgetState extends State<BuildGridWidget> {
                       splashColor: Colors.transparent,
                       icon: Icon(
                         _isFavLoading.contains(index) ||
-                            productItem.is_favorite!
+                                productItem.is_favorite!
                             ? Icons.favorite
                             : Icons.favorite_border,
                         color: Colors.red,
@@ -138,8 +129,7 @@ class BuildGridWidgetState extends State<BuildGridWidget> {
                       onPressed: () {
                         if (productItem.is_favorite!) {
                           setState(() {
-                            productItem.is_favorite =
-                            !productItem.is_favorite!;
+                            productItem.is_favorite = !productItem.is_favorite!;
                           });
                         }
                         Func().addToFav(
@@ -165,91 +155,92 @@ class BuildGridWidgetState extends State<BuildGridWidget> {
       },
     );
   }
-  }
+}
+
 // build products of day for non auth user
 Widget buildProductsOfDay(List<Product> product) => GridView.builder(
-  shrinkWrap: true,
-  physics: const NeverScrollableScrollPhysics(),
-  gridDelegate: GridDelegateClass.gridDelegate,
-  itemCount: product.length,
-  itemBuilder: (context, index) {
-    final productItem = product[index];
-    final media =
-        product[index].media?.map((e) => e.toJson()).toList() ?? [];
-    final photo = media.isEmpty
-        ? 'storage/warehouse/products/images/no-image-ru.jpg'
-        : media[0]['links']['local']['thumbnails']['350'];
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ProductScreen(
-                  product: productItem,
-                )));
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: GridDelegateClass.gridDelegate,
+      itemCount: product.length,
+      itemBuilder: (context, index) {
+        final productItem = product[index];
+        final media =
+            product[index].media?.map((e) => e.toJson()).toList() ?? [];
+        final photo = media.isEmpty
+            ? 'storage/warehouse/products/images/no-image-ru.jpg'
+            : media[0]['links']['local']['thumbnails']['350'];
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProductScreen(
+                          product: productItem,
+                        )));
+          },
+          child: Container(
+            padding: REdgeInsets.only(left: 7, right: 7, top: 6),
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary,
+                borderRadius: BorderRadius.circular(8)),
+            child: Column(
+              children: <Widget>[
+                InkWell(
+                  child: Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        photo != null
+                            ? 'https://cdn.yiwumart.org/$photo'
+                            : 'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
+                              height:
+                                  MediaQuery.of(context).size.height * 0.195,
+                            ),
+                          );
+                        },
+                        height: MediaQuery.of(context).size.height * 0.195,
+                      ),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${productItem.price} ₸',
+                      style: TextStyle(
+                          fontSize: 16.sp, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        '${productItem.name}\n',
+                        textAlign: TextAlign.start,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 12.5.sp, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                BagButton(index: index, id: productItem.id),
+              ],
+            ),
+          ),
+        );
       },
-      child: Container(
-        padding: REdgeInsets.only(left: 7, right: 7, top: 6),
-        decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondary,
-            borderRadius: BorderRadius.circular(8)),
-        child: Column(
-          children: <Widget>[
-            InkWell(
-              child: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    photo != null
-                        ? 'https://cdn.yiwumart.org/$photo'
-                        : 'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
-                    errorBuilder: (BuildContext context, Object exception,
-                        StackTrace? stackTrace) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
-                          height:
-                          MediaQuery.of(context).size.height * 0.195,
-                        ),
-                      );
-                    },
-                    height: MediaQuery.of(context).size.height * 0.195,
-                  ),
-                ),
-              ),
-            ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  '${productItem.price} ₸',
-                  style: TextStyle(
-                      fontSize: 16.sp, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const Spacer(),
-            Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    '${productItem.name}\n',
-                    textAlign: TextAlign.start,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 12.5.sp, fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ],
-            ),
-            const Spacer(),
-            BagButton(index: index, id: productItem.id),
-          ],
-        ),
-      ),
     );
-  },
-);

@@ -175,7 +175,6 @@ class _CatalogItemsState extends State<CatalogItems> {
 
   @override
   Widget build(BuildContext context) {
-    print(_isFavLoading);
     return Scaffold(
       appBar: AppBar(
         title: Text(name!),

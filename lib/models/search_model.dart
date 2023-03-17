@@ -174,14 +174,14 @@ class SearchModel extends SearchDelegate {
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       setState(() {
-                        final value = _history.toList()[index];
+                        final value = revertHistory.toList()[index];
                         _history.remove(value);
                         _saveHistory();
                       });
                     },
                   ),
                   onTap: () {
-                    query = _history.toSet().toList()[index];
+                    query = revertHistory.toSet().toList()[index];
                     showResults(context);
                   },
                 );
@@ -217,11 +217,11 @@ class SearchModel extends SearchDelegate {
                   MaterialPageRoute(
                       builder: (context) => ProductScreen(
                             product: Product(
-                                id: searchItem.id,
-                                name: searchItem.name,
-                                price: searchItem.price,
-                                is_favorite: null,
-                                link: searchItem.link,
+                              id: searchItem.id,
+                              name: searchItem.name,
+                              price: searchItem.price,
+                              is_favorite: null,
+                              link: searchItem.link,
                             ),
                           )));
             },

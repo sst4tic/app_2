@@ -236,13 +236,13 @@ Widget buildNotificationsShimmer({physics}) => ListView.builder(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              children: [
+              children: const [
                 ShimmerWidget.rectangular(height: 20, width: 130),
-                const Spacer(),
+                Spacer(),
                 ShimmerWidget.rectangular(height: 20, width: 110),
               ],
             ),
-            ShimmerWidget.rectangular(height: 20, width: 100),
+            const ShimmerWidget.rectangular(height: 20, width: 100),
           ],
         ),
       );

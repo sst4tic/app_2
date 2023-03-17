@@ -16,10 +16,10 @@ class BagCartWidget extends StatefulWidget {
   const BagCartWidget({super.key, required this.cart, required this.qtyChangeCallback});
 
   @override
-  _BagCartWidgetState createState() => _BagCartWidgetState();
+  BagCartWidgetState createState() => BagCartWidgetState();
 }
 
-class _BagCartWidgetState extends State<BagCartWidget> {
+class BagCartWidgetState extends State<BagCartWidget> {
 
   @override
   Widget build(BuildContext context) {

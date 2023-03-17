@@ -14,6 +14,7 @@ import 'catalog.dart';
 import 'constants.dart';
 import 'notification.dart';
 import 'order_detail.dart';
+
 class Func {
   // func for getting popular categories
   static Future<List<PopularCategories>> getPopularCategories() async {
@@ -38,8 +39,7 @@ class Func {
 
   // func for getting products
   static Future<List<Product>> getProducts() async {
-    var url =
-        '${Constants.API_URL_DOMAIN}action=products_of_day';
+    var url = '${Constants.API_URL_DOMAIN}action=products_of_day';
     final response = await http.get(Uri.parse(url), headers: {
       Constants.header: Constants.bearer,
     });
@@ -49,8 +49,7 @@ class Func {
 
   // func for searching products
   static Future<Search> searchProducts(search) async {
-    var url =
-        '${Constants.API_URL_DOMAIN}action=search&q=$search';
+    var url = '${Constants.API_URL_DOMAIN}action=search&q=$search';
     final response = await http.get(Uri.parse(url), headers: {
       Constants.header: Constants.bearer,
     });
@@ -182,7 +181,6 @@ class Func {
     }
   }
 
-
   // func for getting/deleting firebase token
   Future<void> getFirebaseToken() async {
     if (Constants.USER_TOKEN.isEmpty) {
@@ -191,12 +189,13 @@ class Func {
       FirebaseMessaging.instance.getToken().then((value) async {
         var url =
             '${Constants.API_URL_DOMAIN}action=fcm_device_token_post&fcm_device_token=$value';
-       await http.get(Uri.parse(url), headers: {
+        await http.get(Uri.parse(url), headers: {
           Constants.header: 'Bearer ${Constants.USER_TOKEN}',
         });
       });
     }
   }
+
   // func for load notification list
   Future<List<NotificationClass>> getNotifications() async {
     var url = '${Constants.API_URL_DOMAIN}action=notifications_list';
@@ -207,8 +206,9 @@ class Func {
       },
     );
     final body = jsonDecode(response.body);
-    final notification = body['data'].map<NotificationClass>(
-        NotificationClass.fromJson).toList();
+    final notification = body['data']
+        .map<NotificationClass>(NotificationClass.fromJson)
+        .toList();
     return notification;
   }
 

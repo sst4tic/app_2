@@ -35,144 +35,148 @@ class _LoginState extends State<Login> {
     passFocus.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return
-      Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Профиль',
-          ),
-          centerTitle: false,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Профиль',
         ),
-          resizeToAvoidBottomInset: true,
-          key: _scaffoldkey,
-          body:
-          Center(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.height * 0.01,
-                      horizontal: MediaQuery.of(context).size.width * 0.05),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Вход в аккаунт',
-                            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 5),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                'Нет аккаунта? ',
-                                style: TextStyle(fontSize: 18, color: Colors.grey),
-                              ),
-                              RichText(
-                                text: TextSpan(
-                                  text: 'Создать аккаунт',
-                                  style: const TextStyle(fontSize: 18, color: Colors.red),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => const Registration()));
-                                    },
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            focusNode: emailFocus,
-                            autofocus: true,
-                            onFieldSubmitted: (_) {
-                              _fieldFocusChanged(context, emailFocus, passFocus);
+        centerTitle: false,
+      ),
+      resizeToAvoidBottomInset: true,
+      key: _scaffoldkey,
+      body:Center(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height * 0.01,
+                horizontal: MediaQuery.of(context).size.width * 0.05),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Вход в аккаунт',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Нет аккаунта? ',
+                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Создать аккаунт',
+                          style:
+                              const TextStyle(fontSize: 18, color: Colors.red),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const Registration()));
                             },
-                            controller: _emailController,
-                            decoration: InputDecoration(
-                              label: const Text('Email *'),
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
-                              contentPadding: const EdgeInsets.all(20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide:
-                                const BorderSide(color: Colors.red, width: 1),
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            focusNode: passFocus,
-                            controller: _passController,
-                            obscureText: _hidePass,
-                            decoration: InputDecoration(
-                              labelText: 'Пароль *',
-                              hintText: 'Введите пароль',
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
-                              contentPadding: const EdgeInsets.all(20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(color: Colors.red, width: 1),
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _hidePass ? Icons.visibility : Icons.visibility_off,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _hidePass = !_hidePass;
-                                  });
-                                },
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Expanded(
-                            flex: 0,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                minimumSize: MaterialStateProperty.all(const Size(400, 50)),
-                                shape:
-                                MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(18.0)),
-                                ),
-                              ),
-                              onPressed: () {
-                                _submitForm();
-                                Func().getFirebaseToken();
-                              },
-                              child: const Text(
-                                'Войти',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    focusNode: emailFocus,
+                    autofocus: true,
+                    onFieldSubmitted: (_) {
+                      _fieldFocusChanged(context, emailFocus, passFocus);
+                    },
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      label: const Text('Email *'),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      contentPadding: const EdgeInsets.all(20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1),
+                        borderRadius: BorderRadius.circular(18),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    focusNode: passFocus,
+                    controller: _passController,
+                    obscureText: _hidePass,
+                    decoration: InputDecoration(
+                      labelText: 'Пароль *',
+                      hintText: 'Введите пароль',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      contentPadding: const EdgeInsets.all(20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _hidePass ? Icons.visibility : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _hidePass = !_hidePass;
+                          });
+                        },
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    flex: 0,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        minimumSize:
+                            MaterialStateProperty.all(const Size(400, 50)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0)),
+                        ),
+                      ),
+                      onPressed: () {
+                        _submitForm();
+                        Func().getFirebaseToken();
+                      },
+                      child: const Text(
+                        'Войти',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-      );
+        ),
+      ),
+    );
   }
+
   Future login(Map<String, dynamic>? userData) async {
     final Dio dio = Dio();
     try {
@@ -180,19 +184,13 @@ class _LoginState extends State<Login> {
           .get('${Constants.API_URL_DOMAIN}action=auth&', queryParameters: {
         "email": _emailController.text,
         "password": _passController.text
-      },
-      // options: Options(
-      //   headers: {
-      //     Constants.header: Constants.USER_TOKEN,
-      //   },
-      // )
-      );
-
+      });
       return response;
     } on DioError catch (e) {
       return e.response;
     }
   }
+
   Future<void> _submitForm() async {
     Map<String, dynamic> userData = {
       "phone": _emailController.text,
@@ -200,12 +198,15 @@ class _LoginState extends State<Login> {
     };
     dynamic response = await login(userData);
     if (response.data['api_token'] != null) {
-      Func().showSnackbar(context, response.data['message'], response.data['success']);
+      Func().showSnackbar(
+          context, response.data['message'], response.data['success']);
       pageRoute(response.data['api_token']);
     } else {
-      Func().showSnackbar(context, response.data['message'], response.data['success']);
+      Func().showSnackbar(
+          context, response.data['message'], response.data['success']);
     }
   }
+
   void pageRoute(String token) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setString('login', token);

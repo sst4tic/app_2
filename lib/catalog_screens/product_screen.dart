@@ -45,7 +45,6 @@ class _ProductScreenState extends State<ProductScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (isPageLoading) {
@@ -138,15 +137,20 @@ class _ProductScreenState extends State<ProductScreen> {
                   padding: REdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: WidgetsBinding.instance.window.platformBrightness == Brightness.light ?
-                      Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
+                    color: WidgetsBinding.instance.window.platformBrightness ==
+                            Brightness.light
+                        ? Theme.of(context).colorScheme.secondary
+                        : Theme.of(context).scaffoldBackgroundColor,
                     boxShadow: [
-                      WidgetsBinding.instance.window.platformBrightness == Brightness.light ? BoxShadow(
-                        color: Colors.grey[700]!.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ) : const BoxShadow(),
+                      WidgetsBinding.instance.window.platformBrightness ==
+                              Brightness.light
+                          ? BoxShadow(
+                              color: Colors.grey[700]!.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            )
+                          : const BoxShadow(),
                     ],
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(10),
@@ -156,7 +160,11 @@ class _ProductScreenState extends State<ProductScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('${product.price} ₸', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red)),
+                      Text('${product.price} ₸',
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red)),
                       buildButton(product.id),
                     ],
                   ),

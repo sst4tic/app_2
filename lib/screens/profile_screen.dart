@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yiwumart/authorization/login.dart';
 import 'package:yiwumart/catalog_screens/favorite_products.dart';
@@ -11,6 +13,7 @@ import '../models/shimmer_model.dart';
 import '../util/constants.dart';
 import '../util/function_class.dart';
 import '../util/user.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
@@ -20,17 +23,19 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Future<User> _future;
+  String version = '';
 
   @override
   void initState() {
     _future = getUser();
+    getVersion();
     super.initState();
   }
 
   static Future<User> getUser() async {
-    var url =
-        '${Constants.API_URL_DOMAIN}action=user_profile';
-    final response = await http.get(Uri.parse(url), headers: {Constants.header: Constants.bearer});
+    var url = '${Constants.API_URL_DOMAIN}action=user_profile';
+    final response = await http
+        .get(Uri.parse(url), headers: {Constants.header: Constants.bearer});
     final body = jsonDecode(response.body);
     return User.fromJson(body['data']);
   }
@@ -38,6 +43,13 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> refresh() async {
     setState(() {
       _future = getUser();
+    });
+  }
+
+  void getVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      version = packageInfo.version;
     });
   }
 
@@ -51,9 +63,8 @@ class _ProfilePageState extends State<ProfilePage> {
         centerTitle: false,
       ),
       body: Container(
-        padding: const EdgeInsets.only(left: 16, top: 25, right: 16),
-        child: ListView(
-          physics: const NeverScrollableScrollPhysics(),
+        padding: REdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
+        child: Column(
           children: [
             Container(
               decoration: BoxDecoration(
@@ -66,7 +77,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return buildProfileShimmer();
-                    // Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasData) {
                     final user = snapshot.data!;
                     return buildUser(user);
@@ -246,6 +256,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     ]),
               ),
             ),
+            const Spacer(),
+            Text(
+              version,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            )
           ],
         ),
       ),

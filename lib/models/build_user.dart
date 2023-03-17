@@ -18,7 +18,7 @@ Widget buildUser(user) => ListView.builder(
               Avatar(
                 placeholderColors: const [Color.fromRGBO(232, 69, 69, 1)],
                 shape: AvatarShape.circle(28),
-                name: users.fullName,
+                name: users.surname != null ? users.fullName : users.fullName.substring(0, 1),
                 textStyle: const TextStyle(fontSize: 20, color: Colors.white),
                 margin: const EdgeInsets.all(5),
               ),
