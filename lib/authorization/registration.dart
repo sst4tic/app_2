@@ -196,7 +196,6 @@ class _RegistrationState extends State<Registration> {
                         decoration: InputDecoration(
                           labelText: 'Повторите пароль *',
                           hintText: 'Повторите пароль',
-                          labelStyle: const TextStyle(color: Colors.grey),
                           floatingLabelBehavior: FloatingLabelBehavior.always,
                           contentPadding: const EdgeInsets.all(20),
                           border: OutlineInputBorder(

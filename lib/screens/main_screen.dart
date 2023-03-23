@@ -112,16 +112,17 @@ class MainScreenState extends State<MainScreen> {
           tabBuilder: (BuildContext context, int index) {
             switch (index) {
               case 0:
-                return
-                  CupertinoTabView(
-                    navigatorKey: tabNavKeys[index],
-                    builder: (BuildContext context) {
-                      return CupertinoPageScaffold(
-                        resizeToAvoidBottomInset: false,
-                        child: Constants.USER_TOKEN != '' ?  const AuthHomePage() : const HomePage(),
-                      );
-                    },
-                  );
+                return CupertinoTabView(
+                  navigatorKey: tabNavKeys[index],
+                  builder: (BuildContext context) {
+                    return CupertinoPageScaffold(
+                      resizeToAvoidBottomInset: false,
+                      child: Constants.USER_TOKEN != ''
+                          ? const AuthHomePage()
+                          : const HomePage(),
+                    );
+                  },
+                );
               case 1:
                 return CupertinoTabView(
                   navigatorKey: tabNavKeys[index],

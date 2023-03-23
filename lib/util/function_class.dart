@@ -36,7 +36,15 @@ class Func {
     final catalog = body['data'].map<Catalog>(Catalog.fromJson).toList();
     return catalog;
   }
-
+  // func for getting similar products
+  static Future<List<Product>> getSimilarProducts({catId, productId}) async {
+    var url = '${Constants.API_URL_DOMAIN}action=catalog&category_id=$catId&product_id=$productId';
+    final response = await http.get(Uri.parse(url), headers: {
+      Constants.header: Constants.bearer,
+    });
+    final body = jsonDecode(response.body);
+    return List.from(body['data']?.map!((e) => Product.fromJson(e)).toList());
+  }
   // func for getting products
   static Future<List<Product>> getProducts() async {
     var url = '${Constants.API_URL_DOMAIN}action=products_of_day';

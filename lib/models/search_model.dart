@@ -82,6 +82,7 @@ class SearchModel extends SearchDelegate {
     }
     if (query.trim().isNotEmpty) {
       _history.add(query);
+      _saveHistory();
     }
     SharedPreferences.getInstance().then((prefs) {
       final jsonHistory = json.encode(_history.toList());

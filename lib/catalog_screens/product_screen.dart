@@ -124,7 +124,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       return buildCartShimmer(context);
                     } else if (snapshot.hasData) {
                       final product = snapshot.data!;
-                      return buildProduct(product: product, context: context);
+                      return BuildProduct(productItem: product);
                     } else {
                       return const Text("No widget to build");
                     }

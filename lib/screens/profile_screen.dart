@@ -63,14 +63,15 @@ class _ProfilePageState extends State<ProfilePage> {
         centerTitle: false,
       ),
       body: Container(
-        padding: REdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
-        child: Column(
+        padding: REdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        child: ListView(
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             Container(
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.secondary,
                   borderRadius: const BorderRadius.all(Radius.circular(12))),
-              padding: const EdgeInsets.only(left: 10, right: 10),
+              padding:  REdgeInsets.symmetric(horizontal: 10),
               height: 80,
               child: FutureBuilder<User>(
                 future: _future,
@@ -256,10 +257,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     ]),
               ),
             ),
-            const Spacer(),
-            Text(
-              version,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            SizedBox(height: 20.h),
+            Center(
+              child: Text(
+                version,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
             )
           ],
         ),

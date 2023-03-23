@@ -3,6 +3,7 @@ class ProductItem {
     required this.id,
     required this.name,
     this.categoryName,
+    this.categoryId,
     required this.sku,
     required this.price,
     this.description,
@@ -13,6 +14,7 @@ class ProductItem {
   late final int id;
   late final String name;
   String? categoryName;
+  int? categoryId;
   late final String sku;
   late final String price;
   String? description;
@@ -24,6 +26,7 @@ class ProductItem {
     id = json['id'];
     name = json['name'];
     categoryName = json['category_name'];
+    categoryId = json['category_id'];
     sku = json['sku'];
     price = json['price'].toString();
     description = json['description'];
@@ -37,6 +40,7 @@ class ProductItem {
     data['id'] = id;
     data['name'] = name;
     data['category_name'] = categoryName;
+    data['category_id'] = categoryId;
     data['sku'] = sku;
     data['price'] = price;
     data['description'] = description;
@@ -44,34 +48,6 @@ class ProductItem {
     return data;
   }
 }
-
-// class Availability {
-//   Availability({
-//     required this.id,
-//     required this.productId,
-//     required this.warehouseId,
-//     required this.qty,
-//   });
-//   late final int id;
-//   late final int productId;
-//   late final int warehouseId;
-//   late final int qty;
-//
-//   Availability.fromJson(Map<String, dynamic> json){
-//     id = json['id'];
-//     productId = json['product_id'];
-//     warehouseId = json['warehouse_id'];
-//     qty = json['qty'];
-//   }
-//   Map<String, dynamic> toJson() {
-//     final data = <String, dynamic>{};
-//     data['id'] = id;
-//     data['product_id'] = productId;
-//     data['warehouse_id'] = warehouseId;
-//     data['qty'] = qty;
-//     return data;
-//   }
-// }
 
 class Media {
   Media({
