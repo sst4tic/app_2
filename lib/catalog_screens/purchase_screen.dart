@@ -17,7 +17,6 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.link);
     return Scaffold(
       appBar: AppBar(
         title: const Text(

@@ -202,7 +202,7 @@ class _BuildProductState extends State<BuildProduct> {
         product.categoryId != null
             ? Container(
                 padding: const EdgeInsets.all(10),
-                height: 270.h,
+                height: 280.h,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -219,7 +219,7 @@ class _BuildProductState extends State<BuildProduct> {
                           future: similarFuture,
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              return buildCatalog(snapshot.data!);
+                              return buildSimilar(snapshot.data!);
                             } else if (snapshot.hasError) {
                               return const Center(
                                 child: Text('Произошла ошибка'),
@@ -235,14 +235,13 @@ class _BuildProductState extends State<BuildProduct> {
     );
   }
 
-  Widget buildCatalog(List<Product> product) => CustomScrollView(
+  Widget buildSimilar(List<Product> product) => CustomScrollView(
         scrollDirection: Axis.horizontal,
         slivers: [
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               mainAxisExtent: 200,
               crossAxisCount: 1,
-              // Set to 1 to display one product per row
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
               childAspectRatio: 0.8,
@@ -250,12 +249,13 @@ class _BuildProductState extends State<BuildProduct> {
             delegate: SliverChildBuilderDelegate(
               childCount: product.length,
               (BuildContext context, int index) {
-                final media =
-                    product[index].media?.map((e) => e.toJson()).toList();
-                final photo = media!.isEmpty
-                    ? 'storage/warehouse/products/images/no-image-ru.jpg'
-                    : media[0]['links']['local']['thumbnails']['350'];
                 final productItem = product[index];
+                final media =
+                productItem.media?.map((e) => e.toJson()).toList();
+                final allPhotos = media!
+                    .map((e) =>
+                'https://cdn.yiwumart.org/${e['links']['local']['thumbnails']['750']}')
+                    .toList();
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -283,30 +283,14 @@ class _BuildProductState extends State<BuildProduct> {
                         borderRadius: BorderRadius.circular(8)),
                     child: Column(
                       children: <Widget>[
-                        InkWell(
-                          child: Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                media.isNotEmpty
-                                    ? 'https://cdn.yiwumart.org/$photo'
-                                    : 'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace? stackTrace) {
-                                  return ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.195,
-                                      'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
-                                    ),
-                                  );
-                                },
-                                height:
-                                    MediaQuery.of(context).size.height * 0.195,
-                              ),
-                            ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.195,
+                          child: ImageView(
+                            imageUrls: media.isNotEmpty
+                                ? allPhotos
+                                : [
+                              'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg'
+                            ],
                           ),
                         ),
                         const Spacer(),

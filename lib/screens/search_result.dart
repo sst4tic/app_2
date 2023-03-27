@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
-import 'package:yiwumart/models/bag_button_model.dart';
-import '../catalog_screens/product_screen.dart';
+import '../models/gridview_model.dart';
 import '../models/shimmer_model.dart';
 import '../util/constants.dart';
 import '../util/function_class.dart';
 import '../util/product.dart';
-import '../util/styles.dart';
 
 class SearchResult extends StatefulWidget {
   const SearchResult({Key? key, required this.query}) : super(key: key);
@@ -23,7 +20,6 @@ class _SearchResultState extends State<SearchResult> {
   ScrollController sController = ScrollController();
   int page = 1;
   bool hasMore = true;
-  final Set<int> _isFavLoading = {};
 
   late Future<List<Product>> productFuture = getProducts();
 
@@ -96,122 +92,8 @@ class _SearchResultState extends State<SearchResult> {
     controller: sController,
     slivers: [
       Func.sizedGrid,
-      SliverGrid(
-        gridDelegate: GridDelegateClass.gridDelegate,
-        delegate: SliverChildBuilderDelegate(childCount: product.length,
-                (BuildContext context, int index) {
-              final media =
-              product[index].media?.map((e) => e.toJson()).toList();
-              final photo = media!.isEmpty ? 'storage/warehouse/products/images/no-image-ru.jpg' : media[0]['links']['local']['thumbnails']['350'];
-              final productItem = product[index];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ProductScreen(
-                            product: productItem,
-                          )));
-                },
-                child: Container(
-                  padding: REdgeInsets.only(left: 7, right: 7, top: 6),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(8)),
-                  child: Column(
-                    children: <Widget>[
-                      InkWell(
-                        child: Center(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                              media.isNotEmpty
-                                  ? 'https://cdn.yiwumart.org/$photo'
-                                  : 'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
-                              errorBuilder: (BuildContext context,
-                                  Object exception, StackTrace? stackTrace) {
-                                return ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(
-                                    height: MediaQuery.of(context).size.height * 0.195,
-                                    'https://yiwumart.org/images/shop/products/no-image-ru.jpg',
-                                  ),
-                                );
-                              },
-                              height:
-                              MediaQuery.of(context).size.height * 0.195,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${productItem.price} ₸',
-                            style: TextStyle(
-                                fontSize: 18.sp, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              '${productItem.name}\n',
-                              textAlign: TextAlign.start,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 14.sp, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      if (Constants.USER_TOKEN != '')
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            BagButton(index: index, id: productItem.id),
-                            IconButton(
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              icon: Icon(
-                                _isFavLoading.contains(index) ||
-                                    productItem.is_favorite!? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                if (productItem.is_favorite!) {
-                                  setState(() {
-                                    productItem.is_favorite =
-                                    !productItem.is_favorite!;
-                                  });
-                                }
-                                Func().addToFav(productId: productItem.id, index: index,
-                                  onAdded: () {
-                                    setState(() => _isFavLoading.add(index));
-                                  },
-                                  onRemoved: () {
-                                    setState(() {
-                                      _isFavLoading.remove(index);
-                                    });
-                                  },
-                                );
-                              },
-                            )
-                          ],
-                        )
-                      else
-                        BagButton(index: index, id: productItem.id),
-                    ],
-                  ),
-                ),
-              );
-            }),
+      SliverToBoxAdapter(
+        child: BuildGridWidget(products: product,),
       ),
       Func.sizedGrid,
       Func.sizedGrid,

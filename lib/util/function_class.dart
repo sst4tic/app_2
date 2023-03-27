@@ -81,7 +81,6 @@ class Func {
     ));
   }
 
-  // CustomScrollView SizedBox
 
   static SliverList sizedGrid = SliverList(
     delegate: SliverChildBuilderDelegate(

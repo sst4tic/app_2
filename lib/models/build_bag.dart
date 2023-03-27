@@ -36,13 +36,13 @@ class BagCartWidgetState extends State<BagCartWidget> {
       final body = jsonDecode(response.body);
       if (body['success'] == true) {
         setState(() {
-          cartList.forEach((element) {
+          for (var element in cartList) {
             if (element.id == id) {
               element.qty = qty;
               cart = CartItem(
                   items: cartList, totalSum: cart.totalSum, link: cart.link);
             }
-          });
+          }
           widget.qtyChangeCallback.call();
           Func().showSnackbar(
               context, 'Количество товара изменено', body['success']);

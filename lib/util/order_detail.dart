@@ -27,15 +27,15 @@ class OrderDetail {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['title'] = title;
-    _data['status_name'] = statusName;
-    _data['status'] = status;
-    _data['date'] = date;
-    _data['total'] = total;
-    _data['items'] = items.map((e)=>e.toJson()).toList();
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['status_name'] = statusName;
+    data['status'] = status;
+    data['date'] = date;
+    data['total'] = total;
+    data['items'] = items.map((e)=>e.toJson()).toList();
+    return data;
   }
 }
 

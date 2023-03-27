@@ -34,7 +34,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await Permission.notification.request();
-  FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
   RemoteMessage? initialMessage =
       await FirebaseMessaging.instance.getInitialMessage();
   if (initialMessage != null) {
@@ -45,7 +45,7 @@ void main() async {
             MaterialPageRoute(builder: (context) => const NotificationScreen()))
         : null);
   }
-  await _messaging.setForegroundNotificationPresentationOptions(
+  await messaging.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
     sound: true,
@@ -93,9 +93,9 @@ void main() async {
   var initializationSettingsIOS = const DarwinInitializationSettings();
   var initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-  await _messaging.requestPermission();
+  await messaging.requestPermission();
   if (Platform.isIOS) {
-    var APNS = await _messaging.getAPNSToken();
+    var APNS = await messaging.getAPNSToken();
     print('APNS: $APNS');
   }
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -148,11 +148,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     await getToken();
-    await Func().getFirebaseToken();
   }
 
   @override
   Widget build(BuildContext context) {
+    Func().getFirebaseToken();
     return ScreenUtilInit(
       designSize: const Size(360, 690),
       minTextAdapt: true,

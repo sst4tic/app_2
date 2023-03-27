@@ -6,7 +6,8 @@ import 'package:photo_view/photo_view_gallery.dart';
 class ImageList extends StatefulWidget {
   final List<String> imageUrls;
   final List<String> fullImageUrl;
-  const ImageList({super.key, required this.imageUrls, required this.fullImageUrl});
+  const ImageList(
+      {super.key, required this.imageUrls, this.fullImageUrl = const []});
 
   @override
   ImageListState createState() => ImageListState();
@@ -17,7 +18,8 @@ class ImageListState extends State<ImageList> {
   int _currentIndex = 0;
   List<String> _imageUrls = [];
   List<String> _fullImageUrl = [];
-  static const String _noPhotoImage = 'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg';
+  static const String _noPhotoImage =
+      'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg';
   bool noImage = false;
 
   @override
@@ -38,6 +40,7 @@ class ImageListState extends State<ImageList> {
       noImage = true;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -47,61 +50,31 @@ class ImageListState extends State<ImageList> {
             controller: _controller,
             itemCount: _imageUrls.length,
             itemBuilder: (context, index) {
-              return GestureDetector(
+              return  GestureDetector(
                 onTap: () {
                   noImage ? null :
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Scaffold(
-                        body: Stack(
-                          children: [
-                            PhotoViewGallery.builder(
-                              backgroundDecoration: const BoxDecoration(
-                                color: Colors.white,
-                              ),
-                              itemCount: _imageUrls.length,
-                              builder: (BuildContext context, int index) {
-                                return PhotoViewGalleryPageOptions(
-                                  imageProvider: NetworkImage(_fullImageUrl[index]),
-                                  heroAttributes: PhotoViewHeroAttributes(
-                                    tag: _imageUrls[index],
-                                  ),
-                                );
-                              },
-                              pageController: PageController(
-                                initialPage: _currentIndex,
-                              ),
-                            ),
-                            Positioned(
-                              top: 60,
-                              right: 0,
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(Colors.white),
-                                  elevation: MaterialStateProperty.all(0),
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Icon(Icons.close, color: Colors.black,),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      builder: (context) =>  fullPhoto(),
                     ),
                   );
                 },
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
+                      onError: (exception, stackTrace) {
+                        setState(() {
+                          _imageUrls = [_noPhotoImage];
+                          noImage = true;
+                        });
+                      },
                       image: NetworkImage(_imageUrls[index]),
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-              );
+              ) ;
             },
             onPageChanged: (int index) {
               setState(() {
@@ -110,7 +83,127 @@ class ImageListState extends State<ImageList> {
             },
           ),
         ),
-       noImage ? Container() : Row(
+        noImage
+            ? Container()
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List<Widget>.generate(
+                  _imageUrls.length,
+                  (int index) {
+                    return GestureDetector(
+                      onTap: () {
+                        _controller.animateToPage(
+                          index,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.ease,
+                        );
+                      },
+                      child: Container(
+                        width: 8.0,
+                        height: 8.0,
+                        margin: REdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color:
+                              _currentIndex == index ? Colors.red : Colors.grey,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+      ],
+    );
+  }
+  Widget fullPhoto() => Scaffold(
+    body: Stack(
+      children: [
+        PhotoViewGallery.builder(
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.white,
+          ),
+          itemCount: _imageUrls.length,
+          builder: (BuildContext context, int index) {
+            return PhotoViewGalleryPageOptions(
+              imageProvider: NetworkImage(_fullImageUrl[index]),
+              heroAttributes: PhotoViewHeroAttributes(
+                tag: _imageUrls[index],
+              ),
+            );
+          },
+          pageController: PageController(
+            initialPage: _currentIndex,
+          ),
+        ),
+        Positioned(
+          top: 60,
+          right: 0,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.white),
+              elevation: MaterialStateProperty.all(0),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.close, color: Colors.black,),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class ImageView extends StatefulWidget {
+  final List<String> imageUrls;
+  const ImageView({Key? key, required this.imageUrls}) : super(key: key);
+
+  @override
+  State<ImageView> createState() => _ImageViewState();
+}
+
+class _ImageViewState extends State<ImageView> {
+  final _controller = PageController();
+  int _currentIndex = 0;
+  List<String> _imageUrls = [];
+  @override
+  void initState() {
+    super.initState();
+    _imageUrls = widget.imageUrls;
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: PageView.builder(
+            controller: _controller,
+            itemCount: _imageUrls.length,
+            itemBuilder: (context, index) {
+              return  Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  image: DecorationImage(
+                    onError: (exception, stackTrace) {
+                      setState(() {
+                        _imageUrls = ['https://yiwumart.org/images/shop/products/no-image-ru.jpg'];
+                      });
+                    },
+                    image: NetworkImage(_imageUrls[index]),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ) ;
+            },
+            onPageChanged: (int index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+          ),
+        ),
+       Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List<Widget>.generate(
             _imageUrls.length,
@@ -124,12 +217,14 @@ class ImageListState extends State<ImageList> {
                   );
                 },
                 child: Container(
-                  width: 8.0,
-                  height: 8.0,
-                  margin: REdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
+                  width: 6.0,
+                  height: 6.0,
+                  margin: REdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 4.0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _currentIndex == index ? Colors.red : Colors.grey,
+                    color:
+                    _currentIndex == index ? Colors.red : Colors.grey,
                   ),
                 ),
               );

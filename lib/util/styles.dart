@@ -101,6 +101,7 @@ final lightTheme = ThemeData(
   progressIndicatorTheme: const ProgressIndicatorThemeData(
     color: ColorStyles.primaryColor,
   ),
+
   appBarTheme: AppBarTheme(
     titleTextStyle: const TextStyle(
         color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
@@ -174,6 +175,7 @@ final lightTheme = ThemeData(
       color: ColorStyles.primaryColor,
     ),
   ),
+  indicatorColor: Colors.black,
 );
 
 class TextStyles {

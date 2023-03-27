@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>540331566050-4pa999srejv28iku5d4kpjn37nj0edo9.apps.googleusercontent.com</string>
+	<string>540331566050-pu48t1pljh2kni3l5307hbd5kl0lanb7.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.540331566050-4pa999srejv28iku5d4kpjn37nj0edo9</string>
+	<string>com.googleusercontent.apps.540331566050-pu48t1pljh2kni3l5307hbd5kl0lanb7</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDrC5JY8s6BmvwFbO-lflMyWCYEOEDcKHI</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.yiwumart</string>
+	<string>yiwu.yiwumart</string>
 	<key>PROJECT_ID</key>
 	<string>yiwumart-53257</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:540331566050:ios:39fe61a9485d783f554fbb</string>
+	<string>1:540331566050:ios:d81f5dd342cb923e554fbb</string>
+	<key>DATABASE_URL</key>
+	<string>https://yiwumart-53257-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>

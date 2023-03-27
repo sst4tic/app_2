@@ -51,19 +51,21 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBPPshYWrW0RdEoRQT0JweNZtiTHJJotNs',
-    appId: '1:540331566050:android:2958f1a4722a951d554fbb',
+    appId: '1:540331566050:android:60bb119d2b30f7af554fbb',
     messagingSenderId: '540331566050',
     projectId: 'yiwumart-53257',
+    databaseURL: 'https://yiwumart-53257-default-rtdb.firebaseio.com',
     storageBucket: 'yiwumart-53257.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDrC5JY8s6BmvwFbO-lflMyWCYEOEDcKHI',
-    appId: '1:540331566050:ios:39fe61a9485d783f554fbb',
+    appId: '1:540331566050:ios:d81f5dd342cb923e554fbb',
     messagingSenderId: '540331566050',
     projectId: 'yiwumart-53257',
+    databaseURL: 'https://yiwumart-53257-default-rtdb.firebaseio.com',
     storageBucket: 'yiwumart-53257.appspot.com',
-    iosClientId: '540331566050-4pa999srejv28iku5d4kpjn37nj0edo9.apps.googleusercontent.com',
-    iosBundleId: 'com.example.yiwumart',
+    iosClientId: '540331566050-pu48t1pljh2kni3l5307hbd5kl0lanb7.apps.googleusercontent.com',
+    iosBundleId: 'yiwu.yiwumart',
   );
 }

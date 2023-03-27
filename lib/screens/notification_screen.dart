@@ -28,26 +28,35 @@ class _NotificationScreenState extends State<NotificationScreen> {
           'Уведомления',
         ),
       ),
-      body: FutureBuilder(
-          future: notificationFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return buildNotificationsShimmer();
-            } else if (snapshot.hasData) {
-              if (snapshot.data!.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'Нет уведомлений',
-                    style: TextStyle(fontSize: 25),
-                  ),
-                );
+      body: RefreshIndicator(
+        color: Theme.of(context).disabledColor,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        onRefresh: () async {
+          setState(() {
+            notificationFuture = Func().getNotifications();
+          });
+        },
+        child: FutureBuilder(
+            future: notificationFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return buildNotificationsShimmer();
+              } else if (snapshot.hasData) {
+                if (snapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Нет уведомлений',
+                      style: TextStyle(fontSize: 25),
+                    ),
+                  );
+                }
+                final not = snapshot.data!;
+                return buildNotifications(not);
+              } else {
+                return const Text("No widget to build");
               }
-              final not = snapshot.data!;
-              return buildNotifications(not);
-            } else {
-              return const Text("No widget to build");
-            }
-          }),
+            }),
+      ),
     );
   }
 
