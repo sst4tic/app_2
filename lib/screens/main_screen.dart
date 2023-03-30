@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:yiwumart/screens/purchase_history.dart';
 import 'package:yiwumart/screens/user_profile_scaffold.dart';
+import 'package:yiwumart/util/function_class.dart';
 import '../util/constants.dart';
 import 'auth_home_screen.dart';
 import 'home_screen.dart';
@@ -34,11 +35,18 @@ class MainScreenState extends State<MainScreen> {
   final myKey = GlobalKey<MainScreenState>();
   int currentIndex = 0;
   final CupertinoTabController _controller = CupertinoTabController();
+  int badgeCount = 0;
 
   void onItemTapped(int index) {
     setState(() {
       currentIndex = index;
       _controller.index = index;
+    });
+  }
+
+  void updateBadgeCount(int count) {
+    setState(() {
+      badgeCount = count;
     });
   }
 
@@ -55,6 +63,9 @@ class MainScreenState extends State<MainScreen> {
   void initState() {
     getConnectivity();
     super.initState();
+    Future.delayed(const Duration(milliseconds: 250), () {
+      Func().getInitParams();
+    });
   }
 
   @override
@@ -77,9 +88,6 @@ class MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      Constants.USER_TOKEN;
-    });
     return WillPopScope(
       onWillPop: () async {
         return !await tabNavKeys[_controller.index].currentState!.maybePop();
@@ -94,17 +102,21 @@ class MainScreenState extends State<MainScreen> {
             iconSize: 27,
             currentIndex: currentIndex,
             onTap: onItemTapped,
-            items: const [
-              BottomNavigationBarItem(
+            items: [
+              const BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.house),
                   activeIcon: Icon(CupertinoIcons.house_fill)),
-              BottomNavigationBarItem(
+              const BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.square_list),
                   activeIcon: Icon(CupertinoIcons.square_list_fill)),
               BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.cart),
-                  activeIcon: Icon(CupertinoIcons.cart_fill)),
-              BottomNavigationBarItem(
+                icon: badgeModel(
+                    count: badgeCount, icon: const Icon(CupertinoIcons.cart)),
+                activeIcon: badgeModel(
+                    count: badgeCount,
+                    icon: const Icon(CupertinoIcons.cart_fill)),
+              ),
+              const BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.person),
                   activeIcon: Icon(CupertinoIcons.person_fill)),
             ],
@@ -154,6 +166,19 @@ class MainScreenState extends State<MainScreen> {
                 return Container();
             }
           }),
+    );
+  }
+
+  Widget badgeModel({required int count, required Icon icon}) {
+    return Badge(
+      alignment: const AlignmentDirectional(16, -12),
+      label: Text(
+        count.toString(),
+        style:
+            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      ),
+      isLabelVisible: count == 0 ? false : true,
+      child: icon,
     );
   }
 

@@ -251,10 +251,10 @@ class _BuildProductState extends State<BuildProduct> {
               (BuildContext context, int index) {
                 final productItem = product[index];
                 final media =
-                productItem.media?.map((e) => e.toJson()).toList();
+                    productItem.media?.map((e) => e.toJson()).toList();
                 final allPhotos = media!
                     .map((e) =>
-                'https://cdn.yiwumart.org/${e['links']['local']['thumbnails']['750']}')
+                        'https://cdn.yiwumart.org/${e['links']['local']['thumbnails']['750']}')
                     .toList();
                 return GestureDetector(
                   onTap: () {
@@ -289,8 +289,8 @@ class _BuildProductState extends State<BuildProduct> {
                             imageUrls: media.isNotEmpty
                                 ? allPhotos
                                 : [
-                              'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg'
-                            ],
+                                    'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg'
+                                  ],
                           ),
                         ),
                         const Spacer(),

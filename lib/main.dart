@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,7 +17,6 @@ import 'package:yiwumart/util/styles.dart';
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("NEW FIREBASE MESSAGE on background");
 }
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -54,7 +52,6 @@ void main() async {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification!.android;
-    print('Got a message whilst in the foreground!');
     if (notification != null && android != null) {
       flutterLocalNotificationsPlugin.show(
         notification.hashCode,
@@ -75,11 +72,6 @@ void main() async {
       (message) => _firebaseMessagingBackgroundHandler(message));
 
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) async {
-    print("On message opened app: ${message?.data}}");
-    await SystemChannels.platform.invokeMethod(
-      'UIApplication.setApplicationIconBadgeNumber',
-      0,
-    );
     if (navKey.currentState != null) {
       if (Constants.USER_TOKEN.isNotEmpty) {
         navKey.currentState!.push(MaterialPageRoute(
@@ -96,7 +88,6 @@ void main() async {
   await messaging.requestPermission();
   if (Platform.isIOS) {
     var APNS = await messaging.getAPNSToken();
-    print('APNS: $APNS');
   }
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
@@ -149,7 +140,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangeDependencies();
     await getToken();
   }
-
   @override
   Widget build(BuildContext context) {
     Func().getFirebaseToken();
@@ -163,7 +153,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             dialogStyle: Platform.isIOS
                 ? UpgradeDialogStyle.cupertino
                 : UpgradeDialogStyle.material,
-            durationUntilAlertAgain: const Duration(seconds: 1),
             languageCode: 'ru',
           ),
           child: MaterialApp(

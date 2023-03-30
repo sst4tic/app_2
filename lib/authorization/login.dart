@@ -214,6 +214,7 @@ class _LoginState extends State<Login> {
       Constants.USER_TOKEN = pref.getString('login') ?? '';
       Constants.bearer = 'Bearer ${pref.getString('login') ?? ''}';
     });
+    await Func().getInitParams();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const ProfilePage()));
   }

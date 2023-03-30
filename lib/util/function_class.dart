@@ -36,15 +36,18 @@ class Func {
     final catalog = body['data'].map<Catalog>(Catalog.fromJson).toList();
     return catalog;
   }
+
   // func for getting similar products
   static Future<List<Product>> getSimilarProducts({catId, productId}) async {
-    var url = '${Constants.API_URL_DOMAIN}action=catalog&category_id=$catId&product_id=$productId';
+    var url =
+        '${Constants.API_URL_DOMAIN}action=catalog&category_id=$catId&product_id=$productId';
     final response = await http.get(Uri.parse(url), headers: {
       Constants.header: Constants.bearer,
     });
     final body = jsonDecode(response.body);
     return List.from(body['data']?.map!((e) => Product.fromJson(e)).toList());
   }
+
   // func for getting products
   static Future<List<Product>> getProducts() async {
     var url = '${Constants.API_URL_DOMAIN}action=products_of_day';
@@ -80,7 +83,6 @@ class Func {
       backgroundColor: Colors.black87,
     ));
   }
-
 
   static SliverList sizedGrid = SliverList(
     delegate: SliverChildBuilderDelegate(
@@ -180,6 +182,7 @@ class Func {
     });
     dynamic body = jsonDecode(response.body);
     if (body['success']) {
+      scakey.currentState?.updateBadgeCount(body['qty']);
       onSuccess?.call();
     } else {
       onFailure?.call();
@@ -271,6 +274,21 @@ class Func {
     final body = jsonDecode(response.body);
     final cart = CartItem.fromJson(body['data']);
     return cart;
+  }
+
+  // func for get init parameters
+  Future<void> getInitParams() async {
+    var url = '${Constants.API_URL_DOMAIN}action=init_params';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        Constants.header: Constants.bearer,
+      },
+    );
+    final body = jsonDecode(response.body);
+    if(response.statusCode == 200) {
+      scakey.currentState?.updateBadgeCount(body['data']?['cart_count'] ?? 0);
+    }
   }
 
   // func for load unread unread count

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/catalog_screens/product_screen.dart';
+import 'package:yiwumart/screens/main_screen.dart';
 import 'package:yiwumart/util/product.dart';
 import '../util/cart_list.dart';
 import '../util/constants.dart';
@@ -35,6 +36,7 @@ class BagCartWidgetState extends State<BagCartWidget> {
       );
       final body = jsonDecode(response.body);
       if (body['success'] == true) {
+        scakey.currentState?.updateBadgeCount(body['qty']);
         setState(() {
           for (var element in cartList) {
             if (element.id == id) {
