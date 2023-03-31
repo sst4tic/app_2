@@ -7,7 +7,7 @@ import '../catalog_screens/product_screen.dart';
 import '../util/function_class.dart';
 import '../util/product.dart';
 import '../util/styles.dart';
-import 'bag_button_model.dart';
+import 'bag_models/bag_button_model.dart';
 
 class BuildGridWidget extends StatefulWidget {
   final List<Product> products;

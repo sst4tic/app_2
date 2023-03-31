@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../util/function_class.dart';
-import '../util/styles.dart';
+import '../../util/function_class.dart';
+import '../../util/styles.dart';
 
 class BagButton extends StatefulWidget {
   final int index;

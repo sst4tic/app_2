@@ -8,7 +8,7 @@ import '../util/constants.dart';
 import '../util/function_class.dart';
 import '../util/product.dart';
 import '../util/product_item.dart';
-import 'bag_button_model.dart';
+import 'bag_models/bag_button_model.dart';
 import 'image_list_model.dart';
 
 class BuildProduct extends StatefulWidget {
