@@ -1,13 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:yiwumart/bloc/build_bag_bloc/build_bag_bloc.dart';
 import 'package:yiwumart/catalog_screens/product_screen.dart';
 import 'package:yiwumart/screens/main_screen.dart';
 import 'package:yiwumart/util/product.dart';
-import '../util/cart_list.dart';
-import '../util/constants.dart';
+import '../../util/cart_list.dart';
+import '../../util/constants.dart';
 import 'package:http/http.dart' as http;
-import '../util/function_class.dart';
+import '../../util/function_class.dart';
 
 class BagCartWidget extends StatefulWidget {
   final CartItem cart;
@@ -55,7 +57,13 @@ class BagCartWidgetState extends State<BagCartWidget> {
       }
     }
 
-    return Container(
+    return
+    BlocBuilder<BuildBagBloc, BuildBagState>(
+      builder: (context, state) {
+        return Container();
+      },
+    );
+      Container(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: ListView(
         padding: REdgeInsets.all(10),
@@ -148,8 +156,8 @@ class BagCartWidgetState extends State<BagCartWidget> {
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 5),
                           child: Container(
-                            height: 25.h,
-                            width: 70.w,
+                            height: 30.h,
+                            width: 80.w,
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,8 +169,7 @@ class BagCartWidgetState extends State<BagCartWidget> {
                                         cartItem.qty--;
                                       }
                                     });
-                                    changeQty(
-                                        id: cartItem.id, qty: cartItem.qty);
+                                    changeQty(id: cartItem.id, qty: cartItem.qty);
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(3),
@@ -173,23 +180,23 @@ class BagCartWidgetState extends State<BagCartWidget> {
                                     child: const Icon(
                                       Icons.remove,
                                       color: Colors.white,
-                                      size: 15,
+                                      size: 20,
                                     ),
                                   ),
                                 ),
                                 Text(
                                   cartItem.qty.toString(),
                                   style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
                                       cartItem.qty++;
                                     });
-                                    changeQty(
-                                        id: cartItem.id, qty: cartItem.qty);
+                                    changeQty(id: cartItem.id, qty: cartItem.qty);
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(3),
@@ -200,7 +207,7 @@ class BagCartWidgetState extends State<BagCartWidget> {
                                     child: const Icon(
                                       Icons.add,
                                       color: Colors.white,
-                                      size: 15,
+                                      size: 20,
                                     ),
                                   ),
                                 ),
