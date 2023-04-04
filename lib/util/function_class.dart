@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:yiwumart/util/cart_list.dart';
 import 'package:yiwumart/util/order_list.dart';
 import 'package:yiwumart/util/popular_catalog.dart';
 import 'package:http/http.dart' as http;
@@ -262,20 +261,6 @@ class Func {
     return OrderDetail.fromJson(body['data']);
   }
 
-  // func for load Cart data
-  Future<CartItem> getCart() async {
-    var url = '${Constants.API_URL_DOMAIN}action=cart_list';
-    final response = await http.get(
-      Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
-    );
-    final body = jsonDecode(response.body);
-    final cart = CartItem.fromJson(body['data']);
-    return cart;
-  }
-
   // func for get init parameters
   Future<void> getInitParams() async {
     var url = '${Constants.API_URL_DOMAIN}action=init_params';
@@ -286,7 +271,7 @@ class Func {
       },
     );
     final body = jsonDecode(response.body);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       scakey.currentState?.updateBadgeCount(body['data']?['cart_count'] ?? 0);
     }
   }

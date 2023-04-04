@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:yiwumart/util/cart_list.dart';
@@ -44,17 +42,9 @@ class BagBloc extends Bloc<BagEvent, BagState> {
         final id = event.id;
         var qty = event.quantity;
         var cartList = cart.items;
-        var url =
-            '${Constants.API_URL_DOMAIN}action=cart_product_qty&product_id=$id&qty=$qty';
-        final response = await http.get(
-          Uri.parse(url),
-          headers: {
-            Constants.header: Constants.bearer,
-          },
-        );
-        final body = jsonDecode(response.body);
+        final body = await bagRepo.changeQuantity(id, qty);
         final bagList = await bagRepo.getBagList();
-        if (body['success'] == true) {
+        if (body['success']) {
           cartList.removeWhere((element) {
             if (element.id == id) {
               element.qty = qty;
@@ -71,10 +61,10 @@ class BagBloc extends Bloc<BagEvent, BagState> {
             Func().getInitParams();
             emit(BagEmpty());
           } else {
-              emit(BagLoaded(cart: newCart));
-              Func().getInitParams();
-              Func().showSnackbar(
-                  event.context, 'Количество товара изменено', body['success']);
+            emit(BagLoaded(cart: newCart));
+            Func().getInitParams();
+            Func().showSnackbar(
+                event.context, 'Количество товара изменено', body['success']);
           }
         } else {
           Func().showSnackbar(event.context, body['message'], body['success']);

@@ -18,4 +18,17 @@ class BagRepository implements AbstractBag {
     final cart = CartItem.fromJson(body['data']);
     return cart;
   }
+  @override
+  Future changeQuantity(int id, int quantity) async {
+    var url =
+        '${Constants.API_URL_DOMAIN}action=cart_product_qty&product_id=$id&qty=$quantity';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        Constants.header: Constants.bearer,
+      },
+    );
+    final body = jsonDecode(response.body);
+    return body;
+  }
 }
