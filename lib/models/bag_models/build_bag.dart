@@ -1,69 +1,75 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:yiwumart/bloc/build_bag_bloc/build_bag_bloc.dart';
 import 'package:yiwumart/catalog_screens/product_screen.dart';
-import 'package:yiwumart/screens/main_screen.dart';
 import 'package:yiwumart/util/product.dart';
-import '../../util/cart_list.dart';
-import '../../util/constants.dart';
-import 'package:http/http.dart' as http;
-import '../../util/function_class.dart';
+import '../../bloc/bag_bloc/bag_bloc.dart';
+import '../../catalog_screens/purchase_screen.dart';
 
 class BagCartWidget extends StatefulWidget {
-  final CartItem cart;
-  final VoidCallback qtyChangeCallback;
-
-  const BagCartWidget(
-      {super.key, required this.cart, required this.qtyChangeCallback});
+  const BagCartWidget({super.key});
 
   @override
   BagCartWidgetState createState() => BagCartWidgetState();
 }
 
 class BagCartWidgetState extends State<BagCartWidget> {
+  bool isUpdating = false;
+  void hideIndicator() {
+    Future.delayed(const Duration(milliseconds: 250), () {
+      setState(() {
+        isUpdating = false;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    var cart = widget.cart;
-    final cartList = widget.cart.items;
-    void changeQty({required int id, required int qty}) async {
-      var url =
-          '${Constants.API_URL_DOMAIN}action=cart_product_qty&product_id=$id&qty=$qty';
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          Constants.header: Constants.bearer,
-        },
-      );
-      final body = jsonDecode(response.body);
-      if (body['success'] == true) {
-        scakey.currentState?.updateBadgeCount(body['qty']);
-        setState(() {
-          for (var element in cartList) {
-            if (element.id == id) {
-              element.qty = qty;
-              cart = CartItem(
-                  items: cartList, totalSum: cart.totalSum, link: cart.link);
-            }
-          }
-          widget.qtyChangeCallback.call();
-          Func().showSnackbar(
-              context, 'Количество товара изменено', body['success']);
-        });
-      } else {
-        widget.qtyChangeCallback.call();
-        Func().showSnackbar(context, body['message'], body['success']);
-      }
-    }
-
-    return
-    BlocBuilder<BuildBagBloc, BuildBagState>(
+    return BlocBuilder<BagBloc, BagState>(
       builder: (context, state) {
-        return Container();
+        if (state is BagLoaded) {
+          return Stack(
+            children: [
+              buildBagItems(state.cart),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 5.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        fixedSize: Size(1.sw, 5.h),
+                      ),
+                      onPressed: () async {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PurchaseScreen(
+                                      link: state.cart.link,
+                                    )));
+                      },
+                      child: const Text(
+                        'Оформить заказ',
+                      ),
+                    )),
+              ),
+              isUpdating ? const LoadingIndicator() : Container(),
+            ],
+          );
+        } else {
+          return const Center(child: Text('Ошибка'));
+        }
       },
     );
-      Container(
+  }
+
+  Widget buildBagItems(cart) {
+    final cartList = cart.items;
+    return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: ListView(
         padding: REdgeInsets.all(10),
@@ -166,10 +172,17 @@ class BagCartWidgetState extends State<BagCartWidget> {
                                   onTap: () {
                                     setState(() {
                                       if (cartItem.qty != 0) {
+                                        isUpdating = true;
                                         cartItem.qty--;
+                                        BlocProvider.of<BagBloc>(context)
+                                            .add(ChangeQuantity(
+                                          id: cartItem.id,
+                                          quantity: cartItem.qty,
+                                          context: context,
+                                        ));
                                       }
                                     });
-                                    changeQty(id: cartItem.id, qty: cartItem.qty);
+                                    hideIndicator();
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(3),
@@ -194,9 +207,15 @@ class BagCartWidgetState extends State<BagCartWidget> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      cartItem.qty++;
+                                      isUpdating = true;
+                                      BlocProvider.of<BagBloc>(context)
+                                          .add(ChangeQuantity(
+                                        id: cartItem.id,
+                                        quantity: cartItem.qty + 1,
+                                        context: context,
+                                      ));
                                     });
-                                    changeQty(id: cartItem.id, qty: cartItem.qty);
+                                    hideIndicator();
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(3),
@@ -267,6 +286,20 @@ class BagCartWidgetState extends State<BagCartWidget> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class LoadingIndicator extends StatelessWidget {
+  const LoadingIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black.withOpacity(0.5),
+      child: const Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }

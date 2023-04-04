@@ -19,12 +19,12 @@ class BagLoading extends BagState{
 
 class BagLoaded extends BagState{
   BagLoaded({
-    required this.bagList,
+    required this.cart,
   });
 
-  final CartItem bagList;
+  final CartItem cart;
 
-  List<Object?> get props => [bagList];
+  List<Object?> get props => [cart];
 }
 
 class BagEmpty extends BagState{
