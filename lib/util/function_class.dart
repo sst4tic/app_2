@@ -77,7 +77,7 @@ class Func {
       content: Text(
         text,
         style:
-            TextStyle(color: success ? Colors.green : Colors.red, fontSize: 17),
+        TextStyle(color: success ? Colors.green : Colors.red, fontSize: 17),
       ),
       backgroundColor: Colors.black87,
     ));

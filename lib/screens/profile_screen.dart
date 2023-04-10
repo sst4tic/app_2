@@ -9,6 +9,7 @@ import 'package:yiwumart/screens/edit_profile.dart';
 import 'package:yiwumart/screens/main_screen.dart';
 import 'package:yiwumart/screens/purchase_history.dart';
 import 'package:http/http.dart' as http;
+import 'package:yiwumart/screens/seissions_page.dart';
 import '../models/build_user.dart';
 import '../models/shimmer_model.dart';
 import '../util/constants.dart';
@@ -209,6 +210,38 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     Text(
                       'Редактирование',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: Theme.of(context).primaryColorLight,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(
+              height: 0,
+              thickness: 2,
+            ),
+            // create field for sessions
+           GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Sessions()));
+              },
+              child: Container(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondary,),
+                height: 60,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Сессии',
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     Icon(

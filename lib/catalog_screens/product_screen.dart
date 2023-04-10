@@ -53,17 +53,15 @@ class _ProductScreenState extends State<ProductScreen> {
         body: buildCartShimmer(context),
       );
     } else {
-      return
-        CustomWillPopScope(
+      return CustomWillPopScope(
         action: () {
           Navigator.pop(context, product);
           setState(() {
             product.is_favorite = isFavorite;
           });
         },
-          onWillPop: true,
-        child:
-        Scaffold(
+        onWillPop: true,
+        child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
@@ -227,4 +225,3 @@ class _ProductScreenState extends State<ProductScreen> {
         textAlign: TextAlign.center,
       ));
 }
-
