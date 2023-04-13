@@ -14,6 +14,7 @@ import '../models/build_user.dart';
 import '../models/shimmer_model.dart';
 import '../util/constants.dart';
 import '../util/function_class.dart';
+import '../util/styles.dart';
 import '../util/user.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -37,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
   static Future<User> getUser() async {
     var url = '${Constants.API_URL_DOMAIN}action=user_profile';
     final response = await http
-        .get(Uri.parse(url), headers: {Constants.header: Constants.bearer});
+        .get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return User.fromJson(body['data']);
   }
@@ -96,15 +97,12 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Icon(
                   Icons.local_activity,
-                  color: Theme.of(context).primaryColorLight,
+                  color: Colors.grey[600],
                 ),
                 const SizedBox(width: 10),
                 Text(
                   'Активность',
-                  style: TextStyle(
-                      fontSize: 17,
-                      color: Theme.of(context).primaryColorLight,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyles.headerStyle
                 ),
               ],
             ),
@@ -123,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12))),
                 padding: const EdgeInsets.only(left: 10, right: 10),
-                height: 60,
+                height: 50,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -139,7 +137,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const Divider(
               height: 0,
-              thickness: 2,
+              thickness: 1,
             ),
             GestureDetector(
               onTap: () {
@@ -155,7 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(12),
                         bottomRight: Radius.circular(12))),
-                height: 60,
+                height: 50,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -176,15 +174,12 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Icon(
                   Icons.person,
-                  color: Theme.of(context).primaryColorLight,
+                  color: Colors.grey[600],
                 ),
                 const SizedBox(width: 10),
                 Text(
                   'Аккаунт',
-                  style: TextStyle(
-                      fontSize: 17,
-                      color: Theme.of(context).primaryColorLight,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyles.headerStyle
                 ),
               ],
             ),
@@ -204,7 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12))),
                 padding: const EdgeInsets.only(left: 10, right: 10),
-                height: 60,
+                height: 50,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -222,9 +217,8 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const Divider(
               height: 0,
-              thickness: 2,
+              thickness: 1,
             ),
-            // create field for sessions
            GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -236,7 +230,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: const EdgeInsets.only(left: 10, right: 10),
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondary,),
-                height: 60,
+                height: 50,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -254,7 +248,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const Divider(
               height: 0,
-              thickness: 2,
+              thickness: 1,
             ),
             GestureDetector(
               onTap: () async {
@@ -262,9 +256,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 setState(() {
                   Constants.USER_TOKEN = '';
                   Constants.bearer = '';
+                  Constants.cookie = '';
                 });
                 SharedPreferences pref = await SharedPreferences.getInstance();
                 pref.remove('login');
+                pref.remove('cookie');
                 Func().getFirebaseToken();
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => const Login()),
@@ -277,7 +273,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(12),
                         bottomRight: Radius.circular(12))),
-                height: 60,
+                height: 50,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: const [

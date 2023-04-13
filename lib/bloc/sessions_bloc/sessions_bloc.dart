@@ -16,5 +16,19 @@ class SessionsBloc extends Bloc<SessionsEvent, SessionsState> {
      }
       emit(SessionsLoaded(sessions: sessions.data, currentSession: sessions.currentSession));
     });
+    on<DestroySession>((event, emit) async {
+      var resp = await sessionsRepo.destroySession(event.id);
+      print(resp);
+      if(resp['success'] == true) {
+        add(const LoadSessions());
+      }
+    });
+    on<DestroyAllSessions>((event, emit) async {
+      var resp = await sessionsRepo.destroyAllSessions();
+      print(resp);
+      if(resp['success'] == true) {
+        add(const LoadSessions());
+      }
+    });
   }
 }

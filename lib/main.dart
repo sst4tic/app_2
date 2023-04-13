@@ -138,6 +138,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
+    await Func.getCookies();
     await getToken();
   }
   @override

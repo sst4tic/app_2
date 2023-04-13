@@ -10,9 +10,7 @@ class BagRepository implements AbstractBag {
     var url = '${Constants.API_URL_DOMAIN}action=cart_list';
     final response = await http.get(
       Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
+      headers: Constants.headers()
     );
     final body = jsonDecode(response.body);
     final cart = CartItem.fromJson(body['data']);
@@ -24,9 +22,7 @@ class BagRepository implements AbstractBag {
         '${Constants.API_URL_DOMAIN}action=cart_product_qty&product_id=$id&qty=$quantity';
     final response = await http.get(
       Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
+      headers: Constants.headers()
     );
     final body = jsonDecode(response.body);
     return body;

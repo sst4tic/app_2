@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 10),
-                        const Text('Популярные категории',
+                         Text('Популярные категории',
                             style: TextStyles.headerStyle),
                         const SizedBox(height: 10),
                         SizedBox(
@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                               }),
                         ),
                         const SizedBox(height: 15),
-                        const Text('Товары дня', style: TextStyles.headerStyle),
+                         Text('Товары дня', style: TextStyles.headerStyle),
                         const SizedBox(height: 15),
                         MediaQuery.removePadding(
                           removeTop: true,

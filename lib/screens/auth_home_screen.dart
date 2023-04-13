@@ -8,6 +8,7 @@ import 'package:yiwumart/screens/notification_screen.dart';
 import 'package:yiwumart/util/function_class.dart';
 import 'package:yiwumart/util/popular_catalog.dart';
 import '../models/popular_categories_model.dart';
+import '../util/constants.dart';
 import '../util/product.dart';
 import '../util/styles.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -36,13 +37,7 @@ class _AuthHomePageState extends State<AuthHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Func().getUnreadCount().then((value) {
-      if (mounted) {
-        setState(() {
-          _unreadCount = value;
-        });
-      }
-    });
+    print(Constants.USER_TOKEN);
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -151,7 +146,7 @@ class _AuthHomePageState extends State<AuthHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 10),
-                        const Text('Популярные категории',
+                        Text('Популярные категории',
                             style: TextStyles.headerStyle),
                         const SizedBox(height: 10),
                         SizedBox(
@@ -186,7 +181,7 @@ class _AuthHomePageState extends State<AuthHomePage> {
                               }),
                         ),
                         const SizedBox(height: 15),
-                        const Text('Товары дня', style: TextStyles.headerStyle),
+                        Text('Товары дня', style: TextStyles.headerStyle),
                         const SizedBox(height: 15),
                         MediaQuery.removePadding(
                           removeTop: true,

@@ -10,12 +10,30 @@ class SessionsRepository implements AbstractSessions {
     var url = '${Constants.API_URL_DOMAIN}action=sessions';
     final response = await http.get(
       Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
+      headers: Constants.headers()
     );
     final body = jsonDecode(response.body);
     final sessions = Session.fromJson(body);
     return sessions;
+  }
+  @override
+  Future destroySession(String id) async {
+    var url = '${Constants.API_URL_DOMAIN}action=sessions_destroy&id=$id';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: Constants.headers()
+    );
+    final body = jsonDecode(response.body);
+    return body;
+  }
+  @override
+  Future destroyAllSessions() async {
+    var url = '${Constants.API_URL_DOMAIN}action=all_sessions_destroy';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: Constants.headers()
+    );
+    final body = jsonDecode(response.body);
+    return body;
   }
 }

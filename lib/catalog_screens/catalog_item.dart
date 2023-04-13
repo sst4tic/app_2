@@ -87,7 +87,7 @@ class _CatalogItemsState extends State<CatalogItems> {
     var url =
         '${Constants.API_URL_DOMAIN}action=catalog&category_id=$id&page=$page&orderby=$orderby&$filter';
     final response = await http
-        .get(Uri.parse(url), headers: {Constants.header: Constants.bearer});
+        .get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     if (response.statusCode == 200) {
       setState(() {

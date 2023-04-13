@@ -5,18 +5,25 @@ class User {
   String? surname;
   final String fullName;
   final String shortName;
+  final String email;
   final String roleName;
   String? avatar;
+  final String? phone;
+  final String? gender;
+  final String? bdate;
 
-   User ({
+  User ({
     required this.id,
     required this.name,
     this.surname,
     required this.fullName,
     required this.shortName,
+    required this.email,
     required this.roleName,
     this.avatar,
-
+    this.phone,
+    this.gender,
+    this.bdate,
   });
   static User fromJson(json) => User(
     id: json['id'],
@@ -24,7 +31,11 @@ class User {
     surname: json['surname'],
     fullName: json['full_name'],
     shortName: json['short_name'],
+    email: json['email'],
     roleName: json['role_name'],
     avatar: json['avatar_url'],
+    phone: json['phone'],
+    gender: json['gender'],
+    bdate: json['bdate']
   );
 }

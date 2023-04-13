@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:yiwumart/screens/purchase_history.dart';
@@ -57,6 +59,24 @@ class MainScreenState extends State<MainScreen> {
     });
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => const PurchaseHistory()));
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (!kIsWeb) {
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        print('Running on ${androidInfo.model}');
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        print('Running on ${iosInfo.utsname.machine}');
+      }
+    } else {
+      WebBrowserInfo webBrowserInfo = await deviceInfo.webBrowserInfo;
+      print('Running on ${webBrowserInfo.userAgent}');
+    }
   }
 
   @override

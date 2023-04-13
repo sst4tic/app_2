@@ -39,6 +39,11 @@ class _PurchaseHistoryState extends State<PurchaseHistory> {
                   return buildPurchaseHistoryShimmer(context);
                 } else if (snapshot.hasData) {
                   final order = snapshot.data!;
+                  if(order.isEmpty) {
+                    return const Center(
+                      child: Text('Нет покупок'),
+                    );
+                  }
                   return buildOrder(order);
                 } else {
                   return const Text("No widget to build");

@@ -38,9 +38,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
               onWebViewCreated: (WebViewController webViewController) {
                 webViewController.loadUrl(
                   widget.link,
-                  headers: {
-                    Constants.header: Constants.bearer,
-                  },
+                  headers: Constants.headers()
                 );
               },
               javascriptMode: JavascriptMode.unrestricted,

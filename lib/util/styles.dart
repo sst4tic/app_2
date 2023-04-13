@@ -46,6 +46,7 @@ final darkTheme = ThemeData(
     cursorColor: Colors.white,
   ),
   inputDecorationTheme: InputDecorationTheme(
+    fillColor: ColorStyles.bodyColor,
     labelStyle: TextStyle(
       color: Colors.white,
       fontSize: 16.sp,
@@ -101,7 +102,7 @@ final lightTheme = ThemeData(
   progressIndicatorTheme: const ProgressIndicatorThemeData(
     color: ColorStyles.primaryColor,
   ),
-
+  // iconTheme: const IconThemeData(size: 18),
   appBarTheme: AppBarTheme(
     titleTextStyle: const TextStyle(
         color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
@@ -134,6 +135,7 @@ final lightTheme = ThemeData(
     cursorColor: ColorStyles.primaryColor
   ),
   inputDecorationTheme: InputDecorationTheme(
+    fillColor: ColorStyles.bodyColor,
     labelStyle: TextStyle(
       color: Colors.grey,
       fontSize: 16.sp,
@@ -181,8 +183,13 @@ final lightTheme = ThemeData(
 class TextStyles {
   static const TextStyle appBarTitle =
   TextStyle(color: Colors.black, fontWeight: FontWeight.bold);
-  static const TextStyle headerStyle =
-  TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+  static TextStyle headerStyle =
+  TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey[600]!);
+  static TextStyle editStyle = TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.bold,
+    color: Colors.grey[600],
+  );
 }
 
 class ColorStyles {

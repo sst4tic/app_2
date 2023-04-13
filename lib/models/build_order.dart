@@ -7,7 +7,7 @@ import '../util/order_list.dart';
 Widget buildOrder(List<OrderList> order) => ListView.builder(
     padding: REdgeInsets.all(10),
     shrinkWrap: true,
-    itemCount: 10,
+    itemCount: order.length,
     itemBuilder: (context, index) {
       final orderItem = order[index];
       return GestureDetector(

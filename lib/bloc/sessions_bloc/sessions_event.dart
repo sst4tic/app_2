@@ -14,3 +14,21 @@ class LoadSessions extends SessionsEvent {
   @override
   List<Object?> get props => [completer];
 }
+
+class DestroySession extends SessionsEvent {
+  const DestroySession({
+    required this.id,
+  });
+
+  final String id;
+
+  @override
+  List<Object?> get props => [id];
+}
+
+class DestroyAllSessions extends SessionsEvent {
+  const DestroyAllSessions();
+
+  @override
+  List<Object?> get props => [];
+}

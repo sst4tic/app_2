@@ -202,7 +202,7 @@ class _BuildProductState extends State<BuildProduct> {
         product.categoryId != null
             ? Container(
                 padding: const EdgeInsets.all(10),
-                height: 280.h,
+                height: 295.h,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

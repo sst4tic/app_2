@@ -52,7 +52,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
               } else if (state is BagNotAuthorized) {
                 return bagNonAuthModel(context);
               } else {
-                return const Text("No widget to build");
+                return buildBagShimmer(context);
               }
             },
           )),

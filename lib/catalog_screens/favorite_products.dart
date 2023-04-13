@@ -25,7 +25,7 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
   static Future<List<Product>> getFavorites() async {
     var url =
         '${Constants.API_URL_DOMAIN}action=favorite_list';
-    final response = await http.get(Uri.parse(url), headers: {Constants.header: Constants.bearer});
+    final response = await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return List.from(body['data']?.map!((e) => Product.fromJson(e)).toList());
   }

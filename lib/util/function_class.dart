@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yiwumart/util/order_list.dart';
 import 'package:yiwumart/util/popular_catalog.dart';
 import 'package:http/http.dart' as http;
@@ -18,13 +19,17 @@ class Func {
   // func for getting popular categories
   static Future<List<PopularCategories>> getPopularCategories() async {
     var url = '${Constants.API_URL_DOMAIN}action=popular_categories';
-    final response = await http.get(Uri.parse(url), headers: {
-      Constants.header: Constants.bearer,
-    });
+    final response = await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return body['data']
         .map<PopularCategories>(PopularCategories.fromJson)
         .toList();
+  }
+
+  // func for getting cookies
+  static Future<void> getCookies() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+      Constants.cookie = pref.getString('cookie') ?? '';
   }
 
   // func for getting catalog
@@ -40,9 +45,7 @@ class Func {
   static Future<List<Product>> getSimilarProducts({catId, productId}) async {
     var url =
         '${Constants.API_URL_DOMAIN}action=catalog&category_id=$catId&product_id=$productId';
-    final response = await http.get(Uri.parse(url), headers: {
-      Constants.header: Constants.bearer,
-    });
+    final response = await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return List.from(body['data']?.map!((e) => Product.fromJson(e)).toList());
   }
@@ -50,9 +53,7 @@ class Func {
   // func for getting products
   static Future<List<Product>> getProducts() async {
     var url = '${Constants.API_URL_DOMAIN}action=products_of_day';
-    final response = await http.get(Uri.parse(url), headers: {
-      Constants.header: Constants.bearer,
-    });
+    final response = await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return List.from(body['data']?.map!((e) => Product.fromJson(e)).toList());
   }
@@ -60,9 +61,7 @@ class Func {
   // func for searching products
   static Future<Search> searchProducts(search) async {
     var url = '${Constants.API_URL_DOMAIN}action=search&q=$search';
-    final response = await http.get(Uri.parse(url), headers: {
-      Constants.header: Constants.bearer,
-    });
+    final response = await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     if (search != '') {
       return Search.fromJson(body['data']);
@@ -134,9 +133,7 @@ class Func {
         '${Constants.API_URL_DOMAIN}action=favorite_toggle&product_id=$productId';
     http.Response response = await http.get(
       Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
+      headers: Constants.headers()
     );
     dynamic body = jsonDecode(response.body);
     if (body['message'] == 'ADDED') {
@@ -155,9 +152,7 @@ class Func {
         '${Constants.API_URL_DOMAIN}action=favorite_toggle&product_id=$productId';
     http.Response response = await http.get(
       Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
+      headers: Constants.headers()
     );
     dynamic body = jsonDecode(response.body);
     if (body['message'] == 'ADDED') {
@@ -176,9 +171,7 @@ class Func {
   }) async {
     var url =
         '${Constants.API_URL_DOMAIN}action=add_to_cart&product_id=$productId';
-    http.Response response = await http.get(Uri.parse(url), headers: {
-      Constants.header: Constants.bearer,
-    });
+    http.Response response = await http.get(Uri.parse(url), headers: Constants.headers());
     dynamic body = jsonDecode(response.body);
     if (body['success']) {
       scakey.currentState?.updateBadgeCount(body['qty']);
@@ -198,9 +191,7 @@ class Func {
       FirebaseMessaging.instance.getToken().then((value) async {
         var url =
             '${Constants.API_URL_DOMAIN}action=fcm_device_token_post&fcm_device_token=$value';
-        await http.get(Uri.parse(url), headers: {
-          Constants.header: 'Bearer ${Constants.USER_TOKEN}',
-        });
+        await http.get(Uri.parse(url), headers: Constants.headers());
       });
     }
   }
@@ -210,9 +201,7 @@ class Func {
     var url = '${Constants.API_URL_DOMAIN}action=notifications_list';
     final response = await http.get(
       Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
+      headers: Constants.headers()
     );
     final body = jsonDecode(response.body);
     final notification = body['data']
@@ -226,9 +215,7 @@ class Func {
     var url = '${Constants.API_URL_DOMAIN}action=orders_list';
     final response = await http.get(
       Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
+      headers: Constants.headers()
     );
     final body = jsonDecode(response.body);
     final orders = body['data'].map<OrderList>(OrderList.fromJson).toList();
@@ -240,9 +227,7 @@ class Func {
     var url = '${Constants.API_URL_DOMAIN}action=product_detail&product_id=$id';
     final response = await http.get(
       Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
+      headers: Constants.headers()
     );
     final body = jsonDecode(response.body);
     return ProductItem.fromJson(body['data']);
@@ -253,9 +238,7 @@ class Func {
     var url = '${Constants.API_URL_DOMAIN}action=order_details&cart_id=$id';
     final response = await http.get(
       Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
+      headers: Constants.headers()
     );
     final body = jsonDecode(response.body);
     return OrderDetail.fromJson(body['data']);
@@ -266,9 +249,7 @@ class Func {
     var url = '${Constants.API_URL_DOMAIN}action=init_params';
     final response = await http.get(
       Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
+      headers: Constants.headers()
     );
     final body = jsonDecode(response.body);
     if (response.statusCode == 200) {
@@ -276,14 +257,44 @@ class Func {
     }
   }
 
+  // func for getting user device and browser name
+  String getDeviceNameFromUserAgent(String userAgent) {
+    RegExp regExp = RegExp(r'\(([^;]+);');
+    Match? match = regExp.firstMatch(userAgent);
+    if (match != null) {
+      String deviceInfo = match.group(1) ?? '';
+      return deviceInfo.trim();
+    }
+    return '';
+  }
+
+  String getBrowserNameFromUserAgent(String userAgent) {
+    RegExp regExp = RegExp(r'([A-Za-z]+\/[\d\.]+)');
+    Match? match = regExp.firstMatch(userAgent);
+    if (match != null) {
+      String browserInfo = match.group(1) ?? '';
+      return browserInfo.trim();
+    }
+    return '';
+  }
+
+  // func for delete acc
+  Future deleteAccount() async {
+    var url = '${Constants.API_URL_DOMAIN}action=user_delete';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: Constants.headers()
+    );
+    final body = jsonDecode(response.body);
+    return body;
+  }
+
   // func for load unread unread count
   Future<int> getUnreadCount() async {
     var url = '${Constants.API_URL_DOMAIN}action=notifications_unread_count';
     final response = await http.get(
       Uri.parse(url),
-      headers: {
-        Constants.header: Constants.bearer,
-      },
+      headers: Constants.headers()
     );
     final body = jsonDecode(response.body);
     return body['unread_count'] ?? 0;

@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -177,14 +181,25 @@ class _LoginState extends State<Login> {
     );
   }
 
+
   Future login(Map<String, dynamic>? userData) async {
-    final Dio dio = Dio();
+    final dio = Dio();
+    final cookieJar = CookieJar();
+    dio.interceptors.add(CookieManager(cookieJar));
     try {
-      Response response = await dio
-          .get('${Constants.API_URL_DOMAIN}action=auth&', queryParameters: {
+      final response = await dio.get('${Constants.API_URL_DOMAIN}action=auth&', queryParameters: {
         "email": _emailController.text,
-        "password": _passController.text
+        "password": _passController.text,
       });
+      List<Cookie> cookies = await cookieJar.loadForRequest(Uri.parse(Constants.API_URL_DOMAIN));
+      String cookie = cookies.map((c) => '${c.name}=${c.value}').join(';');
+      if(cookie.isNotEmpty) {
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        await pref.setString('cookie', cookie);
+        setState(() {
+          Constants.cookie = pref.getString('cookie') ?? '';
+        });
+      }
       return response;
     } on DioError catch (e) {
       return e.response;
