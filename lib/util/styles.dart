@@ -46,6 +46,7 @@ final darkTheme = ThemeData(
     cursorColor: Colors.white,
   ),
   inputDecorationTheme: InputDecorationTheme(
+    contentPadding: REdgeInsets.symmetric(horizontal: 20.0),
     fillColor: ColorStyles.bodyColor,
     labelStyle: TextStyle(
       color: Colors.white,
@@ -54,13 +55,9 @@ final darkTheme = ThemeData(
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(18),
     ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: Colors.white, width: 1),
-      borderRadius: BorderRadius.circular(18),
-    ),
     errorBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: Colors.red, width: 1),
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(10),
     ),
   ),
     expansionTileTheme: const ExpansionTileThemeData(
@@ -135,21 +132,23 @@ final lightTheme = ThemeData(
     cursorColor: ColorStyles.primaryColor
   ),
   inputDecorationTheme: InputDecorationTheme(
+    contentPadding: REdgeInsets.symmetric(horizontal: 20.0),
     fillColor: ColorStyles.bodyColor,
     labelStyle: TextStyle(
       color: Colors.grey,
       fontSize: 16.sp,
     ),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(10),
     ),
-    focusedBorder: OutlineInputBorder(
+    focusedBorder:
+    OutlineInputBorder(
       borderSide: const BorderSide(color: Colors.grey, width: 1),
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(10),
     ),
     errorBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: Colors.red, width: 1),
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(10),
     ),
   ),
   expansionTileTheme: const ExpansionTileThemeData(
@@ -185,6 +184,12 @@ class TextStyles {
   TextStyle(color: Colors.black, fontWeight: FontWeight.bold);
   static TextStyle headerStyle =
   TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey[600]!);
+  static TextStyle headerStyle2 =
+  TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: Colors.grey[600]!);
+  static TextStyle bodyStyle = const TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 14.0,
+  );
   static TextStyle editStyle = TextStyle(
     fontSize: 10,
     fontWeight: FontWeight.bold,

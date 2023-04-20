@@ -2,24 +2,24 @@ class CartItem {
  CartItem({
   required this.items,
   required this.totalSum,
-  required this.link,
+  this.cartId,
  });
  late final List<Items> items;
  late String totalSum;
- late String link;
+ late int? cartId;
 
  CartItem.fromJson(Map<String, dynamic> json){
   items = List.from(json['items']).map((e)=>Items.fromJson(e)).toList();
   totalSum = json['total_sum'];
-  link = json['link_checkout'];
+  cartId = json['cart_id'];
  }
 
  Map<String, dynamic> toJson() {
-  final _data = <String, dynamic>{};
-  _data['items'] = items.map((e)=>e.toJson()).toList();
-  _data['total_sum'] = totalSum;
-  _data['link_checkout'] = link;
-  return _data;
+  final data = <String, dynamic>{};
+  data['items'] = items.map((e)=>e.toJson()).toList();
+  data['total_sum'] = totalSum;
+  data['cart_id'] = cartId;
+  return data;
  }
 }
 
@@ -52,14 +52,14 @@ class Items {
  }
 
  Map<String, dynamic> toJson() {
-  final _data = <String, dynamic>{};
-  _data['id'] = id;
-  _data['name'] = name;
-  _data['price'] = price;
-  _data['qty'] = qty;
-  _data['total'] = total;
-  _data['image_thumb'] = imageThumb;
-  _data['link'] = link;
-  return _data;
+  final data = <String, dynamic>{};
+  data['id'] = id;
+  data['name'] = name;
+  data['price'] = price;
+  data['qty'] = qty;
+  data['total'] = total;
+  data['image_thumb'] = imageThumb;
+  data['link'] = link;
+  return data;
  }
 }

@@ -49,7 +49,8 @@ class BagCartWidgetState extends State<BagCartWidget> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => PurchaseScreen(
-                                      link: state.cart.link,
+                                      cartId: state.cart.cartId!,
+                                  totalSum: state.cart.totalSum,
                                     )));
                       },
                       child: const Text(

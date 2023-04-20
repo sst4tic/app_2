@@ -1,23 +1,24 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:upgrader/upgrader.dart';
+import 'package:yiwumart/bloc/auth_bloc/auth_bloc.dart';
+import 'package:yiwumart/bloc/auth_bloc/auth_repo.dart';
 import 'package:yiwumart/screens/main_screen.dart';
 import 'package:yiwumart/screens/notification_screen.dart';
 import 'package:yiwumart/util/constants.dart';
-import 'package:yiwumart/util/function_class.dart';
 import 'package:yiwumart/util/styles.dart';
 
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-}
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel', // id
@@ -101,18 +102,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  String? token;
-
-  getToken() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    setState(() {
-      Constants.USER_TOKEN = pref.getString('login') ?? "";
-      if (Constants.USER_TOKEN.isNotEmpty) {
-        Constants.bearer = 'Bearer ${pref.getString('login') ?? ""}';
-      }
-    });
-  }
-
   // For dark theme controller
   Brightness getThemeMode = WidgetsBinding.instance.window.platformBrightness;
 
@@ -138,32 +127,44 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    await Func.getCookies();
-    await getToken();
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (!kIsWeb) {
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        setState(() {
+          Constants.useragent = androidInfo.model;
+        });
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        setState(() {
+          Constants.useragent = iosInfo.utsname.machine!;
+        });
+      }
+    }
   }
+
   @override
   Widget build(BuildContext context) {
-    Func().getFirebaseToken();
     return ScreenUtilInit(
       designSize: const Size(360, 690),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (BuildContext context, Widget? child) {
-        return UpgradeAlert(
-          upgrader: Upgrader(
-            dialogStyle: Platform.isIOS
-                ? UpgradeDialogStyle.cupertino
-                : UpgradeDialogStyle.material,
-            languageCode: 'ru',
-          ),
-          child: MaterialApp(
-            navigatorKey: navKey,
-            title: 'YiwuMart',
-            debugShowCheckedModeBanner: false,
-            theme: getThemeMode == Brightness.light ? lightTheme : darkTheme,
-            home: MainScreen(
-              key: scakey,
-            ),
+        return BlocProvider(
+          create: (context) => AuthBloc(authRepo: AuthRepo()),
+          child: BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              return MaterialApp(
+                navigatorKey: navKey,
+                title: 'YiwuMart',
+                debugShowCheckedModeBanner: false,
+                theme:
+                    getThemeMode == Brightness.light ? lightTheme : darkTheme,
+                home: MainScreen(
+                  key: scakey,
+                ),
+              );
+            },
           ),
         );
       },

@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:yiwumart/authorization/login.dart';
+import 'package:yiwumart/screens/profile_screen.dart';
 import 'package:yiwumart/screens/purchase_history.dart';
-import 'package:yiwumart/screens/user_profile_scaffold.dart';
-import 'package:yiwumart/util/function_class.dart';
 import '../util/constants.dart';
 import 'auth_home_screen.dart';
 import 'home_screen.dart';
@@ -45,6 +43,9 @@ class MainScreenState extends State<MainScreen> {
       _controller.index = index;
     });
   }
+  void rebuild() {
+    setState(() {});
+  }
 
   void updateBadgeCount(int count) {
     setState(() {
@@ -62,30 +63,9 @@ class MainScreenState extends State<MainScreen> {
   }
 
   @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    if (!kIsWeb) {
-      if (Platform.isAndroid) {
-        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        print('Running on ${androidInfo.model}');
-      } else if (Platform.isIOS) {
-        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-        print('Running on ${iosInfo.utsname.machine}');
-      }
-    } else {
-      WebBrowserInfo webBrowserInfo = await deviceInfo.webBrowserInfo;
-      print('Running on ${webBrowserInfo.userAgent}');
-    }
-  }
-
-  @override
   void initState() {
     getConnectivity();
     super.initState();
-    Future.delayed(const Duration(milliseconds: 250), () {
-      Func().getInitParams();
-    });
   }
 
   @override
@@ -112,81 +92,85 @@ class MainScreenState extends State<MainScreen> {
       onWillPop: () async {
         return !await tabNavKeys[_controller.index].currentState!.maybePop();
       },
-      child: CupertinoTabScaffold(
-          controller: _controller,
-          key: myKey,
-          tabBar: CupertinoTabBar(
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            activeColor: Theme.of(context).canvasColor,
-            inactiveColor: Theme.of(context).disabledColor,
-            iconSize: 27,
-            currentIndex: currentIndex,
-            onTap: onItemTapped,
-            items: [
-              const BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.house),
-                  activeIcon: Icon(CupertinoIcons.house_fill)),
-              const BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.square_list),
-                  activeIcon: Icon(CupertinoIcons.square_list_fill)),
-              BottomNavigationBarItem(
-                icon: badgeModel(
-                    count: badgeCount, icon: const Icon(CupertinoIcons.cart)),
-                activeIcon: badgeModel(
-                    count: badgeCount,
-                    icon: const Icon(CupertinoIcons.cart_fill)),
-              ),
-              const BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.person),
-                  activeIcon: Icon(CupertinoIcons.person_fill)),
-            ],
-          ),
-          tabBuilder: (BuildContext context, int index) {
-            switch (index) {
-              case 0:
-                return CupertinoTabView(
-                  navigatorKey: tabNavKeys[index],
-                  builder: (BuildContext context) {
-                    return CupertinoPageScaffold(
-                      resizeToAvoidBottomInset: false,
-                      child: Constants.USER_TOKEN != ''
-                          ? const AuthHomePage()
-                          : const HomePage(),
-                    );
-                  },
-                );
-              case 1:
-                return CupertinoTabView(
-                  navigatorKey: tabNavKeys[index],
-                  builder: (BuildContext context) => const CatalogPage(),
-                );
-              case 2:
-                return currentIndex == 2
-                    ? CupertinoTabView(
-                        navigatorKey: tabNavKeys[2],
-                        builder: (BuildContext context) {
-                          return const CupertinoPageScaffold(
-                            resizeToAvoidBottomInset: false,
-                            child: ShoppingBag(),
-                          );
-                        },
-                      )
-                    : Container();
-              case 3:
-                return CupertinoTabView(
-                  navigatorKey: tabNavKeys[3],
-                  builder: (BuildContext context) {
-                    return const CupertinoPageScaffold(
-                      resizeToAvoidBottomInset: false,
-                      child: UserProfileScaffold(),
-                    );
-                  },
-                );
-              default:
-                return Container();
-            }
-          }),
+      child: buildTabScaffold(),
     );
+  }
+
+  Widget buildTabScaffold() {
+    return CupertinoTabScaffold(
+        controller: _controller,
+        key: myKey,
+        tabBar: CupertinoTabBar(
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          activeColor: Theme.of(context).canvasColor,
+          inactiveColor: Theme.of(context).disabledColor,
+          iconSize: 27,
+          currentIndex: currentIndex,
+          onTap: onItemTapped,
+          items: [
+            const BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.house),
+                activeIcon: Icon(CupertinoIcons.house_fill)),
+            const BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.square_list),
+                activeIcon: Icon(CupertinoIcons.square_list_fill)),
+            BottomNavigationBarItem(
+              icon: badgeModel(
+                  count: badgeCount, icon: const Icon(CupertinoIcons.cart)),
+              activeIcon: badgeModel(
+                  count: badgeCount,
+                  icon: const Icon(CupertinoIcons.cart_fill)),
+            ),
+            const BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.person),
+                activeIcon: Icon(CupertinoIcons.person_fill)),
+          ],
+        ),
+        tabBuilder: (BuildContext context, int index) {
+          switch (index) {
+            case 0:
+              return CupertinoTabView(
+                navigatorKey: tabNavKeys[index],
+                builder: (BuildContext context) {
+                  return CupertinoPageScaffold(
+                    resizeToAvoidBottomInset: false,
+                    child: Constants.USER_TOKEN != ''
+                        ? const AuthHomePage()
+                        : const HomePage(),
+                  );
+                },
+              );
+            case 1:
+              return CupertinoTabView(
+                navigatorKey: tabNavKeys[index],
+                builder: (BuildContext context) => const CatalogPage(),
+              );
+            case 2:
+              return currentIndex == 2
+                  ? CupertinoTabView(
+                      navigatorKey: tabNavKeys[2],
+                      builder: (BuildContext context) {
+                        return const CupertinoPageScaffold(
+                          resizeToAvoidBottomInset: false,
+                          child: ShoppingBag(),
+                        );
+                      },
+                    )
+                  : Container();
+            case 3:
+              return CupertinoTabView(
+                navigatorKey: tabNavKeys[3],
+                builder: (BuildContext context) {
+                  return CupertinoPageScaffold(
+                    resizeToAvoidBottomInset: false,
+                    child: Constants.USER_TOKEN != '' ? const ProfilePage() : const Login(),
+                  );
+                },
+              );
+            default:
+              return Container();
+          }
+        });
   }
 
   Widget badgeModel({required int count, required Icon icon}) {

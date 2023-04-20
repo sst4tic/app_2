@@ -417,7 +417,9 @@ Widget buildCartShimmer(context) => SafeArea(
                         height: 20.h,
                         width: 130,
                       ),
-                      const SizedBox(width: 70,),
+                      const SizedBox(
+                        width: 70,
+                      ),
                       ShimmerWidget.rectangular(
                         height: 20.h,
                         width: 100,
@@ -434,7 +436,9 @@ Widget buildCartShimmer(context) => SafeArea(
                         height: 20.h,
                         width: 100,
                       ),
-                      const SizedBox(width: 100,),
+                      const SizedBox(
+                        width: 100,
+                      ),
                       ShimmerWidget.rectangular(
                         height: 20.h,
                         width: 100,
@@ -628,53 +632,183 @@ Widget buildPurchaseHistoryShimmer(context) => Container(
             );
           }),
     );
+// shimmer for sessions
+Widget buildSessionShimmer(context) => ListView(
+      padding: REdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+      children: [
+        Padding(
+          padding: REdgeInsets.only(right: 160.0),
+          child: ShimmerWidget.rectangular(height: 10.h),
+        ),
+        SizedBox(height: 8.0.h),
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).accentColor,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: REdgeInsets.only(
+                  top: 8.0,
+                  left: 8.0,
+                  right: 8.0,
+                ),
+                child: Row(children: [
+                  Container(
+                    width: 25.w,
+                    height: 25.h,
+                    decoration: BoxDecoration(
+                      color: Colors.blue[600],
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: ShimmerWidget.rectangular(height: 22.5.h),
+                  ),
+                  const SizedBox(width: 10.0),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ShimmerWidget.rectangular(height: 10.h, width: 100.w),
+                      SizedBox(height: 5.h),
+                      ShimmerWidget.rectangular(height: 10.h, width: 50.w),
+                    ],
+                  ),
+                ]),
+              ),
+              const SizedBox(height: 8.0),
+              const Divider(
+                height: 0,
+              ),
+              SizedBox(
+                height: 35,
+                width: double.infinity,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: 8.0),
+                    SizedBox(
+                      width: 25,
+                      height: 25,
+                      child: ShimmerWidget.rectangular(height: 20.h),
+                    ),
+                    const SizedBox(width: 25.0),
+                    ShimmerWidget.rectangular(height: 10.h, width: 100.w),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 35.0),
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).accentColor,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: ListView.separated(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (context, index) => Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+              child: Row(children: [
+                Container(
+                  width: 25.w,
+                  height: 25.h,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[600],
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: ShimmerWidget.rectangular(height: 20.h),
+                ),
+                const SizedBox(width: 10.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      ShimmerWidget.rectangular(
+                        height: 10,
+                        width: 150,
+                      ),
+                      SizedBox(height: 5.0),
+                      ShimmerWidget.rectangular(
+                        height: 10,
+                        width: 60,
+                      ),
+                      SizedBox(height: 5.0),
+                      ShimmerWidget.rectangular(
+                        height: 10,
+                        width: 100,
+                      ),
+                    ],
+                  ),
+                ),
+              ]),
+            ),
+            separatorBuilder: (context, index) => const Divider(
+              height: 0,
+            ),
+            itemCount: 4,
+          ),
+        ),
+      ],
+    );
 
-Widget buildEditShimmer(context) => Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      padding: const EdgeInsets.only(left: 15, right: 15, top: 45, bottom: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ShimmerWidget.rectangular(
-            height: 20.h,
-            width: 50.w,
+Widget buildEditShimmer(context) => ListView(
+      padding: REdgeInsets.all(8),
+      children: [
+        Container(
+          padding: REdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.secondary,
+            borderRadius: BorderRadius.circular(10),
           ),
-          SizedBox(height: 7.h),
-          ShimmerWidget.rectangular(height: 25.h),
-          SizedBox(height: 15.h),
-          ShimmerWidget.rectangular(
-            height: 20.h,
-            width: 80.w,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ShimmerWidget.rectangular(
+                height: 15.h,
+                width: 50.w,
+              ),
+              SizedBox(height: 7.h),
+              ShimmerWidget.rectangular(height: 25.h),
+              SizedBox(height: 15.h),
+              ShimmerWidget.rectangular(
+                height: 15.h,
+                width: 80.w,
+              ),
+              SizedBox(height: 15.h),
+              ShimmerWidget.rectangular(height: 25.h),
+              SizedBox(height: 15.h),
+              ShimmerWidget.rectangular(
+                height: 15.h,
+                width: 120.w,
+              ),
+              SizedBox(height: 15.h),
+              ShimmerWidget.rectangular(height: 25.h),
+              SizedBox(height: 15.h),
+              ShimmerWidget.rectangular(
+                height: 15.h,
+                width: 50.w,
+              ),
+              SizedBox(height: 15.h),
+              ShimmerWidget.rectangular(height: 25.h),
+              SizedBox(height: 15.h),
+              ShimmerWidget.rectangular(
+                height: 15.h,
+                width: 120.w,
+              ),
+              SizedBox(height: 7.h),
+              ShimmerWidget.rectangular(height: 25.h),
+              SizedBox(height: 10.h),
+              ShimmerWidget.rectangular(height: 35.h),
+              SizedBox(height: 10.h),
+              ShimmerWidget.rectangular(height: 35.h)
+            ],
           ),
-          SizedBox(height: 7.h),
-          ShimmerWidget.rectangular(height: 25.h),
-          SizedBox(height: 15.h),
-          ShimmerWidget.rectangular(
-            height: 20.h,
-            width: 120.w,
-          ),
-          SizedBox(height: 7.h),
-          ShimmerWidget.rectangular(height: 25.h),
-          SizedBox(height: 15.h),
-          ShimmerWidget.rectangular(
-            height: 20.h,
-            width: 50.w,
-          ),
-          SizedBox(height: 7.h),
-          ShimmerWidget.rectangular(height: 25.h),
-          SizedBox(height: 15.h),
-          ShimmerWidget.rectangular(
-            height: 20.h,
-            width: 120.w,
-          ),
-          SizedBox(height: 7.h),
-          ShimmerWidget.rectangular(height: 25.h),
-          SizedBox(height: 10.h),
-          ShimmerWidget.rectangular(height: 35.h),
-          SizedBox(height: 10.h),
-          ShimmerWidget.rectangular(height: 35.h)
-        ],
-      ),
+        ),
+      ],
     );
 
 Widget buildPurchaseShimmer(context) => Container(
@@ -701,7 +835,7 @@ Widget buildPurchaseShimmer(context) => Container(
           ),
           const Divider(height: 0, thickness: 1),
           Container(
-              color: Theme.of(context).colorScheme.secondary,
+              color: Theme.of(context).primaryColor,
               padding: REdgeInsets.only(left: 10, right: 10, top: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

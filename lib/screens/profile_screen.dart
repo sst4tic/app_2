@@ -1,19 +1,18 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:yiwumart/authorization/login.dart';
 import 'package:yiwumart/catalog_screens/favorite_products.dart';
 import 'package:yiwumart/screens/edit_profile.dart';
 import 'package:yiwumart/screens/main_screen.dart';
 import 'package:yiwumart/screens/purchase_history.dart';
 import 'package:http/http.dart' as http;
 import 'package:yiwumart/screens/seissions_page.dart';
+import '../bloc/auth_bloc/auth_bloc.dart';
 import '../models/build_user.dart';
 import '../models/shimmer_model.dart';
 import '../util/constants.dart';
-import '../util/function_class.dart';
 import '../util/styles.dart';
 import '../util/user.dart';
 
@@ -37,8 +36,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   static Future<User> getUser() async {
     var url = '${Constants.API_URL_DOMAIN}action=user_profile';
-    final response = await http
-        .get(Uri.parse(url), headers: Constants.headers());
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return User.fromJson(body['data']);
   }
@@ -74,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.secondary,
                   borderRadius: const BorderRadius.all(Radius.circular(12))),
-              padding:  REdgeInsets.symmetric(horizontal: 10),
+              padding: REdgeInsets.symmetric(horizontal: 10),
               height: 80,
               child: FutureBuilder<User>(
                 future: _future,
@@ -93,19 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const SizedBox(height: 20),
-            Row(
-              children: [
-                Icon(
-                  Icons.local_activity,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  'Активность',
-                  style: TextStyles.headerStyle
-                ),
-              ],
-            ),
+            Text('Активность'.toUpperCase(), style: TextStyles.headerStyle2),
             const SizedBox(height: 10),
             GestureDetector(
               onTap: () {
@@ -120,16 +107,30 @@ class _ProfilePageState extends State<ProfilePage> {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12))),
-                padding: const EdgeInsets.only(left: 10, right: 10),
-                height: 50,
+                padding: REdgeInsets.all(10),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text('История покупок',
-                        style: Theme.of(context).textTheme.bodyLarge),
-                    Icon(
+                    Container(
+                      width: 25,
+                      height: 25,
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: const Icon(
+                        Icons.history,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    SizedBox(width: 5.h),
+                    Text('История покупок', style: TextStyles.bodyStyle),
+                    const Spacer(),
+                    const Icon(
                       Icons.arrow_forward_ios,
-                      color: Theme.of(context).primaryColorLight,
+                      color: Colors.grey,
+                      size: 15,
                     ),
                   ],
                 ),
@@ -137,7 +138,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const Divider(
               height: 0,
-              thickness: 1,
             ),
             GestureDetector(
               onTap: () {
@@ -147,21 +147,35 @@ class _ProfilePageState extends State<ProfilePage> {
                         builder: (context) => const FavoriteProducts()));
               },
               child: Container(
-                padding: const EdgeInsets.only(left: 10, right: 10),
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondary,
                     borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(12),
                         bottomRight: Radius.circular(12))),
-                height: 50,
+                padding: REdgeInsets.all(10),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text('Избранные товары',
-                        style: Theme.of(context).textTheme.bodyLarge),
-                    Icon(
+                    Container(
+                      width: 25,
+                      height: 25,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: const Icon(
+                        Icons.favorite,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    SizedBox(width: 5.h),
+                    Text('Избранные товары', style: TextStyles.bodyStyle),
+                    const Spacer(),
+                    const Icon(
                       Icons.arrow_forward_ios,
-                      color: Theme.of(context).primaryColorLight,
+                      color: Colors.grey,
+                      size: 15,
                     ),
                   ],
                 ),
@@ -170,19 +184,7 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(
               height: 30,
             ),
-            Row(
-              children: [
-                Icon(
-                  Icons.person,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  'Аккаунт',
-                  style: TextStyles.headerStyle
-                ),
-              ],
-            ),
+            Text('Аккаунт'.toUpperCase(), style: TextStyles.headerStyle2),
             const SizedBox(height: 10),
             GestureDetector(
               onTap: () {
@@ -198,18 +200,30 @@ class _ProfilePageState extends State<ProfilePage> {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12))),
-                padding: const EdgeInsets.only(left: 10, right: 10),
-                height: 50,
+                padding: REdgeInsets.all(10),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      'Редактирование',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    Container(
+                      width: 25,
+                      height: 25,
+                      decoration: BoxDecoration(
+                        color: Colors.blueAccent,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: const Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
-                    Icon(
+                    SizedBox(width: 5.h),
+                    Text('Редактирование', style: TextStyles.bodyStyle),
+                    const Spacer(),
+                    const Icon(
                       Icons.arrow_forward_ios,
-                      color: Theme.of(context).primaryColorLight,
+                      color: Colors.grey,
+                      size: 15,
                     ),
                   ],
                 ),
@@ -217,81 +231,92 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const Divider(
               height: 0,
-              thickness: 1,
-            ),
-           GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const Sessions()));
-              },
-              child: Container(
-                padding: const EdgeInsets.only(left: 10, right: 10),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,),
-                height: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Сессии',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: Theme.of(context).primaryColorLight,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Divider(
-              height: 0,
-              thickness: 1,
             ),
             GestureDetector(
-              onTap: () async {
-                scakey.currentState?.updateBadgeCount(0);
-                setState(() {
-                  Constants.USER_TOKEN = '';
-                  Constants.bearer = '';
-                  Constants.cookie = '';
-                });
-                SharedPreferences pref = await SharedPreferences.getInstance();
-                pref.remove('login');
-                pref.remove('cookie');
-                Func().getFirebaseToken();
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const Login()),
-                    (route) => false);
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Sessions()));
               },
               child: Container(
-                padding: const EdgeInsets.only(left: 10, right: 10),
+                padding: REdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 25,
+                      height: 25,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[600],
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: const Icon(
+                        Icons.devices,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    SizedBox(width: 5.h),
+                    Text('Активные устройства', style: TextStyles.bodyStyle),
+                    const Spacer(),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey,
+                      size: 15,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(
+              height: 0,
+            ),
+            GestureDetector(
+              onTap: () {
+                scakey.currentState?.updateBadgeCount(0);
+                context.read<AuthBloc>().add(LogoutEvent());
+              },
+              child: Container(
+                padding: REdgeInsets.all(10),
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondary,
                     borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(12),
                         bottomRight: Radius.circular(12))),
-                height: 50,
                 child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        'Выйти из аккаунта',
-                        style: TextStyle(fontSize: 16, color: Colors.red),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 25,
+                      height: 25,
+                      decoration: BoxDecoration(
                         color: Colors.red,
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                    ]),
+                      child: const Icon(
+                        Icons.logout,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    SizedBox(width: 5.h),
+                    Text('Выйти из аккаунта', style: TextStyles.bodyStyle),
+                    const Spacer(),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey,
+                      size: 15,
+                    ),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: 20.h),
             Center(
               child: Text(
-                version,
+                "Версия приложения $version",
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             )

@@ -27,8 +27,8 @@ class SessionsRepository implements AbstractSessions {
     return body;
   }
   @override
-  Future destroyAllSessions() async {
-    var url = '${Constants.API_URL_DOMAIN}action=all_sessions_destroy';
+  Future destroyAllSessions({required String pass}) async {
+    var url = '${Constants.API_URL_DOMAIN}action=all_sessions_destroy&password=$pass';
     final response = await http.get(
       Uri.parse(url),
       headers: Constants.headers()

@@ -86,8 +86,8 @@ class _CatalogItemsState extends State<CatalogItems> {
   Future<List<Product>> getProducts([orderby = '', filter = '']) async {
     var url =
         '${Constants.API_URL_DOMAIN}action=catalog&category_id=$id&page=$page&orderby=$orderby&$filter';
-    final response = await http
-        .get(Uri.parse(url), headers: Constants.headers());
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     if (response.statusCode == 200) {
       setState(() {
@@ -226,7 +226,9 @@ class _CatalogItemsState extends State<CatalogItems> {
           ),
           Func.sizedGrid,
           SliverToBoxAdapter(
-            child: BuildGridWidget(products: product,),
+            child: BuildGridWidget(
+              products: product,
+            ),
           ),
           Func.sizedGrid,
           Func.sizedGrid,

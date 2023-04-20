@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yiwumart/bloc/edit_profile_bloc/edit_profile_bloc.dart';
 import 'package:yiwumart/bloc/edit_profile_bloc/edit_repo.dart';
-import 'package:yiwumart/util/function_class.dart';
-import '../authorization/login.dart';
 import '../models/date_picker_model.dart';
 import '../models/shimmer_model.dart';
-import '../util/constants.dart';
 import '../util/styles.dart';
 import '../util/user.dart';
-import 'main_screen.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -41,9 +35,9 @@ class _EditProfileState extends State<EditProfile> {
         title: const Text('Редактирование'),
       ),
       body: BlocProvider(
-        create: (context) => EditProfileBloc(editProfileRepo: EditRepo())
-          ..add(LoadEditProfile()),
+         create: (context) => EditProfileBloc(editProfileRepo: EditRepo()),
         child: BlocBuilder<EditProfileBloc, EditProfileState>(
+          bloc: _editBloc,
           builder: (context, state) {
             if (state is EditProfileLoading) {
               return buildEditShimmer(context);
@@ -72,14 +66,17 @@ class _EditProfileState extends State<EditProfile> {
         text: state.user.phone != null
             ? state.user.phone!.length <= 3
                 ? ''
-                : state.user.phone!.substring(3)
+                : state.user.phone!.substring(2)
             : '');
     return ListView(
       padding: REdgeInsets.all(8),
       children: [
         Container(
           padding: REdgeInsets.all(8),
-          color: Theme.of(context).accentColor,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Theme.of(context).accentColor,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -89,6 +86,7 @@ class _EditProfileState extends State<EditProfile> {
                 controller: nameController,
                 decoration: InputDecoration(
                   filled: true,
+                  fillColor: Theme.of(context).scaffoldBackgroundColor,
                   hintText: 'Имя',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -107,6 +105,7 @@ class _EditProfileState extends State<EditProfile> {
                 controller: surnameController,
                 decoration: InputDecoration(
                   filled: true,
+                  fillColor: Theme.of(context).scaffoldBackgroundColor,
                   hintText: 'Фамилия',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -129,7 +128,7 @@ class _EditProfileState extends State<EditProfile> {
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 elevation: 0,
-                dropdownColor: Theme.of(context).primaryColor,
+                dropdownColor: Theme.of(context).scaffoldBackgroundColor,
                 value: selectedGender,
                 items: const [
                   DropdownMenuItem(
@@ -137,7 +136,7 @@ class _EditProfileState extends State<EditProfile> {
                     child: Text('Мужчина'),
                   ),
                   DropdownMenuItem(
-                    value: 'female', // unique value
+                    value: 'female',
                     child: Text('Женщина'),
                   ),
                 ],
@@ -148,6 +147,7 @@ class _EditProfileState extends State<EditProfile> {
                 },
                 decoration: InputDecoration(
                   filled: true,
+                  fillColor: Theme.of(context).scaffoldBackgroundColor,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
@@ -166,6 +166,10 @@ class _EditProfileState extends State<EditProfile> {
               Text('Номер телефона'.toUpperCase(), style: TextStyles.editStyle),
               const SizedBox(height: 10),
               IntlPhoneField(
+                dropdownIcon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.grey,
+                ),
                 controller: phoneController,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [
@@ -173,6 +177,7 @@ class _EditProfileState extends State<EditProfile> {
                 ],
                 decoration: InputDecoration(
                   filled: true,
+                  fillColor: Theme.of(context).scaffoldBackgroundColor,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
@@ -186,19 +191,9 @@ class _EditProfileState extends State<EditProfile> {
                     borderSide: BorderSide.none,
                   ),
                 ),
-                pickerDialogStyle: PickerDialogStyle(
-                  listTileDivider: const Divider(
-                    height: 10,
-                    color: Colors.grey,
-                  ),
-                  width: MediaQuery.of(context).size.width * 0.8,
-                ),
                 searchText: 'Выберите страну',
                 countries: const [
                   'KZ',
-                  'UZ',
-                  'TJ',
-                  'KG',
                 ],
                 initialCountryCode: 'KZ',
               ),
@@ -213,6 +208,7 @@ class _EditProfileState extends State<EditProfile> {
                       surname: surnameController.text,
                       bdate: bdateController.text,
                       gender: selectedGender,
+                      phoneCode: '7',
                       phone: phoneController.text,
                       id: state.user.id,
                       fullName: state.user.fullName,
@@ -239,27 +235,7 @@ class _EditProfileState extends State<EditProfile> {
                 height: 30.h,
                 child: ElevatedButton(
                   onPressed: () async {
-                    var resp = await Func().deleteAccount();
-                    if (resp['success']) {
-                      scakey.currentState?.updateBadgeCount(0);
-                      setState(() {
-                        Constants.USER_TOKEN = '';
-                        Constants.bearer = '';
-                        Constants.cookie = '';
-                      });
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      pref.remove('login');
-                      pref.remove('cookie');
-                      Func().getFirebaseToken();
-                      Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => const Login()),
-                          (route) => false);
-                    } else {
-                      Func().showSnackbar(
-                          context, resp['message'], resp['success']);
-                    }
+                _editBloc.add(DeleteAccount(context: context));
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red,

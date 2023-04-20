@@ -8,7 +8,6 @@ import 'package:yiwumart/screens/notification_screen.dart';
 import 'package:yiwumart/util/function_class.dart';
 import 'package:yiwumart/util/popular_catalog.dart';
 import '../models/popular_categories_model.dart';
-import '../util/constants.dart';
 import '../util/product.dart';
 import '../util/styles.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,7 +25,7 @@ class _AuthHomePageState extends State<AuthHomePage> {
   late Future<List<PopularCategories>> popularCategoriesFuture;
   late Future<List<Product>> productFuture;
   TextEditingController searchController = TextEditingController();
-  int _unreadCount = 0;
+  final int _unreadCount = 0;
 
   @override
   void initState() {
@@ -37,7 +36,6 @@ class _AuthHomePageState extends State<AuthHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(Constants.USER_TOKEN);
     return Scaffold(
       body: CustomScrollView(
         slivers: [

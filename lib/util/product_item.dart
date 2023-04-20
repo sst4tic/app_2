@@ -14,7 +14,7 @@ class ProductItem {
   late final int id;
   late final String name;
   String? categoryName;
-  int? categoryId;
+  var categoryId;
   late final String sku;
   late final String price;
   String? description;

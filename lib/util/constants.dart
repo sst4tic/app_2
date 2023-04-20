@@ -7,5 +7,6 @@ class Constants {
   static String header = 'Authorization';
   static String bearer = '';
   static String cookie = '';
-  static headers() => {header: bearer, 'Cookie': cookie};
+  static String useragent = '';
+  static headers() => {header: bearer, 'Cookie': cookie, 'user-agent': 'YiwuMart: $useragent'};
 }

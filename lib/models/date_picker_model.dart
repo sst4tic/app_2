@@ -5,10 +5,10 @@ class DatePickerModel extends StatefulWidget {
   const DatePickerModel({Key? key, required this.dateController}) : super(key: key);
 
   @override
-  _DatePickerModelState createState() => _DatePickerModelState();
+  DatePickerModelState createState() => DatePickerModelState();
 }
 
-class _DatePickerModelState extends State<DatePickerModel> {
+class DatePickerModelState extends State<DatePickerModel> {
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -44,7 +44,6 @@ class _DatePickerModelState extends State<DatePickerModel> {
                 widget.dateController.text,
                 style: const TextStyle(
                   fontSize: 16,
-                  color: Colors.black87,
                 ),
               ),
               const Icon(Icons.calendar_today_outlined),

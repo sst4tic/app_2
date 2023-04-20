@@ -25,17 +25,20 @@ class Data {
     required this.ipAddress,
     required this.userAgent,
     required this.lastActivity,
+    required this.location,
   });
   late final String id;
   late final String ipAddress;
   late final String userAgent;
   late final String lastActivity;
+  late final String location;
 
   Data.fromJson(Map<String, dynamic> json){
     id = json['id'];
     ipAddress = json['ip_address'];
     userAgent = json['user_agent'];
     lastActivity = json['last_activity'];
+    location = json['location'];
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +47,7 @@ class Data {
     _data['ip_address'] = ipAddress;
     _data['user_agent'] = userAgent;
     _data['last_activity'] = lastActivity;
+    _data['location'] = location;
     return _data;
   }
 }

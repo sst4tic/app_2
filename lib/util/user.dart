@@ -8,6 +8,7 @@ class User {
   final String email;
   final String roleName;
   String? avatar;
+  final String? phoneCode;
   final String? phone;
   final String? gender;
   final String? bdate;
@@ -21,6 +22,7 @@ class User {
     required this.email,
     required this.roleName,
     this.avatar,
+    this.phoneCode,
     this.phone,
     this.gender,
     this.bdate,
@@ -34,6 +36,7 @@ class User {
     email: json['email'],
     roleName: json['role_name'],
     avatar: json['avatar_url'],
+    phoneCode: json['phone_code'],
     phone: json['phone'],
     gender: json['gender'],
     bdate: json['bdate']

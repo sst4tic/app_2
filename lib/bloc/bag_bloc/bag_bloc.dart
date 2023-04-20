@@ -55,7 +55,7 @@ class BagBloc extends Bloc<BagEvent, BagState> {
           final newCart = CartItem(
             items: cartList,
             totalSum: bagList.totalSum,
-            link: cart.link,
+            cartId: cart.cartId,
           );
           if (cartList.isEmpty) {
             Func().getInitParams();

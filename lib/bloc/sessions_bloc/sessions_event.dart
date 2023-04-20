@@ -27,7 +27,11 @@ class DestroySession extends SessionsEvent {
 }
 
 class DestroyAllSessions extends SessionsEvent {
-  const DestroyAllSessions();
+  const DestroyAllSessions({
+    required this.context,
+});
+
+  final BuildContext context;
 
   @override
   List<Object?> get props => [];

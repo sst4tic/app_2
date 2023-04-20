@@ -19,17 +19,23 @@ class Func {
   // func for getting popular categories
   static Future<List<PopularCategories>> getPopularCategories() async {
     var url = '${Constants.API_URL_DOMAIN}action=popular_categories';
-    final response = await http.get(Uri.parse(url), headers: Constants.headers());
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return body['data']
         .map<PopularCategories>(PopularCategories.fromJson)
         .toList();
   }
 
-  // func for getting cookies
-  static Future<void> getCookies() async {
+  // func for logout/delete actions
+  Future<void> logoutActions() async {
+    Func().getFirebaseToken();
+    Constants.USER_TOKEN = '';
+    Constants.bearer = '';
+    Constants.cookie = '';
     SharedPreferences pref = await SharedPreferences.getInstance();
-      Constants.cookie = pref.getString('cookie') ?? '';
+    pref.remove('login');
+    pref.remove('cookie');
   }
 
   // func for getting catalog
@@ -45,7 +51,8 @@ class Func {
   static Future<List<Product>> getSimilarProducts({catId, productId}) async {
     var url =
         '${Constants.API_URL_DOMAIN}action=catalog&category_id=$catId&product_id=$productId';
-    final response = await http.get(Uri.parse(url), headers: Constants.headers());
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return List.from(body['data']?.map!((e) => Product.fromJson(e)).toList());
   }
@@ -53,7 +60,8 @@ class Func {
   // func for getting products
   static Future<List<Product>> getProducts() async {
     var url = '${Constants.API_URL_DOMAIN}action=products_of_day';
-    final response = await http.get(Uri.parse(url), headers: Constants.headers());
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return List.from(body['data']?.map!((e) => Product.fromJson(e)).toList());
   }
@@ -61,7 +69,8 @@ class Func {
   // func for searching products
   static Future<Search> searchProducts(search) async {
     var url = '${Constants.API_URL_DOMAIN}action=search&q=$search';
-    final response = await http.get(Uri.parse(url), headers: Constants.headers());
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     if (search != '') {
       return Search.fromJson(body['data']);
@@ -76,7 +85,7 @@ class Func {
       content: Text(
         text,
         style:
-        TextStyle(color: success ? Colors.green : Colors.red, fontSize: 17),
+            TextStyle(color: success ? Colors.green : Colors.red, fontSize: 17),
       ),
       backgroundColor: Colors.black87,
     ));
@@ -131,10 +140,8 @@ class Func {
   }) async {
     var url =
         '${Constants.API_URL_DOMAIN}action=favorite_toggle&product_id=$productId';
-    http.Response response = await http.get(
-      Uri.parse(url),
-      headers: Constants.headers()
-    );
+    http.Response response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     dynamic body = jsonDecode(response.body);
     if (body['message'] == 'ADDED') {
       onAdded?.call();
@@ -150,10 +157,8 @@ class Func {
   }) async {
     var url =
         '${Constants.API_URL_DOMAIN}action=favorite_toggle&product_id=$productId';
-    http.Response response = await http.get(
-      Uri.parse(url),
-      headers: Constants.headers()
-    );
+    http.Response response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     dynamic body = jsonDecode(response.body);
     if (body['message'] == 'ADDED') {
       onAdded?.call();
@@ -171,7 +176,8 @@ class Func {
   }) async {
     var url =
         '${Constants.API_URL_DOMAIN}action=add_to_cart&product_id=$productId';
-    http.Response response = await http.get(Uri.parse(url), headers: Constants.headers());
+    http.Response response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     dynamic body = jsonDecode(response.body);
     if (body['success']) {
       scakey.currentState?.updateBadgeCount(body['qty']);
@@ -199,10 +205,8 @@ class Func {
   // func for load notification list
   Future<List<NotificationClass>> getNotifications() async {
     var url = '${Constants.API_URL_DOMAIN}action=notifications_list';
-    final response = await http.get(
-      Uri.parse(url),
-      headers: Constants.headers()
-    );
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     final notification = body['data']
         .map<NotificationClass>(NotificationClass.fromJson)
@@ -213,10 +217,8 @@ class Func {
   // func for load orders list
   Future<List<OrderList>> getOrders() async {
     var url = '${Constants.API_URL_DOMAIN}action=orders_list';
-    final response = await http.get(
-      Uri.parse(url),
-      headers: Constants.headers()
-    );
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     final orders = body['data'].map<OrderList>(OrderList.fromJson).toList();
     return orders;
@@ -225,10 +227,8 @@ class Func {
   // func for load productItem data
   Future<ProductItem> getProduct({required int id}) async {
     var url = '${Constants.API_URL_DOMAIN}action=product_detail&product_id=$id';
-    final response = await http.get(
-      Uri.parse(url),
-      headers: Constants.headers()
-    );
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return ProductItem.fromJson(body['data']);
   }
@@ -236,25 +236,22 @@ class Func {
   // func for load orderDetails
   Future<OrderDetail> getOrderDetails({required int id}) async {
     var url = '${Constants.API_URL_DOMAIN}action=order_details&cart_id=$id';
-    final response = await http.get(
-      Uri.parse(url),
-      headers: Constants.headers()
-    );
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return OrderDetail.fromJson(body['data']);
   }
 
   // func for get init parameters
-  Future<void> getInitParams() async {
+  Future<http.Response> getInitParams() async {
     var url = '${Constants.API_URL_DOMAIN}action=init_params';
-    final response = await http.get(
-      Uri.parse(url),
-      headers: Constants.headers()
-    );
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     if (response.statusCode == 200) {
       scakey.currentState?.updateBadgeCount(body['data']?['cart_count'] ?? 0);
     }
+    return response;
   }
 
   // func for getting user device and browser name
@@ -278,24 +275,11 @@ class Func {
     return '';
   }
 
-  // func for delete acc
-  Future deleteAccount() async {
-    var url = '${Constants.API_URL_DOMAIN}action=user_delete';
-    final response = await http.get(
-      Uri.parse(url),
-      headers: Constants.headers()
-    );
-    final body = jsonDecode(response.body);
-    return body;
-  }
-
   // func for load unread unread count
   Future<int> getUnreadCount() async {
     var url = '${Constants.API_URL_DOMAIN}action=notifications_unread_count';
-    final response = await http.get(
-      Uri.parse(url),
-      headers: Constants.headers()
-    );
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return body['unread_count'] ?? 0;
   }
