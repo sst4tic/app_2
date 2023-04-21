@@ -42,6 +42,7 @@ class _EditProfileState extends State<EditProfile> {
             if (state is EditProfileLoading) {
               return buildEditShimmer(context);
             } else if (state is EditProfileLoaded) {
+              selectedGender = state.user.gender == 'Мужчина' ? 'male' : 'female';
               return buildEdit(state, context);
             } else if (state is EditProfileError) {
               return Center(
@@ -140,9 +141,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ],
                 onChanged: (value) {
-                  setState(() {
                     selectedGender = value!;
-                  });
                 },
                 decoration: InputDecoration(
                   filled: true,

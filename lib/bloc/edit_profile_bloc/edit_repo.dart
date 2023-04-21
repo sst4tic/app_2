@@ -40,7 +40,7 @@ class EditRepo implements AbstractEdit {
           options: Options(headers: Constants.headers()));
       return response.data;
     } on DioError catch (e) {
-      return e.response;
+      return e.response?.data;
     }
   }
 }
