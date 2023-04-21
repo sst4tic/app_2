@@ -53,9 +53,9 @@ class _RegistrationState extends State<Registration> {
                     child: Container(
                       padding: REdgeInsets.all(8),
                       width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        borderRadius: const BorderRadius.all(
                           Radius.circular(20),
                         ),
                       ),

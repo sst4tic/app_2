@@ -133,7 +133,6 @@ class _ProductScreenState extends State<ProductScreen> {
                 right: 0,
                 child: Container(
                   padding: REdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  height: 40.h,
                   decoration: BoxDecoration(
                     color: WidgetsBinding.instance.window.platformBrightness ==
                             Brightness.light

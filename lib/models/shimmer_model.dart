@@ -359,7 +359,6 @@ Widget buildNewCatalogShimmer(context) => Column(
 Widget buildCartShimmer(context) => SafeArea(
       child: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
-        // padding: const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -835,7 +834,7 @@ Widget buildPurchaseShimmer(context) => Container(
           ),
           const Divider(height: 0, thickness: 1),
           Container(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.secondary,
               padding: REdgeInsets.only(left: 10, right: 10, top: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -932,6 +931,7 @@ Widget buildDetailShimmer(context) => Container(
       child: ListView(
         children: [
           Card(
+            color: Theme.of(context).colorScheme.secondary,
             margin: const EdgeInsets.only(bottom: 12.5),
             elevation: 0,
             shape: RoundedRectangleBorder(

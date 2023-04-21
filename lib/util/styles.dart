@@ -25,8 +25,7 @@ final darkTheme = ThemeData(
     overlayColor: Colors.transparent,
   ),
   textTheme: const TextTheme(
-    bodyLarge: TextStyle(
-        color: Colors.white, fontSize: 16),
+    bodyLarge: TextStyle(color: Colors.white, fontSize: 16),
     bodyMedium: TextStyle(fontSize: 12, color: Colors.white),
     titleMedium: TextStyle(
         fontSize: 14, fontWeight: FontWeight.normal, color: Colors.white),
@@ -41,7 +40,7 @@ final darkTheme = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
           backgroundColor:
-          MaterialStateProperty.all<Color>(ColorStyles.primaryColor))),
+              MaterialStateProperty.all<Color>(ColorStyles.primaryColor))),
   textSelectionTheme: const TextSelectionThemeData(
     cursorColor: Colors.white,
   ),
@@ -53,18 +52,21 @@ final darkTheme = ThemeData(
       fontSize: 16.sp,
     ),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(10),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: const BorderSide(color: Colors.grey, width: 1),
+      borderRadius: BorderRadius.circular(10),
     ),
     errorBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: Colors.red, width: 1),
       borderRadius: BorderRadius.circular(10),
     ),
   ),
-    expansionTileTheme: const ExpansionTileThemeData(
-      textColor: Colors.white,
-      iconColor: Colors.grey
+  expansionTileTheme: const ExpansionTileThemeData(
+      textColor: Colors.white, iconColor: Colors.grey
       // collapsedTextColor: Colors.white
-    ),
+      ),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
       foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
@@ -83,8 +85,7 @@ final darkTheme = ThemeData(
       ),
       color: Colors.grey[800]!,
     ),
-    labelStyle: const TextStyle(
-    ),
+    labelStyle: const TextStyle(),
   ),
 );
 
@@ -111,8 +112,7 @@ final lightTheme = ThemeData(
     overlayColor: Colors.transparent,
   ),
   textTheme: const TextTheme(
-    bodyLarge: TextStyle(
-        color: Colors.black, fontSize: 16),
+    bodyLarge: TextStyle(color: Colors.black, fontSize: 16),
     bodyMedium: TextStyle(fontSize: 12, color: Colors.black),
     titleMedium: TextStyle(
         fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black),
@@ -127,10 +127,9 @@ final lightTheme = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
           backgroundColor:
-          MaterialStateProperty.all<Color>(ColorStyles.primaryColor))),
-  textSelectionTheme: const TextSelectionThemeData(
-    cursorColor: ColorStyles.primaryColor
-  ),
+              MaterialStateProperty.all<Color>(ColorStyles.primaryColor))),
+  textSelectionTheme:
+      const TextSelectionThemeData(cursorColor: ColorStyles.primaryColor),
   inputDecorationTheme: InputDecorationTheme(
     contentPadding: REdgeInsets.symmetric(horizontal: 20.0),
     fillColor: ColorStyles.bodyColor,
@@ -141,8 +140,7 @@ final lightTheme = ThemeData(
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
     ),
-    focusedBorder:
-    OutlineInputBorder(
+    focusedBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: Colors.grey, width: 1),
       borderRadius: BorderRadius.circular(10),
     ),
@@ -152,21 +150,22 @@ final lightTheme = ThemeData(
     ),
   ),
   expansionTileTheme: const ExpansionTileThemeData(
-    collapsedTextColor: ColorStyles.primaryColor,
+      collapsedTextColor: ColorStyles.primaryColor,
       textColor: ColorStyles.primaryColor,
       iconColor: Colors.grey
-    // collapsedTextColor: Colors.white
-  ),
+      // collapsedTextColor: Colors.white
+      ),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
-      foregroundColor: MaterialStateProperty.all<Color>(ColorStyles.primaryColor),
+      foregroundColor:
+          MaterialStateProperty.all<Color>(ColorStyles.primaryColor),
       textStyle: MaterialStateProperty.all<TextStyle>(const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,
       )),
     ),
   ),
-  tabBarTheme:  const TabBarTheme(
+  tabBarTheme: const TabBarTheme(
     labelColor: Colors.white,
     unselectedLabelColor: Colors.grey,
     indicator: BoxDecoration(
@@ -181,11 +180,11 @@ final lightTheme = ThemeData(
 
 class TextStyles {
   static const TextStyle appBarTitle =
-  TextStyle(color: Colors.black, fontWeight: FontWeight.bold);
-  static TextStyle headerStyle =
-  TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey[600]!);
-  static TextStyle headerStyle2 =
-  TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: Colors.grey[600]!);
+      TextStyle(color: Colors.black, fontWeight: FontWeight.bold);
+  static TextStyle headerStyle = TextStyle(
+      fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey[600]!);
+  static TextStyle headerStyle2 = TextStyle(
+      fontSize: 11, fontWeight: FontWeight.w400, color: Colors.grey[600]!);
   static TextStyle bodyStyle = const TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14.0,
@@ -209,57 +208,46 @@ class ColorStyles {
 }
 
 class BagButtonStyle extends ButtonStyle {
-  BagButtonStyle({required BuildContext context,
-    required isLoaded,
-    required selectedIndex,
-     index})
+  BagButtonStyle(
+      {required BuildContext context,
+      required isLoaded,
+      required selectedIndex,
+      index})
       : super(
-      elevation: MaterialStateProperty.all(0),
-      fixedSize: MaterialStateProperty.all(Constants.USER_TOKEN != ''
-          ? Size(MediaQuery
-          .of(context)
-          .size
-          .width * 0.293, 33)
-          : Size(MediaQuery
-          .of(context)
-          .size
-          .width, 33)),
-      backgroundColor: MaterialStateProperty.all(
-        isLoaded && selectedIndex == index
-            ? Colors.green
-            : ColorStyles.primaryColor,
-      ),
-      shape: BorderStyles.buttonBorder);
+            elevation: MaterialStateProperty.all(0),
+            fixedSize: MaterialStateProperty.all(Constants.USER_TOKEN != ''
+                ? Size(MediaQuery.of(context).size.width * 0.293, 33)
+                : Size(MediaQuery.of(context).size.width, 33)),
+            backgroundColor: MaterialStateProperty.all(
+              isLoaded && selectedIndex == index
+                  ? Colors.green
+                  : ColorStyles.primaryColor,
+            ),
+            shape: BorderStyles.buttonBorder);
 }
 
 class BagButtonItemStyle extends ButtonStyle {
-  BagButtonItemStyle({required BuildContext context,
-    required isLoaded,
-    index})
+  BagButtonItemStyle({required BuildContext context, required isLoaded, index})
       : super(
-      elevation: MaterialStateProperty.all(0),
-      fixedSize: MaterialStateProperty.all(Size(MediaQuery
-          .of(context)
-          .size
-          .width * 0.43, 33.h)),
-      backgroundColor: MaterialStateProperty.all(
-        isLoaded
-            ? Colors.green
-            : ColorStyles.primaryColor,
-      ),
-      shape: BorderStyles.buttonBorder);
+            elevation: MaterialStateProperty.all(0),
+            fixedSize: MaterialStateProperty.all(
+                Size(MediaQuery.of(context).size.width * 0.43, 33.h)),
+            backgroundColor: MaterialStateProperty.all(
+              isLoaded ? Colors.green : ColorStyles.primaryColor,
+            ),
+            shape: BorderStyles.buttonBorder);
 }
 
 class BorderStyles {
   static MaterialStateProperty<OutlinedBorder> buttonBorder =
-  MaterialStateProperty.all<RoundedRectangleBorder>(
+      MaterialStateProperty.all<RoundedRectangleBorder>(
     RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
   );
 }
 
 class GridDelegateClass {
   static SliverGridDelegateWithFixedCrossAxisCount gridDelegate =
-  SliverGridDelegateWithFixedCrossAxisCount(
+      SliverGridDelegateWithFixedCrossAxisCount(
     crossAxisCount: 2,
     childAspectRatio: 20.w / 30.5.h,
     crossAxisSpacing: 8.8.w,

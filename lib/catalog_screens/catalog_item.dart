@@ -491,7 +491,7 @@ class _CatalogItemsState extends State<CatalogItems> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.053,
+                          height: MediaQuery.of(context).size.height * 0.045,
                           width: MediaQuery.of(context).size.width * 0.9,
                           child: ElevatedButton(
                             onPressed: () {

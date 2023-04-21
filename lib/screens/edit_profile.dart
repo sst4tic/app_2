@@ -58,7 +58,6 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget buildEdit(state, context) {
-    var selectedGender = state.user.gender == 'Мужчина' ? 'male' : 'female';
     final nameController = TextEditingController(text: state.user.name);
     final surnameController = TextEditingController(text: state.user.surname);
     final bdateController = TextEditingController(text: state.user.bdate);
@@ -129,7 +128,7 @@ class _EditProfileState extends State<EditProfile> {
               DropdownButtonFormField<String>(
                 elevation: 0,
                 dropdownColor: Theme.of(context).scaffoldBackgroundColor,
-                value: selectedGender,
+                value: state.user.gender == 'Мужчина' ? 'male' : 'female',
                 items: const [
                   DropdownMenuItem(
                     value: 'male',
