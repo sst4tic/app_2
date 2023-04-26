@@ -38,3 +38,16 @@ class RegistrationEvent extends AuthEvent {
 
   List<Object> get props => [email, password, name, surname, context];
 }
+
+class ChangeThemeEvent extends AuthEvent {
+  final bool isDarkTheme;
+  final bool isLightTheme;
+  final bool isSystemTheme;
+
+  ChangeThemeEvent({
+    required this.isDarkTheme,
+    required this.isLightTheme,
+    required this.isSystemTheme,
+  });
+  List<Object> get props => [isDarkTheme, isLightTheme, isSystemTheme];
+}

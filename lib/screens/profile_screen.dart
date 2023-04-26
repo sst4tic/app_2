@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:yiwumart/catalog_screens/favorite_products.dart';
+import 'package:yiwumart/screens/decoration_screen.dart';
 import 'package:yiwumart/screens/edit_profile.dart';
 import 'package:yiwumart/screens/main_screen.dart';
 import 'package:yiwumart/screens/purchase_history.dart';
@@ -219,6 +220,47 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     SizedBox(width: 5.h),
                     Text('Редактирование', style: TextStyles.bodyStyle),
+                    const Spacer(),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey,
+                      size: 15,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(
+              height: 0,
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const DecorationScreen()));
+              },
+              child: Container(
+                padding: REdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 25,
+                      height: 25,
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: const Icon(
+                      Icons.brush,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    SizedBox(width: 5.h),
+                    Text('Оформление', style: TextStyles.bodyStyle),
                     const Spacer(),
                     const Icon(
                       Icons.arrow_forward_ios,

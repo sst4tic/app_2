@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:yiwumart/util/constants.dart';
 
 import '../util/styles.dart';
 
@@ -22,13 +23,22 @@ class ShimmerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Shimmer.fromColors(
-        baseColor: MediaQuery.of(context).platformBrightness == Brightness.light
-            ? ColorStyles.lightShimmerBaseColor
-            : ColorStyles.darkShimmerBaseColor,
+        baseColor:
+            Constants.isSystemTheme
+                ? MediaQuery.of(context).platformBrightness == Brightness.light
+                    ? ColorStyles.lightShimmerBaseColor
+                    : ColorStyles.darkShimmerBaseColor
+                : Constants.isLightTheme
+                    ? ColorStyles.lightShimmerBaseColor
+                    : ColorStyles.darkShimmerBaseColor,
         highlightColor:
-            MediaQuery.of(context).platformBrightness == Brightness.light
-                ? ColorStyles.lightShimmerHighlightColor
-                : ColorStyles.darkShimmerHighlightColor,
+            Constants.isSystemTheme
+                ? MediaQuery.of(context).platformBrightness == Brightness.light
+                    ? ColorStyles.lightShimmerHighlightColor
+                    : ColorStyles.darkShimmerHighlightColor
+                : Constants.isLightTheme
+                    ? ColorStyles.lightShimmerHighlightColor
+                    : ColorStyles.darkShimmerHighlightColor,
         period: const Duration(milliseconds: 800),
         child: Container(
           width: width,

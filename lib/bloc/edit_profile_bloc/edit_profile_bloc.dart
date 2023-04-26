@@ -47,7 +47,6 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
                   ],
                 ));
       } catch (e) {
-        print(e);
         emit(EditProfileError(error: e));
       }
     });
@@ -59,7 +58,6 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
           Func().showSnackbar(event.context, resp['message'], resp['success']);
           Func().logoutActions();
           scakey.currentState!.updateBadgeCount(0);
-          scakey.currentState!.rebuild();
           Navigator.of(event.context).pop();
         } else {
           // ignore: use_build_context_synchronously

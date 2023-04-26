@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yiwumart/bloc/auth_bloc/auth_bloc.dart';
 import 'package:yiwumart/bloc/auth_bloc/auth_repo.dart';
 import 'package:yiwumart/screens/main_screen.dart';
@@ -94,6 +95,8 @@ void main() async {
   runApp(const MyApp());
 }
 
+Brightness getThemeMode = WidgetsBinding.instance.window.platformBrightness;
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -127,6 +130,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      Constants.isDarkTheme = prefs.getBool('isDarkTheme') ?? false;
+      Constants.isSystemTheme = prefs.getBool('isSystemTheme') ?? false;
+      Constants.isLightTheme = prefs.getBool('isNotification') ?? false;
+    });
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (!kIsWeb) {
       if (Platform.isAndroid) {
@@ -154,12 +163,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           create: (context) => AuthBloc(authRepo: AuthRepo()),
           child: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
+              if (state is ThemeChanged) {
+                Constants.isDarkTheme = state.isDarkTheme;
+                Constants.isLightTheme = state.isLightTheme;
+                Constants.isSystemTheme = state.isSystemTheme;
+              }
               return MaterialApp(
                 navigatorKey: navKey,
                 title: 'YiwuMart',
                 debugShowCheckedModeBanner: false,
-                theme:
-                    getThemeMode == Brightness.light ? lightTheme : darkTheme,
+                themeMode: Constants.isSystemTheme
+                    ? ThemeMode.system
+                    : Constants.isDarkTheme
+                        ? ThemeMode.dark
+                        : ThemeMode.light,
+                theme: lightTheme,
+                darkTheme: darkTheme,
                 home: MainScreen(
                   key: scakey,
                 ),

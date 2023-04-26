@@ -16,3 +16,16 @@ class Unauthenticated extends AuthState {
   Unauthenticated({required this.token});
 }
 
+class ThemeChanged extends AuthState {
+  final bool isDarkTheme;
+  final bool isLightTheme;
+  final bool isSystemTheme;
+
+  ThemeChanged({
+    required this.isDarkTheme,
+    required this.isLightTheme,
+    required this.isSystemTheme,
+  });
+
+  List<Object> get props => [isDarkTheme, isLightTheme, isSystemTheme];
+}

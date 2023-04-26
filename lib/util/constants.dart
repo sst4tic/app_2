@@ -1,4 +1,3 @@
-
 class Constants {
   static const String API_URL_DOMAIN = 'https://yiwumart.org/api/v2/core?';
   static const String BASE_URL_DOMAIN = 'https://yiwumart.org';
@@ -8,5 +7,8 @@ class Constants {
   static String bearer = '';
   static String cookie = '';
   static String useragent = '';
+  static bool isDarkTheme = false;
+  static bool isLightTheme = false;
+  static bool isSystemTheme = true;
   static headers() => {header: bearer, 'Cookie': cookie, 'user-agent': 'YiwuMart: $useragent'};
 }

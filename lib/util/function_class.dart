@@ -38,6 +38,38 @@ class Func {
     pref.remove('cookie');
   }
 
+  // func for reset password
+  Future resetPassword(email) async {
+    var url = '${Constants.API_URL_DOMAIN}action=reset_password&email=$email';
+    final response = await http.get(Uri.parse(url));
+    final body = jsonDecode(response.body);
+    return body;
+  }
+
+  // func for validate reset pass
+  Future validateReset(code, email) async {
+    var url = '${Constants.API_URL_DOMAIN}action=reset_password_validate&code=$code&email=$email';
+    final response = await http.get(Uri.parse(url));
+    final body = jsonDecode(response.body);
+    return body;
+  }
+
+  // func for update pass after reset
+  Future updatePassAfterReset(email, password) async {
+    var url = '${Constants.API_URL_DOMAIN}action=reset_password_update&email=$email&password=$password';
+    final response = await http.get(Uri.parse(url));
+    final body = jsonDecode(response.body);
+    return body;
+  }
+
+  // func for change password
+  Future changePassword({required pass,required newPass}) async {
+    var url = '${Constants.API_URL_DOMAIN}action=password_edit&password=$pass&newpassword=$newPass';
+    final response = await http.get(Uri.parse(url), headers: Constants.headers());
+    final body = jsonDecode(response.body);
+    return body;
+  }
+
   // func for getting catalog
   Future<List<Catalog>> getCatalog() async {
     var url = '${Constants.API_URL_DOMAIN}action=categories';

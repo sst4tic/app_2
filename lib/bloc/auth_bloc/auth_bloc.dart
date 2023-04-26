@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yiwumart/screens/main_screen.dart';
 import '../../util/function_class.dart';
 import 'abstract_auth.dart';
@@ -24,7 +26,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       authRepo.logout();
       Func().logoutActions();
       scakey.currentState!.updateBadgeCount(0);
-      scakey.currentState!.rebuild();
       emit(Unauthenticated(token: ''));
     });
     on<LoginEvent>((event, emit) async {
@@ -53,6 +54,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         emit(Unauthenticated(token: ''));
       }
+    });
+    on<ChangeThemeEvent>((event, emit) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isDarkTheme', event.isDarkTheme);
+      prefs.setBool('isLightTheme', event.isLightTheme);
+      prefs.setBool('isSystemTheme', event.isSystemTheme);
+      emit(ThemeChanged(
+          isDarkTheme: event.isDarkTheme,
+          isLightTheme: event.isLightTheme,
+          isSystemTheme: event.isSystemTheme));
     });
   }
 
@@ -103,6 +114,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         yield Unauthenticated(token: 'token');
       }
+    } else if (event is ChangeThemeEvent) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isDarkTheme', event.isDarkTheme);
+      prefs.setBool('isLightTheme', event.isLightTheme);
+      prefs.setBool('isSystemTheme', event.isSystemTheme);
+      yield ThemeChanged(
+          isDarkTheme: event.isDarkTheme,
+          isLightTheme: event.isLightTheme,
+          isSystemTheme: event.isSystemTheme);
     }
   }
 }

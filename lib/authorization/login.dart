@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/authorization/registration.dart';
+import 'package:yiwumart/screens/pass_reset_screen.dart';
 import '../bloc/auth_bloc/auth_bloc.dart';
 
 class Login extends StatefulWidget {
@@ -173,6 +174,23 @@ class _LoginState extends State<Login> {
                               'Войти',
                               style: TextStyle(fontSize: 18),
                             ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5.h,),
+                        RichText(
+                          text: TextSpan(
+                            text: 'Забыли пароль? ',
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.blueAccent),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                        const PassResetScreen()));
+                              },
                           ),
                         ),
                       ],

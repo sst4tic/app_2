@@ -43,9 +43,7 @@ class MainScreenState extends State<MainScreen> {
       _controller.index = index;
     });
   }
-  void rebuild() {
-    setState(() {});
-  }
+
 
   void updateBadgeCount(int count) {
     setState(() {
@@ -108,7 +106,7 @@ class MainScreenState extends State<MainScreen> {
           currentIndex: currentIndex,
           onTap: onItemTapped,
           items: [
-            const BottomNavigationBarItem(
+             const BottomNavigationBarItem(
                 icon: Icon(CupertinoIcons.house),
                 activeIcon: Icon(CupertinoIcons.house_fill)),
             const BottomNavigationBarItem(

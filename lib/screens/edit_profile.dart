@@ -9,6 +9,7 @@ import '../models/date_picker_model.dart';
 import '../models/shimmer_model.dart';
 import '../util/styles.dart';
 import '../util/user.dart';
+import 'change_pass_screen.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -198,7 +199,7 @@ class _EditProfileState extends State<EditProfile> {
               const SizedBox(height: 10),
               SizedBox(
                 width: double.infinity,
-                height: 30.h,
+                height: 25.h,
                 child: ElevatedButton(
                   onPressed: () {
                     var submitUser = User(
@@ -230,13 +231,31 @@ class _EditProfileState extends State<EditProfile> {
               const SizedBox(height: 10),
               SizedBox(
                 width: double.infinity,
-                height: 30.h,
+                height: 25.h,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassScreen()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red,
+                    onPrimary: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text('Изменить пароль'),
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                height: 25.h,
                 child: ElevatedButton(
                   onPressed: () async {
                 _editBloc.add(DeleteAccount(context: context));
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.red,
+                    primary: Colors.red[900],
                     onPrimary: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
