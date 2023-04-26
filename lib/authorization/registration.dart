@@ -128,6 +128,7 @@ class _RegistrationState extends State<Registration> {
                           const SizedBox(height: 20),
                           TextFormField(
                             controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
                             decoration: const InputDecoration(
                               label: Text('Email *'),
                               floatingLabelBehavior:

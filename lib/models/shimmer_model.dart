@@ -22,32 +22,34 @@ class ShimmerWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Shimmer.fromColors(
-        baseColor:
-            Constants.isSystemTheme
-                ? MediaQuery.of(context).platformBrightness == Brightness.light
-                    ? ColorStyles.lightShimmerBaseColor
-                    : ColorStyles.darkShimmerBaseColor
-                : Constants.isLightTheme
-                    ? ColorStyles.lightShimmerBaseColor
-                    : ColorStyles.darkShimmerBaseColor,
-        highlightColor:
-            Constants.isSystemTheme
-                ? MediaQuery.of(context).platformBrightness == Brightness.light
-                    ? ColorStyles.lightShimmerHighlightColor
-                    : ColorStyles.darkShimmerHighlightColor
-                : Constants.isLightTheme
-                    ? ColorStyles.lightShimmerHighlightColor
-                    : ColorStyles.darkShimmerHighlightColor,
-        period: const Duration(milliseconds: 800),
-        child: Container(
-          width: width,
-          height: height,
-          decoration: const BoxDecoration(
-              color: Colors.grey,
-              borderRadius: BorderRadius.all(Radius.circular(6))),
-        ),
-      );
+  Widget build(BuildContext context) {
+    bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+   return Shimmer.fromColors(
+      baseColor: Constants.isSystemTheme
+          ? isDarkMode
+          ? ColorStyles.darkShimmerBaseColor
+          : ColorStyles.lightShimmerBaseColor
+          : Constants.isLightTheme
+          ? ColorStyles.lightShimmerBaseColor
+          : ColorStyles.darkShimmerBaseColor,
+
+      highlightColor: Constants.isSystemTheme
+          ? isDarkMode
+          ? ColorStyles.darkShimmerHighlightColor
+          : ColorStyles.lightShimmerHighlightColor
+          : Constants.isLightTheme
+          ? ColorStyles.lightShimmerHighlightColor
+          : ColorStyles.darkShimmerHighlightColor,
+      period: const Duration(milliseconds: 800),
+      child: Container(
+        width: width,
+        height: height,
+        decoration: const BoxDecoration(
+            color: Colors.grey,
+            borderRadius: BorderRadius.all(Radius.circular(6))),
+      ),
+    );
+  }
 }
 
 Widget buildGridShimmer() => GridView.builder(

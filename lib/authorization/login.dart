@@ -110,6 +110,7 @@ class _LoginState extends State<Login> {
                         const SizedBox(height: 20),
                         TextFormField(
                           focusNode: emailFocus,
+                          keyboardType: TextInputType.emailAddress,
                           autofocus: true,
                           onFieldSubmitted: (_) {
                             _fieldFocusChanged(context, emailFocus, passFocus);

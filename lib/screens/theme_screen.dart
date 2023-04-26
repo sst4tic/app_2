@@ -75,6 +75,7 @@ class _ThemeScreenState extends State<ThemeScreen> {
                 child: Column(
                   children: [
                     GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: () {
                         setState(() {
                           isSystemTheme = true;
@@ -87,6 +88,7 @@ class _ThemeScreenState extends State<ThemeScreen> {
                     ),
                     const Divider(),
                     GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: () {
                         setState(() {
                           isSystemTheme = false;
@@ -99,6 +101,7 @@ class _ThemeScreenState extends State<ThemeScreen> {
                     ),
                     const Divider(),
                     GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: () {
                         setState(() {
                           isSystemTheme = false;
