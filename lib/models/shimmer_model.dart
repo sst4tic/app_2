@@ -23,23 +23,23 @@ class ShimmerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
-   return Shimmer.fromColors(
+    bool isDarkMode =
+        MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return Shimmer.fromColors(
       baseColor: Constants.isSystemTheme
           ? isDarkMode
-          ? ColorStyles.darkShimmerBaseColor
-          : ColorStyles.lightShimmerBaseColor
+              ? ColorStyles.darkShimmerBaseColor
+              : ColorStyles.lightShimmerBaseColor
           : Constants.isLightTheme
-          ? ColorStyles.lightShimmerBaseColor
-          : ColorStyles.darkShimmerBaseColor,
-
+              ? ColorStyles.lightShimmerBaseColor
+              : ColorStyles.darkShimmerBaseColor,
       highlightColor: Constants.isSystemTheme
           ? isDarkMode
-          ? ColorStyles.darkShimmerHighlightColor
-          : ColorStyles.lightShimmerHighlightColor
+              ? ColorStyles.darkShimmerHighlightColor
+              : ColorStyles.lightShimmerHighlightColor
           : Constants.isLightTheme
-          ? ColorStyles.lightShimmerHighlightColor
-          : ColorStyles.darkShimmerHighlightColor,
+              ? ColorStyles.lightShimmerHighlightColor
+              : ColorStyles.darkShimmerHighlightColor,
       period: const Duration(milliseconds: 800),
       child: Container(
         width: width,

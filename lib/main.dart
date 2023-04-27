@@ -95,7 +95,6 @@ void main() async {
   runApp(const MyApp());
 }
 
-Brightness getThemeMode = WidgetsBinding.instance.window.platformBrightness;
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -104,28 +103,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  // For dark theme controller
-  Brightness getThemeMode = WidgetsBinding.instance.window.platformBrightness;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangePlatformBrightness() {
-    setState(() {
-      getThemeMode = WidgetsBinding.instance.window.platformBrightness;
-    });
-  }
+class _MyAppState extends State<MyApp> {
 
   @override
   void didChangeDependencies() async {
@@ -133,8 +111,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       Constants.isDarkTheme = prefs.getBool('isDarkTheme') ?? false;
-      Constants.isSystemTheme = prefs.getBool('isSystemTheme') ?? false;
-      Constants.isLightTheme = prefs.getBool('isNotification') ?? false;
+      Constants.isSystemTheme = prefs.getBool('isSystemTheme') ?? true;
+      Constants.isLightTheme = prefs.getBool('isLightTheme') ?? false;
     });
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (!kIsWeb) {
