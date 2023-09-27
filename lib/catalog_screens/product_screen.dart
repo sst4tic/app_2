@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
 import 'package:yiwumart/util/custom_page_route.dart';
@@ -18,7 +19,8 @@ class ProductScreen extends StatefulWidget {
   State<ProductScreen> createState() => _ProductScreenState();
 }
 
-class _ProductScreenState extends State<ProductScreen> {
+class _ProductScreenState extends State<ProductScreen>
+    with TickerProviderStateMixin {
   late int id;
   String? shareLink;
   late Future<bool> favFuture;
@@ -29,6 +31,9 @@ class _ProductScreenState extends State<ProductScreen> {
   int selectedIndex = -1;
   late Future<ProductItem> productFuture;
   late Product product;
+
+  late final AnimationController _controller;
+  late final Animation<double> animation;
 
   @override
   void initState() {
@@ -43,6 +48,16 @@ class _ProductScreenState extends State<ProductScreen> {
         isPageLoading = false;
       });
     });
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    animation = Tween(begin: 1.0, end: 1.25).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.elasticOut,
+      ),
+    );
   }
 
   @override
@@ -75,11 +90,17 @@ class _ProductScreenState extends State<ProductScreen> {
             actions: [
               Constants.USER_TOKEN.isNotEmpty
                   ? IconButton(
+                      padding: REdgeInsets.only(right: 4),
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
-                      icon: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: Colors.red,
+                      icon: ScaleTransition(
+                        scale: animation,
+                        child: SvgPicture.asset(
+                          isFavorite
+                              ? 'assets/icons/favorite_fill.svg'
+                              : 'assets/icons/favorite.svg',
+                          color: Colors.red,
+                        ),
                       ),
                       onPressed: () {
                         if (isFavorite) {
@@ -102,6 +123,10 @@ class _ProductScreenState extends State<ProductScreen> {
                             });
                           },
                         );
+                        _controller.forward();
+                        Future.delayed(const Duration(milliseconds: 200), () {
+                          _controller.reverse();
+                        });
                       },
                     )
                   : Container(),
@@ -122,6 +147,8 @@ class _ProductScreenState extends State<ProductScreen> {
                       return buildCartShimmer(context);
                     } else if (snapshot.hasData) {
                       final product = snapshot.data!;
+                      // print all product data
+                      print(product.rating);
                       return BuildProduct(productItem: product);
                     } else {
                       return const Text("No widget to build");
@@ -134,10 +161,11 @@ class _ProductScreenState extends State<ProductScreen> {
                 child: Container(
                   padding: REdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: WidgetsBinding.instance.window.platformBrightness ==
-                            Brightness.light
-                        ? Theme.of(context).colorScheme.secondary
-                        : Theme.of(context).scaffoldBackgroundColor,
+                    color: Colors.white,
+                    // WidgetsBinding.instance.window.platformBrightness ==
+                    //         Brightness.light
+                    //     ? Theme.of(context).colorScheme.secondary
+                    //     : Theme.of(context).scaffoldBackgroundColor,
                     boxShadow: [
                       WidgetsBinding.instance.window.platformBrightness ==
                               Brightness.light
@@ -159,9 +187,9 @@ class _ProductScreenState extends State<ProductScreen> {
                     children: [
                       Text('${product.price} ₸',
                           style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red)),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          )),
                       buildButton(product.id),
                     ],
                   ),
@@ -185,7 +213,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 strokeWidth: 3,
               ),
             )
-          : Icon(_isLoaded ? Icons.done : Icons.shopping_basket, size: 17),
+          : Icon(_isLoaded ? Icons.done : Icons.shopping_cart, size: 17),
       onPressed: () {
         setState(() {
           _isLoading = true;

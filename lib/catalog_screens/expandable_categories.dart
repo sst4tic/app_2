@@ -31,14 +31,14 @@ class _ExpandableCategoriesState extends State<ExpandableCategories> {
   late Future<List<Catalog>> catalogFuture = getCatalog();
 
   static Future<List<Catalog>> getCatalog() async {
-    var url = '${Constants.API_URL_DOMAIN}action=categories&id=$id';
+    var url = '${Constants.API_URL_DOMAIN_V3}categories/$id';
     final response = await http.get(Uri.parse(url));
     final body = jsonDecode(response.body);
     return body['data'].map<Catalog>(Catalog.fromJson).toList();
   }
 
   static Future<List<Catalog>> getNestedCatalog(id) async {
-    var url = '${Constants.API_URL_DOMAIN}action=categories&id=$id}';
+    var url = '${Constants.API_URL_DOMAIN_V3}categories/$id}';
     final response = await http.get(Uri.parse(url));
     final body = jsonDecode(response.body);
     return body['data'].map<Catalog>(Catalog.fromJson).toList();

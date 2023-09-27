@@ -45,6 +45,11 @@ dependencies:
   device_info_plus: ^8.2.0
   flutter_slidable: ^2.0.0
   pin_code_fields: ^7.4.0
+  dropdown_button2: ^2.3.9
+  smooth_page_indicator: ^1.1.0
+  group_button: ^5.3.3
+  flutter_multi_formatter: ^2.11.9
+  loader_overlay: ^2.3.2
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +61,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/img/
+    - assets/icons/
   fonts:
     - family: NotoSans
       fonts:

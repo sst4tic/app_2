@@ -25,7 +25,7 @@ class _SearchResultState extends State<SearchResult> {
 
   Future<List<Product>> getProducts() async {
     var url =
-        '${Constants.API_URL_DOMAIN}action=search_view&q=${widget.query}&page=$page';
+        '${Constants.API_URL_DOMAIN_V3}search/view?q=${widget.query}&page=$page';
     final response = await http.get(Uri.parse(url));
     final body = jsonDecode(response.body);
     if (response.statusCode == 200) {

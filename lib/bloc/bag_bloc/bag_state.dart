@@ -20,10 +20,13 @@ class BagLoading extends BagState{
 class BagLoaded extends BagState{
   BagLoaded({
     required this.cart,
+    required this.selectedItems,
+    required this.allSelected,
   });
 
   final CartItem cart;
-
+  final Set<int> selectedItems;
+  bool allSelected;
   List<Object?> get props => [cart];
 }
 

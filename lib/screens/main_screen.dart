@@ -5,16 +5,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:yiwumart/authorization/login.dart';
+import 'package:yiwumart/catalog_screens/favorite_products.dart';
 import 'package:yiwumart/screens/profile_screen.dart';
 import 'package:yiwumart/screens/purchase_history.dart';
+import 'package:yiwumart/util/function_class.dart';
 import '../util/constants.dart';
 import 'auth_home_screen.dart';
-import 'home_screen.dart';
 import 'package:yiwumart/screens/shopping_bag.dart';
 import 'package:yiwumart/catalog_screens/catalog_screen.dart';
 
 GlobalKey<MainScreenState> scakey = GlobalKey<MainScreenState>();
 final tabNavKeys = <GlobalKey<NavigatorState>>[
+  GlobalKey<NavigatorState>(),
   GlobalKey<NavigatorState>(),
   GlobalKey<NavigatorState>(),
   GlobalKey<NavigatorState>(),
@@ -44,12 +46,13 @@ class MainScreenState extends State<MainScreen> {
     });
   }
 
-
   void updateBadgeCount(int count) {
     setState(() {
       badgeCount = count;
     });
   }
+
+  void showSupport() => Func().showSupport(context);
 
   void onThirdItemTapped() {
     setState(() {
@@ -106,12 +109,15 @@ class MainScreenState extends State<MainScreen> {
           currentIndex: currentIndex,
           onTap: onItemTapped,
           items: [
-             const BottomNavigationBarItem(
+            const BottomNavigationBarItem(
                 icon: Icon(CupertinoIcons.house),
                 activeIcon: Icon(CupertinoIcons.house_fill)),
             const BottomNavigationBarItem(
                 icon: Icon(CupertinoIcons.square_list),
                 activeIcon: Icon(CupertinoIcons.square_list_fill)),
+            const BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.heart),
+                activeIcon: Icon(CupertinoIcons.heart)),
             BottomNavigationBarItem(
               icon: badgeModel(
                   count: badgeCount, icon: const Icon(CupertinoIcons.cart)),
@@ -130,12 +136,8 @@ class MainScreenState extends State<MainScreen> {
               return CupertinoTabView(
                 navigatorKey: tabNavKeys[index],
                 builder: (BuildContext context) {
-                  return CupertinoPageScaffold(
-                    resizeToAvoidBottomInset: false,
-                    child: Constants.USER_TOKEN != ''
-                        ? const AuthHomePage()
-                        : const HomePage(),
-                  );
+                  return const CupertinoPageScaffold(
+                      resizeToAvoidBottomInset: false, child: AuthHomePage());
                 },
               );
             case 1:
@@ -144,9 +146,14 @@ class MainScreenState extends State<MainScreen> {
                 builder: (BuildContext context) => const CatalogPage(),
               );
             case 2:
-              return currentIndex == 2
+              return CupertinoTabView(
+                navigatorKey: tabNavKeys[index],
+                builder: (BuildContext context) => const FavoriteProducts(),
+              );
+            case 3:
+              return currentIndex == 3
                   ? CupertinoTabView(
-                      navigatorKey: tabNavKeys[2],
+                      navigatorKey: tabNavKeys[3],
                       builder: (BuildContext context) {
                         return const CupertinoPageScaffold(
                           resizeToAvoidBottomInset: false,
@@ -155,13 +162,15 @@ class MainScreenState extends State<MainScreen> {
                       },
                     )
                   : Container();
-            case 3:
+            case 4:
               return CupertinoTabView(
                 navigatorKey: tabNavKeys[3],
                 builder: (BuildContext context) {
                   return CupertinoPageScaffold(
                     resizeToAvoidBottomInset: false,
-                    child: Constants.USER_TOKEN != '' ? const ProfilePage() : const Login(),
+                    child: Constants.USER_TOKEN != ''
+                        ? const ProfilePage()
+                        : const Login(),
                   );
                 },
               );
@@ -173,11 +182,19 @@ class MainScreenState extends State<MainScreen> {
 
   Widget badgeModel({required int count, required Icon icon}) {
     return Badge(
-      alignment: const AlignmentDirectional(16, -12),
+      backgroundColor: Theme.of(context).canvasColor,
+      alignment: const AlignmentDirectional(2.5, -1),
+      padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 5),
       label: Text(
         count.toString(),
         style:
-            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontFamily: 'Noto Sans',
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0,
+            ),
       ),
       isLabelVisible: count == 0 ? false : true,
       child: icon,

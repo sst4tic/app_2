@@ -1,85 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:yiwumart/util/styles.dart';
 import '../catalog_screens/catalog_item.dart';
 import '../util/popular_catalog.dart';
 
-Widget buildPopularCategories(List<PopularCategories> categories) => ListView.builder(
-  scrollDirection: Axis.horizontal,
-  itemCount: categories.length,
-  padding: EdgeInsets.zero,
-  itemBuilder: (context, index) {
-    final categoryItem = categories[index];
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CatalogItems(
-                  id: categoryItem.id,
-                  name: categoryItem.name,
-                )));
-      },
-      child: Container(
-        margin: index == categories.length - 1
-            ? const EdgeInsets.only(right: 0)
-            : const EdgeInsets.only(right: 7),
-        width: 150,
-        decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(0))),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          elevation: 0,
-          child: Container(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
+Widget buildPopularCategories(List<PopularCategories> categories) =>
+    GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        clipBehavior: Clip.none,
+        gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 5.w / 5.h,
+          crossAxisSpacing: 5.w,
+          mainAxisSpacing: 5.h,
+        ),
+        scrollDirection: Axis.horizontal,
+        itemCount: 8,
+        itemBuilder: (context, index) {
+          final categoryItem = categories[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CatalogItems(
+                            id: categoryItem.id,
+                            name: categoryItem.name,
+                          )));
+            },
+            child: Container(
+              padding: REdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                image: DecorationImage(
-                    image: NetworkImage(categoryItem.image),
-                    fit: BoxFit.cover),
+                borderRadius: BorderRadius.circular(8.0),
+                color: Theme.of(context).primaryColor,
+                // color: Colors.red
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 7, right: 7),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CatalogItems(
-                                  id: categoryItem.id,
-                                  name: categoryItem.name,
-                                )));
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            const Color.fromRGBO(43, 46, 74, 0.8)),
-                        shape: MaterialStateProperty.all<
-                            RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0)),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4),
-                        child: Text(
-                          categoryItem.name,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                  Image.asset(
+                    'assets/img/test.png',
+                    height: 35.h,
+                    width: 55.w,
+                    fit: BoxFit.cover,
+                  ),
+                  SizedBox(height: 5.h),
+                  Text(
+                    categoryItem.name,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Color(0xFF181C32),
+                      fontSize: 9,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w500,
                     ),
-                  )
+                  ),
                 ],
-              )),
-        ),
-      ),
-    );
-  },
-);
+              ),
+            ),
+          );
+        });
+
+//

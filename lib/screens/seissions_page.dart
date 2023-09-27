@@ -62,7 +62,7 @@ class _SessionsState extends State<Sessions> {
         SizedBox(height: 8.0.h),
         Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Column(
@@ -172,7 +172,7 @@ class _SessionsState extends State<Sessions> {
         SizedBox(height: 8.0.h),
         Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: ClipRect(

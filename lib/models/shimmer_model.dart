@@ -120,8 +120,8 @@ Widget buildSearchCatShimmer() => GridView.builder(
             borderRadius: const BorderRadius.all(Radius.circular(8)),
             color: Theme.of(context).colorScheme.secondary,
           ),
-          child: Column(
-            children: const [
+          child: const Column(
+            children: [
               ShimmerWidget.rectangular(height: 150),
               SizedBox(
                 height: 10,
@@ -188,9 +188,9 @@ Widget buildHorizontalShimmer() => ListView.builder(
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.secondary,
             borderRadius: const BorderRadius.all(Radius.circular(10))),
-        child: Column(
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: const [
+          children: [
             Padding(
                 padding: EdgeInsets.only(bottom: 20, left: 10, right: 10),
                 child: ShimmerWidget.rectangular(height: 30))
@@ -243,18 +243,18 @@ Widget buildNotificationsShimmer({physics}) => ListView.builder(
           color: Theme.of(context).colorScheme.secondary,
         ),
         height: 75,
-        child: Column(
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              children: const [
+              children: [
                 ShimmerWidget.rectangular(height: 20, width: 130),
                 Spacer(),
                 ShimmerWidget.rectangular(height: 20, width: 110),
               ],
             ),
-            const ShimmerWidget.rectangular(height: 20, width: 100),
+            ShimmerWidget.rectangular(height: 20, width: 100),
           ],
         ),
       );
@@ -296,14 +296,14 @@ Widget buildProfileShimmer() => ListView.builder(
               borderRadius: const BorderRadius.all(Radius.circular(12))),
           padding: const EdgeInsets.only(left: 5, right: 5),
           height: 80,
-          child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            const SizedBox(
+          child: const Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+            SizedBox(
               width: 20,
             ),
             Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   ShimmerWidget.rectangular(
                     height: 15,
                     width: 100,
@@ -654,7 +654,7 @@ Widget buildSessionShimmer(context) => ListView(
         SizedBox(height: 8.0.h),
         Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Column(
@@ -714,7 +714,7 @@ Widget buildSessionShimmer(context) => ListView(
         const SizedBox(height: 35.0),
         Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: ListView.separated(
@@ -734,10 +734,10 @@ Widget buildSessionShimmer(context) => ListView(
                   child: ShimmerWidget.rectangular(height: 20.h),
                 ),
                 const SizedBox(width: 10.0),
-                Expanded(
+                const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       ShimmerWidget.rectangular(
                         height: 10,
                         width: 150,

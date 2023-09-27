@@ -26,21 +26,20 @@ class AuthRepo implements AbstractAuth {
   }
 
   @override
-  Future login(String email, String password, context) async {
-    final Dio dio = Dio();
-    final cookieJar = CookieJar();
-    dio.interceptors.add(CookieManager(cookieJar));
+  Future<void> login(String email, String password, context) async {
     try {
-      Response response = await dio
-          .get('${Constants.API_URL_DOMAIN}action=auth&', queryParameters: {
+      Dio dio = Dio();
+      // Define the request body as a Map
+      Map<String, dynamic> data = {
         "email": email,
         "password": password,
-      });
-      List<Cookie> cookies =
-      await cookieJar.loadForRequest(Uri.parse(Constants.API_URL_DOMAIN));
-      String cookie = cookies.map((c) => '${c.name}=${c.value}').join(';');
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      await pref.setString('cookie', cookie);
+      };
+
+      Response response = await dio.post(
+        '${Constants.API_URL_DOMAIN}auth', // The API endpoint URL
+        data: FormData.fromMap(data),
+      );
+
       if (response.data['api_token'] != null) {
         SharedPreferences pref = await SharedPreferences.getInstance();
         await pref.setString('login', response.data['api_token']);
@@ -48,10 +47,59 @@ class AuthRepo implements AbstractAuth {
         Constants.USER_TOKEN = response.data['api_token'];
         Constants.bearer = 'Bearer ${response.data['api_token']}';
       }
-      Func().showSnackbar(
-          context, response.data['message'], response.data['success']);
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  @override
+  Future checkSmsCode(String phone, String code) async {
+    const url = '${Constants.API_URL_DOMAIN_V3}check-sms';
+
+    try {
+      Dio dio = Dio();
+      Map<String, dynamic> data = {
+        "phone": phone,
+        "verifyCode": code,
+      };
+
+      Response response = await dio.post(
+        url,
+        data: FormData.fromMap(data),
+      );
+      print(response);
+      if (response.data['api_token'] != null) {
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        await pref.setString('login', response.data['api_token']);
+        Constants.USER_TOKEN = response.data['api_token'];
+        print('API TOKEN:  ${Constants.USER_TOKEN}');
+        Constants.bearer = 'Bearer ${response.data['api_token']}';
+      }
       return response;
-    } on DioError catch (e) {
+    } on DioError catch (e, stacktrace) {
+      print("Exception occured: ${e.error} stackTrace: $stacktrace");
+      return e.response;
+    }
+  }
+
+  @override
+  loginSms(String phone, context) async {
+    const url = '${Constants.API_URL_DOMAIN_V3}login-sms';
+    print(phone);
+    try {
+      Dio dio = Dio();
+      Map<String, dynamic> data = {
+        "phone": phone,
+      };
+
+      Response response = await dio.post(
+        url,
+        data: FormData.fromMap(data),
+      );
+      print(response);
+      return response;
+    } on DioError catch (e, stacktrace) {
+      print("Exception occured: ${e.error} stackTrace: $stacktrace");
       return e.response;
     }
   }
@@ -69,6 +117,7 @@ class AuthRepo implements AbstractAuth {
       });
     }
   }
+
   @override
   Future logout() async {
     final Dio dio = Dio();

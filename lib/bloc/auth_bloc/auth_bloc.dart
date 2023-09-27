@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yiwumart/main.dart';
 import 'package:yiwumart/screens/main_screen.dart';
 import '../../util/function_class.dart';
 import 'abstract_auth.dart';
@@ -28,9 +29,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       scakey.currentState!.updateBadgeCount(0);
       emit(Unauthenticated(token: ''));
     });
+    on<LoginSmsEvent>((event, emit) async {
+      try {
+        final response = await authRepo.loginSms(event.phone, event.context);
+        if (response.statusCode == 200) {
+          // ignore: use_build_context_synchronously
+          Func().showSmsDialog(
+              restartCallback: event.restartCallback,
+              countStream: event.countStream,
+              context: navKey.currentContext!,
+              phone: event.phone,
+              submitCallback: (val) async {
+                final resp = await authRepo.checkSmsCode(event.phone, val);
+                Func().showSnackbar(navKey.currentContext!,
+                    resp.data['message'], resp.data['success']);
+                if (resp.statusCode == 200) {
+                  Navigator.pop(navKey.currentContext!);
+                  print('API TOKEN:  ${resp.data['api_token']}');
+                  emit(Authenticated(token: resp.data['api_token']));
+                  Func().getInitParams();
+                }
+              });
+        }
+      } catch (e) {
+        print(e);
+      }
+    });
     on<LoginEvent>((event, emit) async {
       final response =
           await authRepo.login(event.email, event.password, event.context);
+      // ignore: use_build_context_synchronously
       Func().showSnackbar(
           event.context, response.data['message'], response.data['success']);
       if (response.data['success'] == true) {
@@ -47,6 +75,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           event.context, response.data['message'], response.data['success']);
       if (response.data['success'] == true) {
         emit(Authenticated(token: response.data['api_token']));
+        // ignore: use_build_context_synchronously
         Func().getInitParams();
         Future.delayed(const Duration(milliseconds: 250), () {
           Navigator.pop(event.context);

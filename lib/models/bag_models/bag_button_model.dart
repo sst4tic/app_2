@@ -22,19 +22,19 @@ class BagButtonState extends State<BagButton> {
     return ElevatedButton.icon(
       icon: _isLoading && selectedIndex == widget.index
           ? Container(
-        width: 16,
-        height: 16,
-        padding: const EdgeInsets.all(1.0),
-        child: const CircularProgressIndicator(
-          color: Colors.white,
-          strokeWidth: 3,
-        ),
-      )
+              width: 16,
+              height: 16,
+              padding: const EdgeInsets.all(1.0),
+              child: const CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 3,
+              ),
+            )
           : Icon(
-          _isLoaded && selectedIndex == widget.index
-              ? Icons.done
-              : Icons.shopping_basket,
-          size: 16),
+              _isLoaded && selectedIndex == widget.index
+                  ? Icons.done
+                  : Icons.shopping_cart,
+              size: 16),
       onPressed: () {
         setState(() {
           _isLoading = true;
@@ -60,9 +60,9 @@ class BagButtonState extends State<BagButton> {
             .then((value) {
           Future.delayed(const Duration(seconds: 2))
               .then((value) => setState(() {
-            _isLoading = false;
-            _isLoaded = false;
-          }));
+                    _isLoading = false;
+                    _isLoaded = false;
+                  }));
         });
       },
       style: BagButtonStyle(
@@ -72,7 +72,12 @@ class BagButtonState extends State<BagButton> {
           index: widget.index),
       label: Text(
         _isLoaded && selectedIndex == widget.index ? 'Добавлен' : 'В корзину',
-        style: const TextStyle(fontSize: 11),
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontFamily: 'Noto Sans',
+          fontWeight: FontWeight.w500,
+        ),
         textAlign: TextAlign.center,
       ),
     );

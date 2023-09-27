@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yiwumart/bloc/auth_bloc/auth_bloc.dart';
 import 'package:yiwumart/bloc/auth_bloc/auth_repo.dart';
+import 'package:yiwumart/bloc/home_page_bloc/home_page_bloc.dart';
 import 'package:yiwumart/screens/main_screen.dart';
 import 'package:yiwumart/screens/notification_screen.dart';
 import 'package:yiwumart/util/constants.dart';
@@ -92,7 +94,15 @@ void main() async {
     var APNS = await messaging.getAPNSToken();
   }
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  runApp(const MyApp());
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider<AuthBloc>(
+      create: (context) => AuthBloc(authRepo: AuthRepo()),
+    ),
+    BlocProvider<HomePageBloc>(
+      create: (context) => HomePageBloc(),
+    ),
+  ],
+  child: const MyApp()));
 }
 
 
@@ -146,19 +156,22 @@ class _MyAppState extends State<MyApp> {
                 Constants.isLightTheme = state.isLightTheme;
                 Constants.isSystemTheme = state.isSystemTheme;
               }
-              return MaterialApp(
-                navigatorKey: navKey,
-                title: 'YiwuMart',
-                debugShowCheckedModeBanner: false,
-                themeMode: Constants.isSystemTheme
-                    ? ThemeMode.system
-                    : Constants.isDarkTheme
-                        ? ThemeMode.dark
-                        : ThemeMode.light,
-                theme: lightTheme,
-                darkTheme: darkTheme,
-                home: MainScreen(
-                  key: scakey,
+              return GlobalLoaderOverlay(
+                overlayColor: Colors.black.withOpacity(0.5),
+                child: MaterialApp(
+                  navigatorKey: navKey,
+                  title: 'YiwuMart',
+                  debugShowCheckedModeBanner: false,
+                  themeMode: Constants.isSystemTheme
+                      ? ThemeMode.system
+                      : Constants.isDarkTheme
+                          ? ThemeMode.dark
+                          : ThemeMode.light,
+                  theme: lightTheme,
+                  darkTheme: darkTheme,
+                  home: MainScreen(
+                    key: scakey,
+                  ),
                 ),
               );
             },

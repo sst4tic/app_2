@@ -32,8 +32,8 @@ Widget buildOrderDetails({required OrderDetail details, context}) {
                       const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                   child: Text(details.title,
                       textAlign: TextAlign.start,
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w500)),
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w500)),
                 ),
                 const Divider(
                   height: 0,
@@ -117,7 +117,6 @@ Widget buildOrderDetails({required OrderDetail details, context}) {
             title: const Text(
               'Товары',
             ),
-            centerTitle: false,
           ),
         ),
         const Divider(height: 0, thickness: 1),
@@ -134,6 +133,8 @@ Widget buildOrderDetails({required OrderDetail details, context}) {
                   MaterialPageRoute(
                     builder: (context) => ProductScreen(
                       product: Product(
+                        reviewCount: 0,
+                        rating: 0,
                         id: cartItem.id,
                         name: cartItem.title,
                         price: cartItem.price,
@@ -165,9 +166,10 @@ Widget buildOrderDetails({required OrderDetail details, context}) {
                           return SizedBox(
                             height: 60.h,
                             width: 60.w,
-                           child: Image.network(
-                             'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg',
-                              fit: BoxFit.cover,),
+                            child: Image.network(
+                              'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg',
+                              fit: BoxFit.cover,
+                            ),
                           );
                         },
                       ),
@@ -195,12 +197,13 @@ Widget buildOrderDetails({required OrderDetail details, context}) {
                 ),
               ),
             );
-          }, separatorBuilder: (BuildContext context, int index) {
-          return const Divider(
-            height: 0,
-            thickness: 1,
-          );
-        },
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const Divider(
+              height: 0,
+              thickness: 1,
+            );
+          },
         ),
         const Divider(height: 0, thickness: 1),
         SizedBox(
@@ -215,17 +218,15 @@ Widget buildOrderDetails({required OrderDetail details, context}) {
             ),
             actions: [
               Container(
-                  padding:
-                       REdgeInsets.only(left: 10, top: 5, bottom: 5),
+                  padding: REdgeInsets.only(left: 10, top: 5, bottom: 5),
                   height: 15.h,
                   child: Text('Итоговая сумма: ',
                       style: TextStyle(
-                          fontSize: 14,
+                        fontSize: 14,
                         color: Theme.of(context).primaryColorLight,
                       ))),
               Container(
-                  padding:
-                       REdgeInsets.only(right: 10, top: 5, bottom: 5),
+                  padding: REdgeInsets.only(right: 10, top: 5, bottom: 5),
                   height: 15.h,
                   child: Text('${details.total} ₸',
                       style: TextStyle(

@@ -15,9 +15,11 @@ class PurchaseCheckout extends PurchaseEvent {
   final int cartId;
   final String address;
   final String phone;
+  final String name;
+  final String paymentMethod;
+  final String? online;
   String? comments;
   final BuildContext context;
 
-  PurchaseCheckout({required this.cartId, required this.address, required this.context, required this.phone, this.comments});
-  List<Object?> get props => [cartId, address, context, phone, comments ?? ''];
+  PurchaseCheckout({required this.cartId, required this.address, required this.context, required this.phone, this.comments, required this.name, required this.paymentMethod, this.online});
 }

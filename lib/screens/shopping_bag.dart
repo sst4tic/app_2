@@ -44,7 +44,9 @@ class _ShoppingBagState extends State<ShoppingBag> {
               if (state is BagLoading) {
                 return buildBagShimmer(context);
               } else if (state is BagLoaded) {
-                return const BagCartWidget();
+                return BagCartWidget(
+                  bagBloc: _bagBloc,
+                );
               } else if (state is BagLoadingFailure) {
                 return Text(state.exception.toString());
               } else if (state is BagEmpty) {

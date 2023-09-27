@@ -198,6 +198,7 @@ class _CatalogItemsState extends State<CatalogItems> {
                       }
                       return buildCatalog(catalog);
                     } else {
+                      print(snapshot.error);
                       return const Text("No widget to build");
                     }
                   }),
@@ -213,14 +214,15 @@ class _CatalogItemsState extends State<CatalogItems> {
         slivers: [
           Func.sizedGrid,
           FilterSliverList(
-            onSortChanged: (value) {
-              setState(() {
-                val = value.toString();
-                page = 1;
-                list.clear();
-                productFuture = getProducts(value.toString(), filters);
-              });
-            },
+            onSortChanged: showSort,
+            // onSortChanged: (value) {
+            //   setState(() {
+            //     val = value.toString();
+            //     page = 1;
+            //     list.clear();
+            //     productFuture = getProducts(value.toString(), filters);
+            //   });
+            // },
             onFilterClick: () => showFilter(context),
             val: val,
           ),
@@ -250,9 +252,84 @@ class _CatalogItemsState extends State<CatalogItems> {
         ],
       );
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  void showSort() => showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+        ),
+      ),
+      backgroundColor: Theme.of(context).primaryColor,
+      builder: (c) {
+        return Container(
+          height: 200.h,
+          padding: REdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD9D9D9),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                height: 6,
+                width: 120.w,
+              ),
+              // create 3 radio with 3 text
+              Expanded(
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: orderByList.length,
+                  itemBuilder: (context, index) {
+                    return CheckboxListTile(
+                      value: val == orderByList[index],
+                      onChanged: (bool? value) {
+                        setState(() {
+                          val = value! ? orderByList[index] : null;
+                          page = 1;
+                          list.clear();
+                          productFuture = getProducts(val.toString(), filters);
+                        });
+                        Navigator.pop(context);
+                      },
+                      checkColor: Colors.white,
+                      activeColor: const Color(0xFF0D6EFD),
+                      checkboxShape: const CircleBorder(
+                        side: BorderSide(
+                            width: 1,
+                            color: Color(0xFFC7C7C7),
+                            strokeAlign: BorderSide.strokeAlignOutside),
+                      ),
+                      title: Text(
+                        orderByMap[orderByList[index]]!,
+                        style: const TextStyle(
+                          color: Color(0xFF414141),
+                          fontSize: 18,
+                          fontFamily: 'Noto Sans',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      controlAffinity: ListTileControlAffinity.trailing,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      });
+
   Future showFilter(context) => showModalBottomSheet(
       isScrollControlled: true,
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+        ),
+      ),
       builder: (context) => StatefulBuilder(builder: (context, innerSetState) {
             return SafeArea(
               child: FormBuilder(
@@ -260,66 +337,58 @@ class _CatalogItemsState extends State<CatalogItems> {
                 child: Container(
                     color: Theme.of(context).primaryColor,
                     height: MediaQuery.of(context).size.height * 0.65,
-                    width: MediaQuery.of(context).size.width,
+                    padding: REdgeInsets.all(8),
                     child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: 20,
-                            right: 20,
-                            top: 10,
-                            bottom: MediaQuery.of(context).viewInsets.bottom),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Icon(
-                                Icons.close,
-                                size: 30,
-                              ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Icon(
+                              Icons.close,
+                              size: 30,
                             ),
-                            const Text(
-                              'Фильтры',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _formKey.currentState?.reset();
-                                    _startValue = minValue!;
-                                    _endValue = maxValue!;
-                                    startController.text =
-                                        _startValue.round().toString();
-                                    endController.text =
-                                        _endValue.round().toString();
-                                    filterDefaultValues.forEach((key, value) {
-                                      if (_formKey.currentState!.fields
-                                          .containsKey(key)) {
-                                        _formKey.currentState?.fields[key]!
-                                            .didChange(value);
-                                      }
-                                    });
+                          ),
+                          const Text(
+                            'Фильтр',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _formKey.currentState?.reset();
+                                  _startValue = minValue!;
+                                  _endValue = maxValue!;
+                                  startController.text =
+                                      _startValue.round().toString();
+                                  endController.text =
+                                      _endValue.round().toString();
+                                  filterDefaultValues.forEach((key, value) {
+                                    if (_formKey.currentState!.fields
+                                        .containsKey(key)) {
+                                      _formKey.currentState?.fields[key]!
+                                          .didChange(value);
+                                    }
                                   });
-                                },
-                                child: Text(
-                                  'Сброс',
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                )),
-                          ],
-                        ),
+                                });
+                              },
+                              child: Text(
+                                'Сброс',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              )),
+                        ],
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.47,
                         child: ListView(
-                          padding: const EdgeInsets.only(top: 20),
                           children: [
                             filterData['price']['min'] != null
-                                ? const Padding(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: Text(
+                                ? Padding(
+                                    padding: REdgeInsets.only(left: 8),
+                                    child: const Text(
                                       'Цена',
                                       style: TextStyle(
                                         fontSize: 16,
@@ -334,127 +403,115 @@ class _CatalogItemsState extends State<CatalogItems> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       SizedBox(height: 15.h),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 6),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            SizedBox(
-                                              height: 50,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.44,
-                                              child: FormBuilderTextField(
-                                                name: 'start_value',
-                                                onChanged: (value) {
-                                                  innerSetState(() {
-                                                    if (value == '' ||
-                                                        value == '0') {
-                                                      _startValue = minValue!;
-                                                    } else if (double.parse(
-                                                            value!) >
-                                                        maxValue!) {
-                                                      _startValue = maxValue!;
-                                                    } else if (double.parse(
-                                                            value) <
-                                                        minValue!) {
-                                                      _startValue = minValue!;
-                                                    } else {
-                                                      _startValue =
-                                                          double.parse(value);
-                                                    }
-                                                  });
-                                                },
-                                                controller: startController,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  floatingLabelBehavior:
-                                                      FloatingLabelBehavior
-                                                          .always,
-                                                  label: Text(
-                                                    'От',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge,
-                                                  ),
-                                                  border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                  hintStyle: const TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    color: Colors.grey,
-                                                  ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          SizedBox(
+                                            height: 50,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.44,
+                                            child: FormBuilderTextField(
+                                              name: 'start_value',
+                                              onChanged: (value) {
+                                                innerSetState(() {
+                                                  if (value == '' ||
+                                                      value == '0') {
+                                                    _startValue = minValue!;
+                                                  } else if (double.parse(
+                                                          value!) >
+                                                      maxValue!) {
+                                                    _startValue = maxValue!;
+                                                  } else if (double.parse(
+                                                          value) <
+                                                      minValue!) {
+                                                    _startValue = minValue!;
+                                                  } else {
+                                                    _startValue =
+                                                        double.parse(value);
+                                                  }
+                                                });
+                                              },
+                                              controller: startController,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              decoration: InputDecoration(
+                                                floatingLabelBehavior:
+                                                    FloatingLabelBehavior
+                                                        .always,
+                                                label: Text(
+                                                  'От',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge,
+                                                ),
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                hintStyle: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Colors.grey,
                                                 ),
                                               ),
                                             ),
-                                            Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 6),
-                                                child: SizedBox(
-                                                  height: 50,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.44,
-                                                  child: FormBuilderTextField(
-                                                    name: 'end_value',
-                                                    onChanged: (value) {
-                                                      innerSetState(() {
-                                                        if (value == '' ||
-                                                            value == '0') {
-                                                          _endValue = maxValue!;
-                                                        } else if (double.parse(
-                                                                value!) >
-                                                            maxValue!) {
-                                                          _endValue = maxValue!;
-                                                        } else if (double.parse(
-                                                                value) <
-                                                            minValue!) {
-                                                          _endValue = minValue!;
-                                                        } else {
-                                                          _endValue =
-                                                              double.parse(
-                                                                  value);
-                                                        }
-                                                      });
-                                                    },
-                                                    controller: endController,
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    decoration: InputDecoration(
-                                                      floatingLabelBehavior:
-                                                          FloatingLabelBehavior
-                                                              .always,
-                                                      label: Text(
-                                                        'До',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyLarge,
-                                                      ),
-                                                      border:
-                                                          OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10)),
-                                                      hintStyle:
-                                                          const TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )),
-                                          ],
-                                        ),
+                                          ),
+                                          SizedBox(
+                                            height: 50,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.44,
+                                            child: FormBuilderTextField(
+                                              name: 'end_value',
+                                              onChanged: (value) {
+                                                innerSetState(() {
+                                                  if (value == '' ||
+                                                      value == '0') {
+                                                    _endValue = maxValue!;
+                                                  } else if (double.parse(
+                                                          value!) >
+                                                      maxValue!) {
+                                                    _endValue = maxValue!;
+                                                  } else if (double.parse(
+                                                          value) <
+                                                      minValue!) {
+                                                    _endValue = minValue!;
+                                                  } else {
+                                                    _endValue =
+                                                        double.parse(value);
+                                                  }
+                                                });
+                                              },
+                                              controller: endController,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              decoration: InputDecoration(
+                                                floatingLabelBehavior:
+                                                    FloatingLabelBehavior
+                                                        .always,
+                                                label: Text(
+                                                  'До',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge,
+                                                ),
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                hintStyle: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                       RangeSlider(
                                         activeColor:
@@ -480,47 +537,45 @@ class _CatalogItemsState extends State<CatalogItems> {
                                     ],
                                   )
                                 : Container(),
-                            Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Func().buildFilterField(filterData,
-                                    filterDefaultValues, filterValues, context))
+                            Func().buildFilterField(filterData,
+                                filterDefaultValues, filterValues, context)
                           ],
                         ),
                       ),
                       const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.045,
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _formKey.currentState!.save();
-                              filterValues = _formKey.currentState!.value;
-                              setState(() {
-                                String encodedString =
-                                    filterValues.keys.map((key) {
-                                  return key +
-                                      '=' +
-                                      Uri.encodeQueryComponent(
-                                          filterValues[key].toString());
-                                }).join('&');
-                                filters = encodedString;
-                                page = 1;
-                                hasMore = true;
-                                list.clear();
-                                productFuture = getProducts(val, filters);
-                              });
-                              Navigator.pop(context);
-                            },
-                            child: const Text(
-                              'Показать результаты',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _formKey.currentState!.save();
+                          filterValues = _formKey.currentState!.value;
+                          setState(() {
+                            String encodedString = filterValues.keys.map((key) {
+                              return key +
+                                  '=' +
+                                  Uri.encodeQueryComponent(
+                                      filterValues[key].toString());
+                            }).join('&');
+                            filters = encodedString;
+                            page = 1;
+                            hasMore = true;
+                            list.clear();
+                            productFuture = getProducts(val, filters);
+                          });
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).disabledColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          fixedSize:
+                              Size(MediaQuery.of(context).size.width, 45),
+                        ),
+                        child: const Text(
+                          'Показать результаты',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),

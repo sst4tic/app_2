@@ -107,6 +107,9 @@ class _CatalogPageState extends State<CatalogPage> {
             ),
             elevation: 0,
             child: ListTile(
+              leading: Image.network(
+                'https://cdn.yiwumart.org/storage/warehouse/products/images/10754/zJ8H9PD8nUID6cFSy9Qq9t9jWMnNOWTaT0ZQ021K.png'
+              ),
                 onTap: () {
                   Navigator.push(
                       context,

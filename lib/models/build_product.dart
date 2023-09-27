@@ -2,7 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:yiwumart/models/feedback_model.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
+import 'package:yiwumart/screens/create_feedback_page.dart';
+import 'package:yiwumart/screens/feedback_page.dart';
 import '../catalog_screens/product_screen.dart';
 import '../util/constants.dart';
 import '../util/function_class.dart';
@@ -23,6 +28,7 @@ class _BuildProductState extends State<BuildProduct> {
   late ProductItem product;
   final Set<int> _isFavLoading = {};
   late Future<List<Product>> similarFuture;
+  double test = 3.5;
 
   @override
   void initState() {
@@ -74,22 +80,40 @@ class _BuildProductState extends State<BuildProduct> {
                 ),
               ),
               const SizedBox(height: 4.0),
-              Text(
-                product.categoryName!,
-                style: const TextStyle(
-                  fontSize: 14.0,
-                  color: Colors.grey,
-                ),
+              Row(
+                children: [
+                  StarRating(
+                    rating: double.parse(product.rating.toString()),
+                    onRatingChanged: (rating) {
+                      setState(() {
+                        test = rating;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    width: 3.w,
+                  ),
+                  Text(
+                    '(${product.reviewCount} отзывов)',
+                    style: const TextStyle(
+                      color: Color(0xFF7C7C7C),
+                      fontSize: 13,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  )
+                ],
               ),
-              const SizedBox(height: 8.0),
+              const SizedBox(height: 12),
               Text(
                 '${product.price} ₸',
                 style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
+                  color: Color(0xFF181C32),
+                  fontSize: 22,
+                  fontFamily: 'Noto Sans',
+                  fontWeight: FontWeight.w700,
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -103,31 +127,28 @@ class _BuildProductState extends State<BuildProduct> {
               const Text(
                 "О товаре",
                 style: TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8.0),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Expanded(
-                    flex: 1,
-                    child: Text(
-                      "Артикул товара",
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.grey,
-                      ),
+                  const Text(
+                    'Артикул товара',
+                    style: TextStyle(
+                      color: Color(0xFF5E6278),
+                      fontSize: 14,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      product.sku,
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  Text(
+                    product.sku,
+                    style: const TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
@@ -135,27 +156,40 @@ class _BuildProductState extends State<BuildProduct> {
               const SizedBox(height: 8.0),
               Row(
                 children: [
-                  const Expanded(
-                    flex: 1,
-                    child: Text(
-                      "Наличие",
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.grey,
-                      ),
+                  const Text(
+                    'Наличие',
+                    style: TextStyle(
+                      color: Color(0xFF5E6278),
+                      fontSize: 14,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      product.availability,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
-                        color: product.availability != 'Нет в наличии'
-                            ? Colors.green
-                            : Colors.red,
-                      ),
+                  const Spacer(),
+                  Container(
+                    width: 13,
+                    height: 13,
+                    decoration: ShapeDecoration(
+                      color: product.availability == 'Нет в наличии'
+                          ? Colors.red
+                          : Colors.green,
+                      shape: const OvalBorder(),
+                    ),
+                  ),
+                  SizedBox(width: 3.w),
+                  SvgPicture.asset(
+                    'assets/icons/truck_icon.svg',
+                    height: 18.h,
+                    width: 18.w,
+                  ),
+                  SizedBox(width: 3.w),
+                  Text(
+                    product.availability,
+                    style: const TextStyle(
+                      color: Color(0xFF5E6278),
+                      fontSize: 14,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
@@ -163,6 +197,185 @@ class _BuildProductState extends State<BuildProduct> {
             ],
           ),
         ),
+        const SizedBox(height: 8.0),
+        Container(
+          color: Theme.of(context).colorScheme.secondary,
+          padding: REdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Отзывы",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FeedbackPage())),
+                    child: const Text(
+                      'Все',
+                      style: TextStyle(
+                        color: Color(0xFF2C2D4F),
+                        fontSize: 15,
+                        fontFamily: 'Noto Sans',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              if (product.reviewCount != 0) ...[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    StarRating(
+                      rating: double.parse(product.rating.toString()),
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 3.w,
+                    ),
+                    Text(
+                      '(${product.reviewCount} отзывов)',
+                      style: const TextStyle(
+                        color: Color(0xFF7C7C7C),
+                        fontSize: 13,
+                        fontFamily: 'Noto Sans',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          product.reviews![0].user!.fullName!,
+                          style: const TextStyle(
+                            color: Color(0xFF4A4E64),
+                            fontSize: 16,
+                            fontFamily: 'Noto Sans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        StarRating(
+                          rating: double.parse(
+                              product.reviews![0].rating!.toString()),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      product.reviews![0].date!,
+                      style: const TextStyle(
+                        color: Color(0xFF7C7C7C),
+                        fontSize: 13,
+                        fontFamily: 'Noto Sans',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      product.reviews![0].body!,
+                      style: const TextStyle(
+                        color: Color(0xFF333333),
+                        fontSize: 14,
+                        fontFamily: 'Noto Sans',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Отзыв был полезен? ',
+                          style: TextStyle(
+                            color: Color(0xFF7C7C7C),
+                            fontSize: 13,
+                            fontFamily: 'Noto Sans',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        const Spacer(),
+                        const Icon(Icons.thumb_up_alt_outlined,
+                            size: 16, color: Color(0xFF7C7C7C)),
+                        SizedBox(width: 2.w),
+                        const Text(
+                          '1',
+                          style: TextStyle(
+                            color: Color(0xFF7C7C7C),
+                            fontSize: 13,
+                            fontFamily: 'Noto Sans',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        const Icon(Icons.thumb_down_alt_outlined,
+                            size: 16, color: Color(0xFF7C7C7C)),
+                        SizedBox(width: 2.w),
+                        const Text(
+                          '0',
+                          style: TextStyle(
+                            color: Color(0xFF7C7C7C),
+                            fontSize: 13,
+                            fontFamily: 'Noto Sans',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 150.w,
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ] else ...[
+                const Divider(),
+                const SizedBox(height: 8.0),
+                const Center(
+                  child: Text(
+                    'На этот товар пока нет отзывов. \nЗакажите и будьте первым!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF7C7C7C),
+                      fontSize: 14,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ]
+            ],
+          ),
+        ),
+
+        product.reviewCheck
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CreateFeedbackPage(
+                                prodId: product.id.toString(),
+                              ))),
+                  child: const Text('Оставить отзыв'),
+                ),
+              )
+            : const SizedBox.shrink(),
         const SizedBox(height: 8.0),
         product.description != null
             ? Container(
@@ -221,6 +434,7 @@ class _BuildProductState extends State<BuildProduct> {
                             if (snapshot.hasData) {
                               return buildSimilar(snapshot.data!);
                             } else if (snapshot.hasError) {
+                              print(snapshot.error);
                               return const Center(
                                 child: Text('Произошла ошибка'),
                               );
@@ -256,6 +470,10 @@ class _BuildProductState extends State<BuildProduct> {
                     .map((e) =>
                         'https://cdn.yiwumart.org/${e['links']['local']['thumbnails']['750']}')
                     .toList();
+                final fullImageUrl = media!
+                    .map((e) =>
+                        'https://cdn.yiwumart.org/${e['links']['local']['full']}')
+                    .toList();
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -285,7 +503,7 @@ class _BuildProductState extends State<BuildProduct> {
                       children: <Widget>[
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.195,
-                          child: ImageView(
+                          child: ImageList(
                             imageUrls: media.isNotEmpty
                                 ? allPhotos
                                 : [
@@ -326,36 +544,39 @@ class _BuildProductState extends State<BuildProduct> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               BagButton(index: index, id: productItem.id),
-                              IconButton(
-                                highlightColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                icon: Icon(
-                                  _isFavLoading.contains(index) ||
-                                          productItem.is_favorite!
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {
-                                  if (productItem.is_favorite!) {
-                                    setState(() {
-                                      productItem.is_favorite =
-                                          !productItem.is_favorite!;
-                                    });
-                                  }
-                                  Func().addToFav(
-                                    productId: productItem.id,
-                                    index: index,
-                                    onAdded: () {
-                                      setState(() => _isFavLoading.add(index));
-                                    },
-                                    onRemoved: () {
+                              Expanded(
+                                child: IconButton(
+                                  highlightColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  icon: SvgPicture.asset(
+                                    _isFavLoading.contains(index) ||
+                                            productItem.is_favorite!
+                                        ? 'assets/icons/favorite_fill.svg'
+                                        : 'assets/icons/favorite.svg',
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    if (productItem.is_favorite!) {
                                       setState(() {
-                                        _isFavLoading.remove(index);
+                                        productItem.is_favorite =
+                                            !productItem.is_favorite!;
                                       });
-                                    },
-                                  );
-                                },
+                                    }
+                                    Func().addToFav(
+                                      productId: productItem.id,
+                                      index: index,
+                                      onAdded: () {
+                                        setState(
+                                            () => _isFavLoading.add(index));
+                                      },
+                                      onRemoved: () {
+                                        setState(() {
+                                          _isFavLoading.remove(index);
+                                        });
+                                      },
+                                    );
+                                  },
+                                ),
                               )
                             ],
                           )

@@ -1,5 +1,6 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/util/notification.dart';
 import '../models/shimmer_model.dart';
 import '../util/function_class.dart';
@@ -43,10 +44,43 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 return buildNotificationsShimmer();
               } else if (snapshot.hasData) {
                 if (snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'Нет уведомлений',
-                      style: TextStyle(fontSize: 25),
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.notifications_off_rounded,
+                          size: 100,
+                          color: Color.fromRGBO(94, 98, 120, 1),
+                        ),
+                        SizedBox(height: 10.h),
+                        const Text(
+                          'Новых уведомлений нет',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color(0xFF5B5B5B),
+                            fontSize: 17,
+                            fontFamily: 'Noto Sans',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(
+                                  MediaQuery.of(context).size.width * 0.65, 40),
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text(
+                              'На главную страницу',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontFamily: 'Noto Sans',
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ))
+                      ],
                     ),
                   );
                 }

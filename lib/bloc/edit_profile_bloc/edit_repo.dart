@@ -8,7 +8,7 @@ import '../../util/user.dart';
 class EditRepo implements AbstractEdit {
   @override
   Future getProfile() async {
-    var url = '${Constants.API_URL_DOMAIN}action=user_profile';
+    var url = '${Constants.API_URL_DOMAIN_V3}my';
     final response =
         await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
@@ -17,10 +17,13 @@ class EditRepo implements AbstractEdit {
   }
   @override
   Future deleteAccount() async {
-    var response = await http.get(
-        Uri.parse('${Constants.API_URL_DOMAIN}action=user_delete'),
-        headers: Constants.headers());
+    var response = await http.delete(
+        Uri.parse('${Constants.API_URL_DOMAIN_V3}my'),
+        headers: Constants.headers()
+    );
+    print(response.body);
     final body = jsonDecode(response.body);
+    print(body);
     return body;
   }
   @override
@@ -38,9 +41,35 @@ class EditRepo implements AbstractEdit {
             "phone_code": user.phoneCode,
           },
           options: Options(headers: Constants.headers()));
+      print('DIO RESP: ${response.data}');
+
       return response.data;
     } on DioError catch (e) {
       return e.response?.data;
     }
   }
 }
+
+
+// Future editProfile(User user) async {
+//   final Dio dio = Dio();
+//   try {
+//     Map<String, dynamic> data = {
+//       "name": user.name,
+//       "surname": user.surname,
+//       "bdate": user.bdate,
+//       "gender": user.gender,
+//       // "phone": user.phone,
+//       // "phone_code": user.phoneCode,
+//     };
+//     Response response = await dio.put(
+//         '${Constants.API_URL_DOMAIN_V3}my',
+//         data: FormData.fromMap(data),
+//         options: Options(headers: Constants.headers()));
+//     print('DIO RESP: ${response.data}');
+//
+//     return response.data;
+//   } on DioError catch (e) {
+//     return e.response?.data;
+//   }
+// }

@@ -30,7 +30,7 @@ class DatePickerModelState extends State<DatePickerModel> {
       onTap: () => _selectDate(context),
       child: Container(
         width: double.infinity,
-        height: 50,
+        height: 45,
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(10),

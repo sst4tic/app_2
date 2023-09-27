@@ -1,20 +1,21 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:yiwumart/catalog_screens/favorite_products.dart';
-import 'package:yiwumart/screens/decoration_screen.dart';
-import 'package:yiwumart/screens/edit_profile.dart';
+import 'package:yiwumart/main.dart';
+import 'package:yiwumart/models/profile_item.dart';
 import 'package:yiwumart/screens/main_screen.dart';
 import 'package:yiwumart/screens/purchase_history.dart';
 import 'package:http/http.dart' as http;
 import 'package:yiwumart/screens/seissions_page.dart';
+import 'package:yiwumart/util/function_class.dart';
 import '../bloc/auth_bloc/auth_bloc.dart';
 import '../models/build_user.dart';
 import '../models/shimmer_model.dart';
 import '../util/constants.dart';
-import '../util/styles.dart';
 import '../util/user.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -36,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   static Future<User> getUser() async {
-    var url = '${Constants.API_URL_DOMAIN}action=user_profile';
+    var url = '${Constants.API_URL_DOMAIN_V3}my';
     final response =
         await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
@@ -56,8 +57,71 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  Map<IconData, String> items = {
+    Icons.access_time_outlined: 'История покупок',
+    Icons.settings_outlined: 'Настройки',
+    CupertinoIcons.creditcard_fill: 'Мои карты',
+    CupertinoIcons.headphones: 'Связаться с нами',
+    Icons.computer: 'Активные устройства',
+    CupertinoIcons.moon: 'Темная тема',
+    Icons.logout: 'Выйти из аккаунта',
+  };
+
   @override
   Widget build(BuildContext context) {
+    final actions = [
+      () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const PurchaseHistory()),
+        );
+      },
+      () {
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const PurchaseHistory()),
+        // );
+      },
+      () {
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const PurchaseHistory()),
+        // );
+      },
+      () {
+      scakey.currentState!.showSupport();
+      },
+      () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Sessions()),
+        );
+      },
+      () {
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const PurchaseHistory()),
+        // );
+      },
+      () {
+        Func().showLogoutDialog(
+          context: context,
+          submitCallback: () {
+            context.read<AuthBloc>().add(LogoutEvent());
+            scakey.currentState?.updateBadgeCount(0);
+          },
+        );
+      },
+    ];
+    List<Widget> profileWidgets = List.generate(
+      items.length,
+      (index) => ProfileModel(
+        action: actions[index],
+        icon: items.keys.toList()[index],
+        title: items.values.toList()[index],
+        logout: index == items.length - 1 ? true : false,
+      ),
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -92,270 +156,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               ),
             ),
-            const SizedBox(height: 20),
-            Text('Активность'.toUpperCase(), style: TextStyles.headerStyle2),
-            const SizedBox(height: 10),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PurchaseHistory()));
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12))),
-                padding: REdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: const Icon(
-                        Icons.history,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                    SizedBox(width: 5.h),
-                    Text('История покупок', style: TextStyles.bodyStyle),
-                    const Spacer(),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Divider(
-              height: 0,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const FavoriteProducts()));
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                    borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12))),
-                padding: REdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: const Icon(
-                        Icons.favorite,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                    SizedBox(width: 5.h),
-                    Text('Избранные товары', style: TextStyles.bodyStyle),
-                    const Spacer(),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Text('Аккаунт'.toUpperCase(), style: TextStyles.headerStyle2),
-            const SizedBox(height: 10),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const EditProfile()))
-                    .then((value) => refresh());
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12))),
-                padding: REdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: const Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                    SizedBox(width: 5.h),
-                    Text('Редактирование', style: TextStyles.bodyStyle),
-                    const Spacer(),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Divider(
-              height: 0,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const DecorationScreen()));
-              },
-              child: Container(
-                padding: REdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: const Icon(
-                      Icons.brush,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                    SizedBox(width: 5.h),
-                    Text('Оформление', style: TextStyles.bodyStyle),
-                    const Spacer(),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Divider(
-              height: 0,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Sessions()));
-              },
-              child: Container(
-                padding: REdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[600],
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: const Icon(
-                        Icons.devices,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                    SizedBox(width: 5.h),
-                    Text('Активные устройства', style: TextStyles.bodyStyle),
-                    const Spacer(),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Divider(
-              height: 0,
-            ),
-            GestureDetector(
-              onTap: () {
-                scakey.currentState?.updateBadgeCount(0);
-                context.read<AuthBloc>().add(LogoutEvent());
-              },
-              child: Container(
-                padding: REdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                    borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12))),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: const Icon(
-                        Icons.logout,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                    SizedBox(width: 5.h),
-                    Text('Выйти из аккаунта', style: TextStyles.bodyStyle),
-                    const Spacer(),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 20.h),
+            const SizedBox(height: 15),
+            ...profileWidgets,
             Center(
               child: Text(
                 "Версия приложения $version",
@@ -368,3 +170,278 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+/// ///////////////////////////////////////////////////////////////
+
+/// old version
+///
+///
+// Text('Активность'.toUpperCase(), style: TextStyles.headerStyle2),
+// const SizedBox(height: 10),
+
+// GestureDetector(
+//   onTap: () {
+//     Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) => const PurchaseHistory()));
+//   },
+//   child: Container(
+//     decoration: BoxDecoration(
+//         color: Theme.of(context).colorScheme.secondary,
+//         borderRadius: const BorderRadius.only(
+//             topLeft: Radius.circular(12),
+//             topRight: Radius.circular(12))),
+//     padding: REdgeInsets.all(10),
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.start,
+//       children: [
+//         Container(
+//           width: 25,
+//           height: 25,
+//           decoration: BoxDecoration(
+//             color: Colors.orange,
+//             borderRadius: BorderRadius.circular(5),
+//           ),
+//           child: const Icon(
+//             Icons.history,
+//             color: Colors.white,
+//             size: 20,
+//           ),
+//         ),
+//         SizedBox(width: 5.h),
+//         Text('История покупок', style: TextStyles.bodyStyle),
+//         const Spacer(),
+//         const Icon(
+//           Icons.arrow_forward_ios,
+//           color: Colors.grey,
+//           size: 15,
+//         ),
+//       ],
+//     ),
+//   ),
+// ),
+// const Divider(
+//   height: 0,
+// ),
+// GestureDetector(
+//   onTap: () {
+//     Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) => const FavoriteProducts()));
+//   },
+//   child: Container(
+//     decoration: BoxDecoration(
+//         color: Theme.of(context).colorScheme.secondary,
+//         borderRadius: const BorderRadius.only(
+//             bottomLeft: Radius.circular(12),
+//             bottomRight: Radius.circular(12))),
+//     padding: REdgeInsets.all(10),
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.start,
+//       children: [
+//         Container(
+//             padding: REdgeInsets.all(3),
+//             width: 25,
+//             height: 25,
+//             decoration: BoxDecoration(
+//               color: Colors.red,
+//               borderRadius: BorderRadius.circular(5),
+//             ),
+//             child: SvgPicture.asset(
+//               'assets/icons/favorite_fill.svg',
+//               color: Colors.white,
+//             )),
+//         SizedBox(width: 5.h),
+//         Text('Избранные товары', style: TextStyles.bodyStyle),
+//         const Spacer(),
+//         const Icon(
+//           Icons.arrow_forward_ios,
+//           color: Colors.grey,
+//           size: 15,
+//         ),
+//       ],
+//     ),
+//   ),
+// ),
+// const SizedBox(
+//   height: 30,
+// ),
+// Text('Аккаунт'.toUpperCase(), style: TextStyles.headerStyle2),
+// const SizedBox(height: 10),
+// GestureDetector(
+//   onTap: () {
+//     Navigator.push(
+//             context,
+//             MaterialPageRoute(
+//                 builder: (context) => const EditProfile()))
+//         .then((value) => refresh());
+//   },
+//   child: Container(
+//     decoration: BoxDecoration(
+//         color: Theme.of(context).colorScheme.secondary,
+//         borderRadius: const BorderRadius.only(
+//             topLeft: Radius.circular(12),
+//             topRight: Radius.circular(12))),
+//     padding: REdgeInsets.all(10),
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.start,
+//       children: [
+//         Container(
+//           width: 25,
+//           height: 25,
+//           decoration: BoxDecoration(
+//             color: Colors.blueAccent,
+//             borderRadius: BorderRadius.circular(5),
+//           ),
+//           child: const Icon(
+//             Icons.edit,
+//             color: Colors.white,
+//             size: 20,
+//           ),
+//         ),
+//         SizedBox(width: 5.h),
+//         Text('Редактирование', style: TextStyles.bodyStyle),
+//         const Spacer(),
+//         const Icon(
+//           Icons.arrow_forward_ios,
+//           color: Colors.grey,
+//           size: 15,
+//         ),
+//       ],
+//     ),
+//   ),
+// ),
+// const Divider(
+//   height: 0,
+// ),
+// GestureDetector(
+//   onTap: () {
+//     Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) => const DecorationScreen()));
+//   },
+//   child: Container(
+//     padding: REdgeInsets.all(10),
+//     decoration: BoxDecoration(
+//       color: Theme.of(context).colorScheme.secondary,
+//     ),
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.start,
+//       children: [
+//         Container(
+//           width: 25,
+//           height: 25,
+//           decoration: BoxDecoration(
+//             color: Colors.orange,
+//             borderRadius: BorderRadius.circular(5),
+//           ),
+//           child: const Icon(
+//             Icons.brush,
+//             color: Colors.white,
+//             size: 20,
+//           ),
+//         ),
+//         SizedBox(width: 5.h),
+//         Text('Оформление', style: TextStyles.bodyStyle),
+//         const Spacer(),
+//         const Icon(
+//           Icons.arrow_forward_ios,
+//           color: Colors.grey,
+//           size: 15,
+//         ),
+//       ],
+//     ),
+//   ),
+// ),
+// const Divider(
+//   height: 0,
+// ),
+// GestureDetector(
+//   onTap: () {
+//     Navigator.push(context,
+//         MaterialPageRoute(builder: (context) => const Sessions()));
+//   },
+//   child: Container(
+//     padding: REdgeInsets.all(10),
+//     decoration: BoxDecoration(
+//       color: Theme.of(context).colorScheme.secondary,
+//     ),
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.start,
+//       children: [
+//         Container(
+//           width: 25,
+//           height: 25,
+//           decoration: BoxDecoration(
+//             color: Colors.grey[600],
+//             borderRadius: BorderRadius.circular(5),
+//           ),
+//           child: const Icon(
+//             Icons.devices,
+//             color: Colors.white,
+//             size: 20,
+//           ),
+//         ),
+//         SizedBox(width: 5.h),
+//         Text('Активные устройства', style: TextStyles.bodyStyle),
+//         const Spacer(),
+//         const Icon(
+//           Icons.arrow_forward_ios,
+//           color: Colors.grey,
+//           size: 15,
+//         ),
+//       ],
+//     ),
+//   ),
+// ),
+// const Divider(
+//   height: 0,
+// ),
+// GestureDetector(
+//   onTap: () {
+//     Func().showLogoutDialog(
+//         context: context,
+//         submitCallback: () {
+//           context.read<AuthBloc>().add(LogoutEvent());
+//           scakey.currentState?.updateBadgeCount(0);
+//         });
+//   },
+//   child: Container(
+//     padding: REdgeInsets.all(10),
+//     decoration: BoxDecoration(
+//         color: Theme.of(context).colorScheme.secondary,
+//         borderRadius: const BorderRadius.only(
+//             bottomLeft: Radius.circular(12),
+//             bottomRight: Radius.circular(12))),
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.start,
+//       children: [
+//         Container(
+//           width: 25,
+//           height: 25,
+//           decoration: BoxDecoration(
+//             color: Colors.red,
+//             borderRadius: BorderRadius.circular(5),
+//           ),
+//           child: const Icon(
+//             Icons.logout,
+//             color: Colors.white,
+//             size: 20,
+//           ),
+//         ),
+//         SizedBox(width: 5.h),
+//         Text('Выйти из аккаунта', style: TextStyles.bodyStyle),
+//         const Spacer(),
+//         const Icon(
+//           Icons.arrow_forward_ios,
+//           color: Colors.grey,
+//           size: 15,
+//         ),
+//       ],
+//     ),
+//   ),
+// ),
+// SizedBox(height: 20.h),

@@ -21,90 +21,84 @@ Widget buildOrder(List<OrderList> order) => ListView.builder(
             ),
           );
         },
-        child: Card(
-          margin: const EdgeInsets.only(bottom: 12.5),
-          elevation: 0,
-          shape: RoundedRectangleBorder(
+        child: Container(
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            side: BorderSide(color: Colors.grey.withOpacity(0.2)),
-          ),
-          child: Container(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
             color: Theme.of(context).colorScheme.secondary,
-            height: 75.h,
-            child: Column(
-              children: [
-                Container(
-                  height: 25.h,
-                  padding: REdgeInsets.only(left: 10, right: 10, bottom: 5),
-                  child: Row(children: [
-                    Text(orderItem.title,
-                        style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w500)),
-                    const Spacer(),
-                    Text(orderItem.date,
-                        style: const TextStyle(
-                            fontSize: 14,
-                          fontWeight: FontWeight.w400
-                            )),
-                  ]),
-                ),
-                const Divider(
-                  height: 0,
-                  thickness: 1,
-                ),
-                Container(
-                  height: 30.h,
-                  padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                  child: Row(children: [
-                    Container(
-                      height: 20.h,
-                      padding: const EdgeInsets.only(
-                          left: 5, right: 5, top: 2, bottom: 2),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: orderItem.status == 5
-                            ? Colors.green[800]
-                            : orderItem.status == 6
-                                ? Colors.red
-                                : Theme.of(context).scaffoldBackgroundColor,
-                      ),
-                      child: Row(
-                        children: [
-                          FaIcon(
-                            orderItem.status == 5
-                                ? FontAwesomeIcons.checkDouble
-                                : orderItem.status == 6
-                                    ? FontAwesomeIcons.times
-                                    : FontAwesomeIcons.clock,
-                            size: 12,
-                            color: orderItem.status == 5
-                                ? Colors.white
-                                : orderItem.status == 6
-                                    ? Colors.red
-                                    : Theme.of(context).primaryColorLight,
-                          ),
-                          const SizedBox(width: 5),
-                          Text(orderItem.statusName,
-                              style: TextStyle(
-                                  color: orderItem.status == 5
-                                      ? Colors.white
-                                      : orderItem.status == 6
-                                          ? Colors.red
-                                          : Theme.of(context).primaryColorLight,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    ),
-                    const Spacer(),
-                    Text('${orderItem.total} ₸',
-                        style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold)),
-                  ]),
-                ),
-              ],
+            border: Border.all(
+              color: Colors.grey.withOpacity(0.2),
             ),
+          ),
+          margin: const EdgeInsets.only(bottom: 12.5),
+          height: 75.h,
+          child: Column(
+            children: [
+              Container(
+                padding: REdgeInsets.only(left: 10, right: 10, bottom: 10),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(orderItem.title,
+                          style: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w500)),
+                      Text(orderItem.date,
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w400)),
+                    ]),
+              ),
+              const Divider(
+                height: 0,
+                thickness: 1,
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                child: Row(children: [
+                  Container(
+                    padding: REdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: orderItem.status == 5
+                          ? Colors.green[800]
+                          : orderItem.status == 6
+                              ? Colors.red
+                              : Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                    child: Row(
+                      children: [
+                        FaIcon(
+                          orderItem.status == 5
+                              ? FontAwesomeIcons.checkDouble
+                              : orderItem.status == 6
+                                  ? FontAwesomeIcons.times
+                                  : FontAwesomeIcons.clock,
+                          size: 12,
+                          color: orderItem.status == 5
+                              ? Colors.white
+                              : orderItem.status == 6
+                                  ? Colors.red
+                                  : Theme.of(context).primaryColorLight,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(orderItem.statusName,
+                            style: TextStyle(
+                                color: orderItem.status == 5
+                                    ? Colors.white
+                                    : orderItem.status == 6
+                                        ? Colors.red
+                                        : Theme.of(context).primaryColorLight,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  Text('${orderItem.total} ₸',
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.bold)),
+                ]),
+              ),
+            ],
           ),
         ),
       );

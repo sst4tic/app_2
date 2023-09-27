@@ -1,11 +1,11 @@
 
 class User {
   final int id;
-  final String name;
+  final String? name;
   String? surname;
   final String fullName;
   final String shortName;
-  final String email;
+  final String? email;
   final String roleName;
   String? avatar;
   final String? phoneCode;
@@ -15,11 +15,11 @@ class User {
 
   User ({
     required this.id,
-    required this.name,
+    this.name,
     this.surname,
     required this.fullName,
     required this.shortName,
-    required this.email,
+    this.email,
     required this.roleName,
     this.avatar,
     this.phoneCode,

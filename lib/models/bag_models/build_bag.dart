@@ -1,48 +1,46 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:yiwumart/bloc/bag_bloc/bag_repo.dart';
 import 'package:yiwumart/catalog_screens/product_screen.dart';
+import 'package:yiwumart/util/cart_list.dart';
 import 'package:yiwumart/util/product.dart';
 import '../../bloc/bag_bloc/bag_bloc.dart';
 import '../../catalog_screens/purchase_screen.dart';
 
 class BagCartWidget extends StatefulWidget {
-  const BagCartWidget({super.key});
+  const BagCartWidget({super.key, required this.bagBloc});
+
+  final BagBloc bagBloc;
 
   @override
   BagCartWidgetState createState() => BagCartWidgetState();
 }
 
 class BagCartWidgetState extends State<BagCartWidget> {
-  bool isUpdating = false;
-  void hideIndicator() {
-    Future.delayed(const Duration(milliseconds: 250), () {
-      setState(() {
-        isUpdating = false;
-      });
-    });
-  }
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BagBloc, BagState>(
+      bloc: widget.bagBloc,
       builder: (context, state) {
         if (state is BagLoaded) {
           return Stack(
             children: [
-              buildBagItems(state.cart),
+              buildBagItems(state.cart, state.selectedItems, widget.bagBloc,
+                  state.allSelected),
               Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
                 child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 5.0),
+                    padding: REdgeInsets.all(8),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        fixedSize: Size(1.sw, 5.h),
+                        fixedSize: Size(1.sw, 40.h),
                       ),
                       onPressed: () async {
                         Navigator.push(
@@ -50,15 +48,17 @@ class BagCartWidgetState extends State<BagCartWidget> {
                             MaterialPageRoute(
                                 builder: (context) => PurchaseScreen(
                                       cartId: state.cart.cartId!,
-                                  totalSum: state.cart.totalSum,
+                                      totalSum: state.cart.totalSum,
                                     )));
                       },
                       child: const Text(
                         'Оформить заказ',
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
                       ),
                     )),
               ),
-              isUpdating ? const LoadingIndicator() : Container(),
             ],
           );
         } else {
@@ -68,7 +68,9 @@ class BagCartWidgetState extends State<BagCartWidget> {
     );
   }
 
-  Widget buildBagItems(cart) {
+  Widget buildBagItems(CartItem cart, Set<int> selectedValues, BagBloc bagBloc,
+      bool isSelectAll) {
+    print(isSelectAll);
     final cartList = cart.items;
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -84,11 +86,51 @@ class BagCartWidgetState extends State<BagCartWidget> {
                   topRight: Radius.circular(10),
                 ),
               ),
-              title: const Text('Товары',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  )),
+              titleSpacing: 0,
+              title: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Checkbox(
+                    checkColor: Colors.white,
+                    activeColor: Colors.blue,
+                    value: isSelectAll,
+                    // make circle color red
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    side: MaterialStateBorderSide.resolveWith(
+                      (states) => const BorderSide(
+                          width: 1.0, color: Color(0xFFC7C7C7)),
+                    ),
+                    onChanged: (val) {
+                      cartList.forEach((element) {
+                        bagBloc.add(SelectItem(id: element.id));
+                      });
+                    },
+                  ),
+                  const Text('Выбрать все',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      )),
+                  const Spacer(),
+                  TextButton(
+                      onPressed: () {
+                        if (selectedValues.isNotEmpty) {
+                          bagBloc.add(DeleteSelected(ids: selectedValues));
+                        }
+                      },
+                      child: Text('Удалить выбранное',
+                          style: TextStyle(
+                            color: selectedValues.isEmpty
+                                ? Colors.grey
+                                : const Color(0xFFCC444A),
+                            fontSize: 12,
+                            fontFamily: 'Noto Sans',
+                            fontWeight: FontWeight.w500,
+                          ))),
+                ],
+              ),
               centerTitle: false,
             ),
           ),
@@ -117,15 +159,33 @@ class BagCartWidgetState extends State<BagCartWidget> {
                   );
                 },
                 child: Container(
-                  padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
+                  padding: REdgeInsets.symmetric(
+                    horizontal: 8,
                   ),
                   height: 80.h,
                   color: Theme.of(context).colorScheme.secondary,
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
+                      SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: Checkbox(
+                          checkColor: Colors.white,
+                          activeColor: Colors.blue,
+                          value: selectedValues.contains(cartItem.id),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          side: MaterialStateBorderSide.resolveWith(
+                            (states) => const BorderSide(
+                                width: 1.0, color: Color(0xFFC7C7C7)),
+                          ),
+                          onChanged: (val) {
+                            bagBloc.add(SelectItem(id: cartItem.id));
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 5),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(cartItem.imageThumb,
@@ -171,29 +231,32 @@ class BagCartWidgetState extends State<BagCartWidget> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    setState(() {
-                                      if (cartItem.qty != 0) {
-                                        isUpdating = true;
-                                        cartItem.qty--;
-                                        BlocProvider.of<BagBloc>(context)
-                                            .add(ChangeQuantity(
-                                          id: cartItem.id,
-                                          quantity: cartItem.qty,
-                                          context: context,
-                                        ));
-                                      }
-                                    });
-                                    hideIndicator();
+                                    if (cartItem.qty != 0) {
+                                      cartItem.qty--;
+
+                                      bagBloc.add(ChangeQuantity(
+                                        id: cartItem.id,
+                                        quantity: cartItem.qty,
+                                        context: context,
+                                      ));
+                                    }
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(3),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color: Colors.red,
+                                      color: Colors.transparent,
+                                      border: Border.all(
+                                        color: const Color(0xFFD6D6D6),
+                                        width: 1,
+                                      ),
                                     ),
-                                    child: const Icon(
-                                      Icons.remove,
-                                      color: Colors.white,
+                                    child: Icon(
+                                      cartItem.qty == 1
+                                          ? CupertinoIcons.trash
+                                          : Icons.remove,
+                                      color:
+                                          const Color.fromRGBO(13, 110, 253, 1),
                                       size: 20,
                                     ),
                                   ),
@@ -207,26 +270,25 @@ class BagCartWidgetState extends State<BagCartWidget> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    setState(() {
-                                      isUpdating = true;
-                                      BlocProvider.of<BagBloc>(context)
-                                          .add(ChangeQuantity(
-                                        id: cartItem.id,
-                                        quantity: cartItem.qty + 1,
-                                        context: context,
-                                      ));
-                                    });
-                                    hideIndicator();
+                                    bagBloc.add(ChangeQuantity(
+                                      id: cartItem.id,
+                                      quantity: cartItem.qty + 1,
+                                      context: context,
+                                    ));
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(3),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color: Colors.green,
+                                      color: Colors.transparent,
+                                      border: Border.all(
+                                        color: const Color(0xFFD6D6D6),
+                                        width: 1,
+                                      ),
                                     ),
                                     child: const Icon(
                                       Icons.add,
-                                      color: Colors.white,
+                                      color: Color.fromRGBO(13, 110, 253, 1),
                                       size: 20,
                                     ),
                                   ),
@@ -287,20 +349,6 @@ class BagCartWidgetState extends State<BagCartWidget> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class LoadingIndicator extends StatelessWidget {
-  const LoadingIndicator({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black.withOpacity(0.5),
-      child: const Center(
-        child: CircularProgressIndicator(),
       ),
     );
   }

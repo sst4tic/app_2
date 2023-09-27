@@ -1,12 +1,16 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_multi_formatter/formatters/phone_input_formatter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:yiwumart/bloc/edit_profile_bloc/edit_profile_bloc.dart';
 import 'package:yiwumart/bloc/edit_profile_bloc/edit_repo.dart';
+import '../bloc/home_page_bloc/home_page_bloc.dart';
 import '../models/date_picker_model.dart';
 import '../models/shimmer_model.dart';
+import '../util/function_class.dart';
 import '../util/styles.dart';
 import '../util/user.dart';
 import 'change_pass_screen.dart';
@@ -36,14 +40,16 @@ class _EditProfileState extends State<EditProfile> {
         title: const Text('Редактирование'),
       ),
       body: BlocProvider(
-         create: (context) => EditProfileBloc(editProfileRepo: EditRepo()),
+        create: (context) => EditProfileBloc(editProfileRepo: EditRepo()),
         child: BlocBuilder<EditProfileBloc, EditProfileState>(
           bloc: _editBloc,
           builder: (context, state) {
             if (state is EditProfileLoading) {
               return buildEditShimmer(context);
             } else if (state is EditProfileLoaded) {
-              selectedGender = state.user.gender == 'Мужчина' ? 'male' : 'female';
+              selectedGender =
+                  state.user.gender == 'Мужчина' ? 'male' : 'female';
+              print('PHONE ${state.user.phone}');
               return buildEdit(state, context);
             } else if (state is EditProfileError) {
               return Center(
@@ -76,7 +82,7 @@ class _EditProfileState extends State<EditProfile> {
           padding: REdgeInsets.all(8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,38 +91,16 @@ class _EditProfileState extends State<EditProfile> {
               const SizedBox(height: 10),
               TextFormField(
                 controller: nameController,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor,
-                  hintText: 'Имя',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
+                decoration:
+                    InputDecorations(hintText: 'Введите имя').editDecoration,
               ),
               const SizedBox(height: 20),
               Text('Фамилия'.toUpperCase(), style: TextStyles.editStyle),
               const SizedBox(height: 10),
               TextFormField(
                 controller: surnameController,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor,
-                  hintText: 'Фамилия',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
+                decoration: InputDecorations(hintText: 'Введите фамилию')
+                    .editDecoration,
               ),
               const SizedBox(height: 20),
               Text('Дата рождения'.toUpperCase(), style: TextStyles.editStyle),
@@ -127,10 +111,27 @@ class _EditProfileState extends State<EditProfile> {
               const SizedBox(height: 20),
               Text('Пол'.toUpperCase(), style: TextStyles.editStyle),
               const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                elevation: 0,
-                dropdownColor: Theme.of(context).scaffoldBackgroundColor,
+              DropdownButton2(
+                underline: Container(),
+                onChanged: (value) {
+                  selectedGender = value!;
+                },
                 value: state.user.gender == 'Мужчина' ? 'male' : 'female',
+                isExpanded: true,
+                buttonStyleData: ButtonStyleData(
+                  height: 40,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Theme.of(context).scaffoldBackgroundColor),
+                  padding: REdgeInsets.all(8),
+                ),
+                dropdownStyleData: DropdownStyleData(
+                  elevation: 0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                ),
                 items: const [
                   DropdownMenuItem(
                     value: 'male',
@@ -141,30 +142,32 @@ class _EditProfileState extends State<EditProfile> {
                     child: Text('Женщина'),
                   ),
                 ],
-                onChanged: (value) {
-                    selectedGender = value!;
-                },
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
               ),
+              // DropdownButtonFormField<String>(
+              //   elevation: 0,
+              //   dropdownColor: Theme.of(context).scaffoldBackgroundColor,
+              //   value: state.user.gender == 'Мужчина' ? 'male' : 'female',
+              //   items: const [
+              //     DropdownMenuItem(
+              //       value: 'male',
+              //       child: Text('Мужчина'),
+              //     ),
+              //     DropdownMenuItem(
+              //       value: 'female',
+              //       child: Text('Женщина'),
+              //     ),
+              //   ],
+              //   onChanged: (value) {
+              //     selectedGender = value!;
+              //   },
+              //   decoration: InputDecorations(hintText: 'Выберите пол')
+              //       .editDecoration,
+              // ),
               const SizedBox(height: 20),
               Text('Номер телефона'.toUpperCase(), style: TextStyles.editStyle),
               const SizedBox(height: 10),
               IntlPhoneField(
+                enabled: false,
                 dropdownIcon: const Icon(
                   Icons.arrow_drop_down,
                   color: Colors.grey,
@@ -173,27 +176,28 @@ class _EditProfileState extends State<EditProfile> {
                 keyboardType: TextInputType.phone,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
+                  PhoneInputFormatter(defaultCountryCode: 'KZ')
                 ],
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
+                decoration: InputDecorations(hintText: '').editDecoration,
+                flagsButtonPadding: REdgeInsets.only(
+                  left: 5,
+                  top: 0,
+                  bottom: 0,
                 ),
+                flagsButtonMargin:
+                    REdgeInsets.only(top: 1, bottom: 1, left: 0.5, right: 5),
                 searchText: 'Выберите страну',
                 countries: const [
                   'KZ',
                 ],
+                dropdownIconPosition: IconPosition.trailing,
+                disableLengthCheck: true,
+                dropdownTextStyle: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 12.23,
+                  fontFamily: 'Noto Sans',
+                  fontWeight: FontWeight.w400,
+                ),
                 initialCountryCode: 'KZ',
               ),
               const SizedBox(height: 10),
@@ -234,7 +238,10 @@ class _EditProfileState extends State<EditProfile> {
                 height: 25.h,
                 child: ElevatedButton(
                   onPressed: () async {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ChangePassScreen()));
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red,
@@ -252,7 +259,11 @@ class _EditProfileState extends State<EditProfile> {
                 height: 25.h,
                 child: ElevatedButton(
                   onPressed: () async {
-                _editBloc.add(DeleteAccount(context: context));
+                    Func().showDelete(
+                        context: context,
+                        submitCallback: () {
+                          _editBloc.add(DeleteAccount(context: context));
+                        });
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red[900],

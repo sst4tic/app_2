@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:group_button/group_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yiwumart/catalog_screens/catalog_item.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
@@ -119,24 +120,84 @@ class SearchModel extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    final buttons = [
+      "Телевизор",
+      "Вытяжка",
+      "Мультиварка",
+      "Холодильник",
+      "Посудомоечная машина"
+    ];
     return StatefulBuilder(builder: (context, setState) {
       return Column(
         mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(
+            height: 8.h,
+          ),
+          const Padding(
+            padding: EdgeInsets.only(left: 12.0),
+            child: Text(
+              'Популярные запросы',
+              style: TextStyle(
+                color: Color(0xFF7B7B7B),
+                fontSize: 14,
+                fontFamily: 'Noto Sans',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 8.h,
+          ),
+          Container(
+            padding: REdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            width: double.infinity,
+            child: GroupButton(
+              options: const GroupButtonOptions(
+                mainGroupAlignment: MainGroupAlignment.start,
+              ),
+              onSelected: (name, index, isSelected) {
+                print(name);
+                print(index);
+                print(isSelected);
+                query = name;
+                showResults(context);
+              },
+              buttons: buttons,
+              buttonBuilder: (isSelected, index, context) => Container(
+                padding: REdgeInsets.symmetric(vertical: 4, horizontal: 9),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF1F1F1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  index,
+                  style: const TextStyle(
+                    color: Color(0xFF494949),
+                    fontSize: 13,
+                    fontFamily: 'Noto Sans',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ),
           _history.isNotEmpty
               ? Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                  width: double.infinity,
-                  height: 40.h,
-                  color: Theme.of(context).colorScheme.secondary,
+                  padding: REdgeInsets.symmetric(horizontal: 12),
                   child: Row(
                     children: [
                       Text(
                         'История поиска',
                         style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF7B7B7B),
+                          fontSize: 14,
+                          fontFamily: 'Noto Sans',
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       const Spacer(),
@@ -152,12 +213,13 @@ class SearchModel extends SearchDelegate {
                               _saveHistory();
                             });
                           },
-                          child: Text(
+                          child: const Text(
                             'Очистить',
                             style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF0D6EFD),
+                              fontSize: 14,
+                              fontFamily: 'Noto Sans',
+                              fontWeight: FontWeight.w400,
                             ),
                           )),
                     ],
@@ -169,28 +231,32 @@ class SearchModel extends SearchDelegate {
               itemCount: _history.toSet().toList().length,
               itemBuilder: (BuildContext context, int index) {
                 var revertHistory = _history.toList().reversed;
-                return ListTile(
-                  title: Text(revertHistory.toList()[index]),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      setState(() {
-                        final value = revertHistory.toList()[index];
-                        _history.remove(value);
-                        _saveHistory();
-                      });
+                return Container(
+                  color: Colors.white,
+                  child: ListTile(
+                    leading: Icon(Icons.access_time),
+                    contentPadding: REdgeInsets.symmetric(horizontal: 12),
+                    title: Text(revertHistory.toList()[index]),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        setState(() {
+                          final value = revertHistory.toList()[index];
+                          _history.remove(value);
+                          _saveHistory();
+                        });
+                      },
+                    ),
+                    onTap: () {
+                      query = revertHistory.toSet().toList()[index];
+                      showResults(context);
                     },
                   ),
-                  onTap: () {
-                    query = revertHistory.toSet().toList()[index];
-                    showResults(context);
-                  },
                 );
               },
               separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(
-                height: 0,
-                thickness: 1,
+                  const SizedBox(
+                height: 6,
               ),
             ),
           ),
@@ -218,11 +284,12 @@ class SearchModel extends SearchDelegate {
                   MaterialPageRoute(
                       builder: (context) => ProductScreen(
                             product: Product(
+                              rating: 0,
                               id: searchItem.id,
                               name: searchItem.name,
                               price: searchItem.price,
                               is_favorite: null,
-                              link: searchItem.link,
+                              link: searchItem.link, reviewCount: 0,
                             ),
                           )));
             },
@@ -317,7 +384,12 @@ class SearchModel extends SearchDelegate {
               title: Text(
                 searchItem.name,
                 style:
-                    const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                    const TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontFamily: 'Noto Sans',
+                fontWeight: FontWeight.w600,
+              ),
               ),
               trailing: const Icon(
                 Icons.arrow_forward_ios,
@@ -332,7 +404,7 @@ class SearchModel extends SearchDelegate {
         child: Container(
           color: Theme.of(context).scaffoldBackgroundColor,
           child: Padding(
-            padding: REdgeInsets.all(10),
+            padding: REdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -343,7 +415,12 @@ class SearchModel extends SearchDelegate {
                           children: [
                             Text(
                               'Найдено ${search.products.total} товаров',
-                              style: Theme.of(context).textTheme.bodyLarge,
+                              style: const TextStyle(
+                                color: Color(0xFF7B7B7B),
+                                fontSize: 14,
+                                fontFamily: 'Noto Sans',
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             const SizedBox(height: 10),
                             SizedBox(
@@ -374,7 +451,11 @@ class SearchModel extends SearchDelegate {
                                   child: const Text(
                                     'Показать найденные товары',
                                     style: TextStyle(
-                                        color: Colors.white, fontSize: 17),
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontFamily: 'Noto Sans',
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   )),
                             ),
                           ],
@@ -391,8 +472,10 @@ class SearchModel extends SearchDelegate {
                     : const Text(
                         'Категории',
                         style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF494949),
+                          fontSize: 16,
+                          fontFamily: 'Noto Sans',
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                 SizedBox(height: 10.h),

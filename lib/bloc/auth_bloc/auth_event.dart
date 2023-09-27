@@ -51,3 +51,14 @@ class ChangeThemeEvent extends AuthEvent {
   });
   List<Object> get props => [isDarkTheme, isLightTheme, isSystemTheme];
 }
+
+class LoginSmsEvent extends AuthEvent {
+  final BuildContext context;
+  final String phone;
+  Stream<int> countStream;
+  VoidCallback restartCallback;
+
+  LoginSmsEvent({required this.phone, required this.context, required this.countStream, required this.restartCallback});
+
+  List<Object> get props => [phone, context];
+}

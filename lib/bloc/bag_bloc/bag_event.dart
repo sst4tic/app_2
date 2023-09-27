@@ -26,3 +26,23 @@ class ChangeQuantity extends BagEvent {
 
   List<Object?> get props => [id, quantity, context];
 }
+
+class SelectItem extends BagEvent {
+  SelectItem({
+    required this.id,
+  });
+
+  final int id;
+
+  List<Object?> get props => [id];
+}
+
+class DeleteSelected extends BagEvent {
+  DeleteSelected({
+    required this.ids,
+  });
+
+  final Set<int> ids;
+
+  List<Object?> get props => [ids];
+}
