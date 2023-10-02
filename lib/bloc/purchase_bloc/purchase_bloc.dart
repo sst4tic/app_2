@@ -47,18 +47,6 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
             "city": "Алматы",
             "email": "aman@gmail.com",
           };
-          // Map<String, dynamic> data = {
-          //   "cart_id": event.cartId,
-          //   "name":"Bratishka Yevgeniy",
-          //   "phone": "+77470636988",
-          //   "address":"chulanova 129",
-          //   // "payment_method":"cash",
-          //   "payment_method":"online",
-          //   "online":"halyk",
-          //   "comment":"",
-          //   "city":"Алматы",
-          //   "email":"admin@admin.com"
-          // };
           print(data);
           var url = '${Constants.API_URL_DOMAIN_V3}checkout';
           final Response response = await dio.post(url,
@@ -77,6 +65,9 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
 
         var resp = await checkoutPost();
         // ignore: use_build_context_synchronously
+        if(resp['success']) {
+          Func().showSuccessPurchase(context: event.context);
+        } else
         Func().showSnackbar(event.context, resp['success'] != null
             ? 'Успешно'
             : resp['errors'].toString(), resp['success'] != null ? true : false);

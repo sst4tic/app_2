@@ -45,6 +45,8 @@ class Items {
     required this.id,
     required this.name,
      this.is_favorite,
+    required this.rating,
+    required this.reviewCount,
     required this.price,
     required this.link,
      this.media,
@@ -52,6 +54,8 @@ class Items {
   late final int id;
   late final String name;
    bool? is_favorite;
+  late final rating;
+  late final reviewCount;
   late final String price;
    String? link;
   late final List<Media>? media;
@@ -60,6 +64,8 @@ class Items {
     id = json['id'];
     name = json['name'];
     is_favorite = json['is_favorite'];
+    rating = json['avg_rating'];
+    reviewCount = json['review_count'];
     price = json['price'].toString();
     link = json['link'];
     media = json['media'] != null ? List.from(json['media']).map((e)=>Media.fromJson(e)).toList() : null;
@@ -70,6 +76,8 @@ class Items {
     data['id'] = id;
     data['name'] = name;
     data['is_favorite'] = is_favorite;
+    data['rating'] = rating;
+    data['review_count'] = reviewCount;
     data['price'] = price;
     data['link'] = link;
     data['media'] = media;

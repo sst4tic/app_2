@@ -6,6 +6,7 @@ import 'package:yiwumart/main.dart';
 import 'package:yiwumart/util/cart_list.dart';
 import '../../util/constants.dart';
 import '../../util/function_class.dart';
+import '../../util/product.dart';
 import 'abstract_bag.dart';
 
 part 'bag_event.dart';
@@ -14,6 +15,7 @@ part 'bag_state.dart';
 
 class BagBloc extends Bloc<BagEvent, BagState> {
   final AbstractBag bagRepo;
+
   BagBloc({required this.bagRepo}) : super(BagInitial()) {
     Set<int> selectedItems = <int>{};
     bool isSelectAll = false;
@@ -30,9 +32,13 @@ class BagBloc extends Bloc<BagEvent, BagState> {
             if (bagList.items.isNotEmpty) {
               // bagList.items.map((e) => selectedItems.add(e.id)).toList();
               print(selectedItems);
-              emit(BagLoaded(cart: bagList, selectedItems: selectedItems, allSelected: false));
+              emit(BagLoaded(
+                  cart: bagList,
+                  selectedItems: selectedItems,
+                  allSelected: false));
             } else {
-              emit(BagEmpty());
+              final products = await Func.getProducts();
+              emit(BagEmpty(products: products));
             }
           }
         }
@@ -66,10 +72,15 @@ class BagBloc extends Bloc<BagEvent, BagState> {
           );
           if (cartList.isEmpty) {
             Func().getInitParams();
-            emit(BagEmpty());
+            final products = await Func.getProducts();
+            emit(BagEmpty(products: products));
           } else {
-            emit(BagLoaded(cart: newCart, selectedItems: selectedItems, allSelected: isSelectAll));
+            emit(BagLoaded(
+                cart: newCart,
+                selectedItems: selectedItems,
+                allSelected: isSelectAll));
             Func().getInitParams();
+            // ignore: use_build_context_synchronously
             Func().showSnackbar(
                 event.context, 'Количество товара изменено', body['success']);
           }
@@ -89,13 +100,16 @@ class BagBloc extends Bloc<BagEvent, BagState> {
       } else {
         selectedItems.add(id);
       }
-      if(selectedItems.length == (state as BagLoaded).cart.items.length) {
+      if (selectedItems.length == (state as BagLoaded).cart.items.length) {
         isSelectAll = true;
       } else {
         isSelectAll = false;
       }
       print(isSelectAll);
-      emit(BagLoaded(cart: (state as BagLoaded).cart, selectedItems: selectedItems, allSelected: isSelectAll));
+      emit(BagLoaded(
+          cart: (state as BagLoaded).cart,
+          selectedItems: selectedItems,
+          allSelected: isSelectAll));
     });
 
     on<DeleteSelected>((event, emit) async {
@@ -112,16 +126,22 @@ class BagBloc extends Bloc<BagEvent, BagState> {
             totalSum: cart.totalSum,
             cartId: cart.cartId,
           );
+          Func().getInitParams();
           if (cartList.isEmpty) {
-            emit(BagEmpty());
+            final products = await Func.getProducts();
+            emit(BagEmpty(products: products));
           } else {
-            emit(BagLoaded(cart: newCart, selectedItems: selectedItems, allSelected: isSelectAll));
+            emit(BagLoaded(
+                cart: newCart,
+                selectedItems: selectedItems,
+                allSelected: isSelectAll));
             Func().getInitParams();
             Func().showSnackbar(
                 navKey.currentContext!, body['message'], body['success']);
           }
         } else {
-          Func().showSnackbar(navKey.currentContext!, body['errors'].toString(), body['success']);
+          Func().showSnackbar(navKey.currentContext!, body['errors'].toString(),
+              body['success']);
         }
         navKey.currentContext!.loaderOverlay.hide();
       } catch (e) {

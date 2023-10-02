@@ -560,6 +560,15 @@ class Func {
     }
   }
 
+  // for getting popular search
+  Future<List<String>> getPopularSearch() async {
+    var url = '${Constants.API_URL_DOMAIN_V3}search/popular';
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
+    final body = jsonDecode(response.body);
+    return List.from(body['data']?.map((e) => e.toString()).toList());
+  }
+
   void showWarningDialog({
     required BuildContext context,
     required String text,
@@ -573,8 +582,11 @@ class Func {
                 borderRadius: BorderRadius.circular(18.0)),
             title: Column(
               children: [
-                Icon(Icons.warning_rounded,
-                    color: Colors.yellow[800], size: 50),
+                SvgPicture.asset(
+                  'assets/icons/bag_error.svg',
+                  height: 92,
+                  width: 92,
+                ),
                 const SizedBox(height: 10),
                 Text(
                   text,
@@ -607,35 +619,38 @@ class Func {
                   REdgeInsets.symmetric(horizontal: 20, vertical: 10),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0)),
-              title: Column(
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/exit_icon.svg',
-                    width: 50,
-                    height: 50,
-                  ),
-                  const SizedBox(height: 5),
-                  const Text('Предупреждение',
+              title: Container(
+                margin: REdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/exit_icon.svg',
+                      width: 92,
+                      height: 92,
+                    ),
+                    const SizedBox(height: 5),
+                    const Text('Предупреждение',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0xFF414141),
+                          fontSize: 22,
+                          fontFamily: 'Noto Sans',
+                          fontWeight: FontWeight.w700,
+                        )),
+                    const SizedBox(height: 5),
+                    const Text(
+                      'Вы уверены, что хотите \nвыйти из аккаунта?',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xFF414141),
-                        fontSize: 22,
+                        color: Color(0xFF5B5B5B),
+                        fontSize: 15,
                         fontFamily: 'Noto Sans',
-                        fontWeight: FontWeight.w700,
-                      )),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Вы уверены, что хотите \nвыйти из аккаунта?',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(0xFF5B5B5B),
-                      fontSize: 15,
-                      fontFamily: 'Noto Sans',
-                      fontWeight: FontWeight.w400,
-                      height: 1.5,
+                        fontWeight: FontWeight.w400,
+                        height: 1.5,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               children: <Widget>[
                 Row(
@@ -644,6 +659,9 @@ class Func {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFF0F0F0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
                         ),
                         onPressed: () {
                           Navigator.of(dialogContext).pop();
@@ -662,6 +680,9 @@ class Func {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red[700],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
                         ),
                         onPressed: () {
                           Navigator.of(dialogContext).pop();
@@ -694,10 +715,10 @@ class Func {
                   borderRadius: BorderRadius.circular(18.0)),
               title: Column(
                 children: [
-                  Image.asset(
-                    'assets/icons/delete_warning.png',
-                    width: 50,
-                    height: 50,
+                  SvgPicture.asset(
+                    'assets/icons/delete_warning.svg',
+                    width: 92,
+                    height: 92,
                   ),
                   const SizedBox(height: 5),
                   const Text('Удаление аккаунта',
@@ -708,7 +729,7 @@ class Func {
                         fontFamily: 'Noto Sans',
                         fontWeight: FontWeight.w700,
                       )),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   const Text(
                     'Вы уверены, что хотите \nудалить аккаунт?',
                     textAlign: TextAlign.center,
@@ -764,6 +785,301 @@ class Func {
               ],
             );
           });
+
+  void showDeleteCart(
+          {required BuildContext context,
+          required VoidCallback submitCallback}) =>
+      showDialog(
+          context: context,
+          builder: (dialogContext) {
+            return SimpleDialog(
+              contentPadding:
+                  REdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0)),
+              title: Column(
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/delete_cart.svg',
+                    width: 92,
+                    height: 92,
+                  ),
+                  const SizedBox(height: 5),
+                  const Text('Удаление аккаунта',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFF414141),
+                        fontSize: 22,
+                        fontFamily: 'Noto Sans',
+                        fontWeight: FontWeight.w700,
+                      )),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'Вы уверены, что хотите удалить все товары из корзины?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF5B5B5B),
+                      fontSize: 15,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+              children: <Widget>[
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFF0F0F0),
+                        ),
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                        },
+                        child: const Text('Отмена',
+                            style: TextStyle(
+                              color: Color(0xFF5E606B),
+                              fontSize: 15,
+                              fontFamily: 'Noto Sans',
+                              fontWeight: FontWeight.w700,
+                            )),
+                      ),
+                    ),
+                    SizedBox(width: 10.w),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red[700],
+                        ),
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                          submitCallback.call();
+                        },
+                        child: const Text('Удалить',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontFamily: 'Noto Sans',
+                              fontWeight: FontWeight.w700,
+                            )),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          });
+
+  void showDeleteFeedback(
+      {required BuildContext context,
+        required VoidCallback submitCallback}) =>
+      showDialog(
+          context: context,
+          builder: (dialogContext) {
+            return SimpleDialog(
+              contentPadding:
+              REdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0)),
+              title: Column(
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/delete_feedback.svg',
+                    width: 92,
+                    height: 92,
+                  ),
+                  const SizedBox(height: 5),
+                  const Text('Удаление отзыва',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFF414141),
+                        fontSize: 22,
+                        fontFamily: 'Noto Sans',
+                        fontWeight: FontWeight.w700,
+                      )),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'Вы уверены, что хотите \nудалить отзыв?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF5B5B5B),
+                      fontSize: 15,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+              children: <Widget>[
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFF0F0F0),
+                        ),
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                        },
+                        child: const Text('Отмена',
+                            style: TextStyle(
+                              color: Color(0xFF5E606B),
+                              fontSize: 15,
+                              fontFamily: 'Noto Sans',
+                              fontWeight: FontWeight.w700,
+                            )),
+                      ),
+                    ),
+                    SizedBox(width: 10.w),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red[700],
+                        ),
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                          submitCallback.call();
+                        },
+                        child: const Text('Удалить',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontFamily: 'Noto Sans',
+                              fontWeight: FontWeight.w700,
+                            )),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          });
+
+
+  // for submit feedback success
+  void showSuccessPurchase({required BuildContext context}) => showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return SimpleDialog(
+          contentPadding: REdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+          title: Column(
+            children: [
+              SvgPicture.asset(
+                'assets/icons/purchase_success.svg',
+                width: 92,
+                height: 92,
+              ),
+              const SizedBox(height: 5),
+              const Text('Спасибо за заказ!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFF414141),
+                    fontSize: 22,
+                    fontFamily: 'Noto Sans',
+                    fontWeight: FontWeight.w700,
+                  )),
+              const SizedBox(height: 5),
+              const Text(
+                'Ваш заказ успешно оформлен и отображен в Истории покупок',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'Noto Sans',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+          children: <Widget>[
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                    },
+                    child: const Text('ОК',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'Noto Sans',
+                          fontWeight: FontWeight.w700,
+                        )),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      });
+
+  /// for submit feedback success
+  void showFeedbackSuccess({required BuildContext context}) => showDialog(
+        context: context,
+        builder: (dialogContext) {
+          return SimpleDialog(
+            contentPadding: REdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+            title: Column(
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/purchase_success.svg',
+                  width: 92,
+                  height: 92,
+                ),
+                const SizedBox(height: 5),
+                const Text('Спасибо за ваш отзыв!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF414141),
+                      fontSize: 22,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w700,
+                    )),
+                const SizedBox(height: 5),
+                const Text(
+                  'Ваш отзыв будет опубликован на странице товара',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontFamily: 'Noto Sans',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+            children: <Widget>[
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(dialogContext).pop();
+                      },
+                      child: const Text('ОК',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: 'Noto Sans',
+                            fontWeight: FontWeight.w700,
+                          )),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
 
   String formatPhoneNumber(String phoneNumber) {
     if (phoneNumber.length != 12) {

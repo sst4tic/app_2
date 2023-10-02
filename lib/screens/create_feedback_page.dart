@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:yiwumart/models/feedback_model.dart';
+import 'package:yiwumart/models/star_rating.dart';
 import 'package:yiwumart/util/styles.dart';
 
 import '../bloc/review_post_bloc/review_post_bloc.dart';

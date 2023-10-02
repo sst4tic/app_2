@@ -50,7 +50,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
               } else if (state is BagLoadingFailure) {
                 return Text(state.exception.toString());
               } else if (state is BagEmpty) {
-                return bagEmptyModel(context);
+                return bagEmptyModel(context, state.products);
               } else if (state is BagNotAuthorized) {
                 return bagNonAuthModel(context);
               } else {

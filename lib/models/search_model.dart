@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:group_button/group_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yiwumart/catalog_screens/catalog_item.dart';
+import 'package:yiwumart/models/star_rating.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
 import 'package:yiwumart/screens/search_result.dart';
 import 'package:yiwumart/util/product.dart';
@@ -14,6 +15,7 @@ import '../util/search.dart';
 
 class SearchModel extends SearchDelegate {
   final Set<String> _history = {};
+  List<String> buttons = [];
 
   SearchModel() {
     _loadHistory();
@@ -25,6 +27,7 @@ class SearchModel extends SearchDelegate {
     if (history != null) {
       _history.addAll(history);
     }
+    buttons = await Func().getPopularSearch();
   }
 
   _saveHistory() async {
@@ -120,13 +123,6 @@ class SearchModel extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final buttons = [
-      "Телевизор",
-      "Вытяжка",
-      "Мультиварка",
-      "Холодильник",
-      "Посудомоечная машина"
-    ];
     return StatefulBuilder(builder: (context, setState) {
       return Column(
         mainAxisSize: MainAxisSize.max,
@@ -161,9 +157,6 @@ class SearchModel extends SearchDelegate {
                 mainGroupAlignment: MainGroupAlignment.start,
               ),
               onSelected: (name, index, isSelected) {
-                print(name);
-                print(index);
-                print(isSelected);
                 query = name;
                 showResults(context);
               },
@@ -191,7 +184,7 @@ class SearchModel extends SearchDelegate {
                   padding: REdgeInsets.symmetric(horizontal: 12),
                   child: Row(
                     children: [
-                      Text(
+                      const Text(
                         'История поиска',
                         style: TextStyle(
                           color: Color(0xFF7B7B7B),
@@ -226,40 +219,57 @@ class SearchModel extends SearchDelegate {
                   ),
                 )
               : Container(),
-          Expanded(
-            child: ListView.separated(
-              itemCount: _history.toSet().toList().length,
-              itemBuilder: (BuildContext context, int index) {
-                var revertHistory = _history.toList().reversed;
-                return Container(
-                  color: Colors.white,
-                  child: ListTile(
-                    leading: Icon(Icons.access_time),
-                    contentPadding: REdgeInsets.symmetric(horizontal: 12),
-                    title: Text(revertHistory.toList()[index]),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        setState(() {
-                          final value = revertHistory.toList()[index];
-                          _history.remove(value);
-                          _saveHistory();
-                        });
-                      },
+          _history.isEmpty
+              ? Container()
+              : Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(color: Colors.white),
+                  padding: REdgeInsets.all(12),
+                  child: GroupButton(
+                    options: const GroupButtonOptions(
+                      mainGroupAlignment: MainGroupAlignment.start,
                     ),
-                    onTap: () {
-                      query = revertHistory.toSet().toList()[index];
+                    onSelected: (name, index, isSelected) {
+                      query = name;
                       showResults(context);
                     },
+                    buttons: _history.toList().reversed.toList(),
+                    buttonBuilder: (isSelected, index, context) => Container(
+                      padding:
+                          REdgeInsets.symmetric(vertical: 4, horizontal: 9),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF1F1F1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            index,
+                            style: const TextStyle(
+                              color: Color(0xFF494949),
+                              fontSize: 13,
+                              fontFamily: 'Noto Sans',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(width: 2),
+                          GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _history.remove(index);
+                                  _saveHistory();
+                                });
+                              },
+                              child: const Icon(
+                                Icons.close,
+                                size: 12,
+                              ))
+                        ],
+                      ),
+                    ),
                   ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-                  const SizedBox(
-                height: 6,
-              ),
-            ),
-          ),
+                ),
         ],
       );
     });
@@ -270,7 +280,7 @@ class SearchModel extends SearchDelegate {
         shrinkWrap: true,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 1,
-            childAspectRatio: 53.w / 25.5.h,
+            childAspectRatio: 43.w / 25.5.h,
             crossAxisSpacing: 10.w,
             mainAxisSpacing: 10.h),
         itemCount: search.length > 4 ? 4 : search.length,
@@ -289,7 +299,8 @@ class SearchModel extends SearchDelegate {
                               name: searchItem.name,
                               price: searchItem.price,
                               is_favorite: null,
-                              link: searchItem.link, reviewCount: 0,
+                              link: searchItem.link,
+                              reviewCount: 0,
                             ),
                           )));
             },
@@ -299,6 +310,7 @@ class SearchModel extends SearchDelegate {
                   color: Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadius.circular(8)),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   InkWell(
                     child: Center(
@@ -324,31 +336,40 @@ class SearchModel extends SearchDelegate {
                       ),
                     ),
                   ),
-                  const Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${searchItem.price} ₸',
-                        style: TextStyle(
-                            fontSize: 18.sp, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  SizedBox(height: 5.h),
+                  Text(
+                    '${searchItem.name}\n'.toUpperCase(),
+                    textAlign: TextAlign.start,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Color(0xFF181C32),
+                      fontSize: 14,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                  SizedBox(height: 4.h),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          '${searchItem.name}\n',
-                          textAlign: TextAlign.start,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 14.sp, fontWeight: FontWeight.w500),
-                        ),
+                  SizedBox(height: 5.h),
+                  Row(children: [
+                    StarRating(
+                      rating: double.parse(searchItem.rating.toString()),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      '(${searchItem.reviewCount} отзывов)',
+                      style: const TextStyle(
+                        color: Color(0xFF7B7B7B),
+                        fontSize: 12,
+                        fontFamily: 'Noto Sans',
+                        fontWeight: FontWeight.w400,
                       ),
-                    ],
+                    ),
+                  ]),
+                  SizedBox(height: 5.h),
+                  Text(
+                    '${searchItem.price} ₸',
+                    style:
+                        TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 5.h),
                 ],
@@ -383,13 +404,12 @@ class SearchModel extends SearchDelegate {
               },
               title: Text(
                 searchItem.name,
-                style:
-                    const TextStyle(
-                color: Colors.black,
-                fontSize: 14,
-                fontFamily: 'Noto Sans',
-                fontWeight: FontWeight.w600,
-              ),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontFamily: 'Noto Sans',
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               trailing: const Icon(
                 Icons.arrow_forward_ios,

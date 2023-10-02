@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/bloc/bag_bloc/bag_repo.dart';
 import 'package:yiwumart/catalog_screens/product_screen.dart';
 import 'package:yiwumart/util/cart_list.dart';
+import 'package:yiwumart/util/function_class.dart';
 import 'package:yiwumart/util/product.dart';
 import '../../bloc/bag_bloc/bag_bloc.dart';
 import '../../catalog_screens/purchase_screen.dart';
@@ -103,9 +104,11 @@ class BagCartWidgetState extends State<BagCartWidget> {
                           width: 1.0, color: Color(0xFFC7C7C7)),
                     ),
                     onChanged: (val) {
-                      cartList.forEach((element) {
+                      for (var element in cartList) {
+                        // make check if element is selected
+
                         bagBloc.add(SelectItem(id: element.id));
-                      });
+                      }
                     },
                   ),
                   const Text('Выбрать все',
@@ -117,7 +120,14 @@ class BagCartWidgetState extends State<BagCartWidget> {
                   TextButton(
                       onPressed: () {
                         if (selectedValues.isNotEmpty) {
-                          bagBloc.add(DeleteSelected(ids: selectedValues));
+                          Func().showDeleteCart(
+                            context: context,
+                            submitCallback: () {
+                              if (selectedValues.isNotEmpty) {
+                                bagBloc
+                                    .add(DeleteSelected(ids: selectedValues));
+                              }
+                            });
                         }
                       },
                       child: Text('Удалить выбранное',

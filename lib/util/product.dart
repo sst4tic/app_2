@@ -18,7 +18,7 @@ class Product {
   bool? is_favorite;
   late final String link;
   List<Media>? media;
-  late final int? rating;
+  late final rating;
   late final int? reviewCount;
 
   Product.fromJson(Map<String, dynamic> json) {

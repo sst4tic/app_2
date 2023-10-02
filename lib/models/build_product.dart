@@ -4,7 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:yiwumart/models/feedback_model.dart';
+import 'package:yiwumart/models/star_rating.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
 import 'package:yiwumart/screens/create_feedback_page.dart';
 import 'package:yiwumart/screens/feedback_page.dart';

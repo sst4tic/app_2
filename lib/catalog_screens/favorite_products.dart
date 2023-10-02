@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:yiwumart/catalog_screens/product_screen.dart';
-import 'package:yiwumart/models/feedback_model.dart';
+import 'package:yiwumart/models/star_rating.dart';
 import 'package:yiwumart/util/styles.dart';
 import '../bloc/favorites_bloc/favorites_bloc.dart';
 import '../models/bag_models/bag_button_model.dart';
@@ -96,6 +96,7 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                   ),
                 );
               }
+              // print(product.map((e) => e.media?.map((e) => e.links?.local.thumbnails.s350).toList()));
               return buildFavorites(product);
             } else if (state is FavoritesLoadingFailure) {
               return Center(
@@ -118,19 +119,11 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
         itemCount: product.length,
         itemBuilder: (context, index) {
           final productItem = product[index];
-          final media = productItem.media?.map((e) => e.toJson()).toList();
-          final allPhotos = media
-              ?.map((e) =>
-                  'https://cdn.yiwumart.org/${e['links']['local']['thumbnails']['350']}')
+          final photos = product
+              .map((e) => e.media?.map((e) => e.links?.local.thumbnails.s350))
+              .where((element) => element != null)
+              .expand((element) => element!)
               .toList();
-          if (allPhotos != null && index < allPhotos.length) {
-            final photoAtIndex = allPhotos[index];
-            print(photoAtIndex);
-          } else {
-            print(noPhotoImage);
-          }
-          // final photo = product[index].media?.map((e) => 'https://cdn.yiwumart.org/${e.links?.local.thumbnails.s350}');
-          // final mappedPhoto = photo ?? noPhotoImage;
           return GestureDetector(
             onTap: () {
               Navigator.push(
@@ -150,15 +143,32 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                     Row(
                       children: [
                         Container(
-                          height: 95,
+                          margin: REdgeInsets.all(5),
+                          height: 90,
                           width: 60,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             image: DecorationImage(
-                              image: NetworkImage(
-                                  allPhotos != null && index < allPhotos.length
-                                      ? allPhotos[index]
-                                      : noPhotoImage),
+                              image: Image.network(
+                                photos.isNotEmpty
+                                    ? 'https://cdn.yiwumart.org/${photos[index]}'
+                                        .toString()
+                                    : noPhotoImage,
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace? stackTrace) {
+                                  return Image.network(
+                                    noPhotoImage,
+                                    fit: BoxFit.fill,
+                                  );
+                                },
+                              ).image,
+
+                              // NetworkImage(photos.isNotEmpty
+                              //     ? 'https://cdn.yiwumart.org/${photos[index]}'
+                              //         .toString()
+                              //     : noPhotoImage,
+                              // ),
+
                               fit: BoxFit.fill,
                             ),
                           ),
@@ -186,13 +196,34 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    SvgPicture.asset(
-                                      'assets/icons/favorite_fill.svg',
-                                      color:
-                                          const Color.fromRGBO(252, 47, 61, 1),
-                                      fit: BoxFit.cover,
-                                      height: 15,
-                                      width: 15,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Func().addToFav(
+                                          index: index,
+                                          productId: productItem.id,
+                                          onAdded: () {
+                                            setState(() {
+                                              productItem.is_favorite =
+                                                  !productItem.is_favorite!;
+                                            });
+                                          },
+                                          onRemoved: () {
+                                            setState(() {
+                                              productItem.is_favorite =
+                                                  !productItem.is_favorite!;
+                                            });
+                                          },
+                                        );
+                                        _favoritesBloc.add(LoadFavorites());
+                                      },
+                                      child: SvgPicture.asset(
+                                        'assets/icons/favorite_fill.svg',
+                                        color: const Color.fromRGBO(
+                                            252, 47, 61, 1),
+                                        fit: BoxFit.cover,
+                                        height: 15,
+                                        width: 15,
+                                      ),
                                     ),
                                     // ScaleTransition(
                                     //   scale: _animations[index],

@@ -22,7 +22,7 @@ Widget buildOrder(List<OrderList> order) => ListView.builder(
           );
         },
         child: Container(
-          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          padding: REdgeInsets.all(8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: Theme.of(context).colorScheme.secondary,
@@ -31,29 +31,19 @@ Widget buildOrder(List<OrderList> order) => ListView.builder(
             ),
           ),
           margin: const EdgeInsets.only(bottom: 12.5),
-          height: 75.h,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: REdgeInsets.only(left: 10, right: 10, bottom: 10),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(orderItem.title,
-                          style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w500)),
-                      Text(orderItem.date,
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w400)),
-                    ]),
-              ),
-              const Divider(
-                height: 0,
-                thickness: 1,
-              ),
-              Container(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                child: Row(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(orderItem.title,
+                      style:  const TextStyle(
+                        color: Color(0xFF181C32),
+                        fontSize: 15,
+                        fontFamily: 'Noto Sans',
+                        fontWeight: FontWeight.w600,
+                      )),
                   Container(
                     padding: REdgeInsets.all(5),
                     decoration: BoxDecoration(
@@ -61,43 +51,71 @@ Widget buildOrder(List<OrderList> order) => ListView.builder(
                       color: orderItem.status == 5
                           ? Colors.green[800]
                           : orderItem.status == 6
-                              ? Colors.red
-                              : Theme.of(context).scaffoldBackgroundColor,
+                          ? Colors.red
+                          : Theme.of(context).scaffoldBackgroundColor,
                     ),
                     child: Row(
                       children: [
-                        FaIcon(
-                          orderItem.status == 5
-                              ? FontAwesomeIcons.checkDouble
-                              : orderItem.status == 6
-                                  ? FontAwesomeIcons.times
-                                  : FontAwesomeIcons.clock,
-                          size: 12,
-                          color: orderItem.status == 5
-                              ? Colors.white
-                              : orderItem.status == 6
-                                  ? Colors.red
-                                  : Theme.of(context).primaryColorLight,
-                        ),
+                        const Icon(Icons.circle, size: 8,),
                         const SizedBox(width: 5),
                         Text(orderItem.statusName,
                             style: TextStyle(
                                 color: orderItem.status == 5
                                     ? Colors.white
                                     : orderItem.status == 6
-                                        ? Colors.red
-                                        : Theme.of(context).primaryColorLight,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold)),
+                                    ? Colors.red
+                                    : Theme.of(context).primaryColorLight,
+                              fontSize: 10,
+                              fontFamily: 'Noto Sans',
+                              fontWeight: FontWeight.w400)),
                       ],
                     ),
                   ),
-                  const Spacer(),
-                  Text('${orderItem.total} ₸',
-                      style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.bold)),
-                ]),
+                ],
               ),
+              Text(orderItem.date,
+                  style: const TextStyle(
+                    color: Color(0xFF919191),
+                    fontSize: 10,
+                    fontFamily: 'Noto Sans',
+                    fontWeight: FontWeight.w500,
+                  )),
+              const SizedBox(height: 10),
+              ListView.separated(itemBuilder: (context, index) {
+                return ListTile(
+                  contentPadding: REdgeInsets.all(0),
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg',
+                      width: 43,
+                      height: 43,
+                    ),
+                  ),
+                  title: const Text(
+                    'Морозильник типа "ларь"\nQ BC/BD 420L (1294*598*84)',
+                    style: TextStyle(
+                      color: Color(0xFF181C32),
+                      fontSize: 12,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  trailing: const Text(
+                    '368 000 т',
+                    style: TextStyle(
+                      color: Color(0xFF282E4D),
+                      fontSize: 15,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  )
+                );
+              },
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) => const Divider(height: 0),
+                  itemCount: 2),
             ],
           ),
         ),

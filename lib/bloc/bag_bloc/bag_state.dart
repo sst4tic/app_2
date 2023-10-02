@@ -7,7 +7,7 @@ class BagInitial extends BagState {
   List<Object?> get props => [];
 }
 
-class BagLoading extends BagState{
+class BagLoading extends BagState {
   BagLoading({
     this.completer,
   });
@@ -17,7 +17,7 @@ class BagLoading extends BagState{
   List<Object?> get props => [completer];
 }
 
-class BagLoaded extends BagState{
+class BagLoaded extends BagState {
   BagLoaded({
     required this.cart,
     required this.selectedItems,
@@ -27,14 +27,20 @@ class BagLoaded extends BagState{
   final CartItem cart;
   final Set<int> selectedItems;
   bool allSelected;
+
   List<Object?> get props => [cart];
 }
 
-class BagEmpty extends BagState{
+class BagEmpty extends BagState {
+  BagEmpty({
+    required this.products,
+  });
+
   List<Object?> get props => [];
+  final List<Product> products;
 }
 
-class BagNotAuthorized extends BagState{
+class BagNotAuthorized extends BagState {
   List<Object?> get props {
     if (Constants.USER_TOKEN.isNotEmpty) {
       return [true];
@@ -43,7 +49,8 @@ class BagNotAuthorized extends BagState{
     }
   }
 }
-class BagLoadingFailure extends BagState{
+
+class BagLoadingFailure extends BagState {
   BagLoadingFailure({
     this.exception,
   });

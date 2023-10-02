@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:yiwumart/models/feedback_model.dart';
+import 'package:yiwumart/models/star_rating.dart';
 import 'package:yiwumart/models/image_list_model.dart';
 import '../catalog_screens/product_screen.dart';
 import '../util/function_class.dart';
@@ -12,8 +12,9 @@ import 'bag_models/bag_button_model.dart';
 
 class BuildGridWidget extends StatefulWidget {
   final List<Product> products;
+  final VoidCallback? bagCallback;
 
-  const BuildGridWidget({Key? key, required this.products}) : super(key: key);
+  const BuildGridWidget({Key? key, required this.products, this.bagCallback}) : super(key: key);
 
   @override
   BuildGridWidgetState createState() => BuildGridWidgetState();

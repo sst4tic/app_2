@@ -8,6 +8,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:yiwumart/main.dart';
 import 'package:yiwumart/models/profile_item.dart';
 import 'package:yiwumart/screens/main_screen.dart';
+import 'package:yiwumart/screens/my_feedback_screen.dart';
 import 'package:yiwumart/screens/purchase_history.dart';
 import 'package:http/http.dart' as http;
 import 'package:yiwumart/screens/seissions_page.dart';
@@ -60,7 +61,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Map<IconData, String> items = {
     Icons.access_time_outlined: 'История покупок',
     Icons.settings_outlined: 'Настройки',
-    CupertinoIcons.creditcard_fill: 'Мои карты',
+    Icons.feedback: 'Мои отзывы',
     CupertinoIcons.headphones: 'Связаться с нами',
     Icons.computer: 'Активные устройства',
     CupertinoIcons.moon: 'Темная тема',
@@ -83,13 +84,13 @@ class _ProfilePageState extends State<ProfilePage> {
         // );
       },
       () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const PurchaseHistory()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MyFeedBackPage()),
+        );
       },
       () {
-      scakey.currentState!.showSupport();
+        scakey.currentState!.showSupport();
       },
       () {
         Navigator.push(
@@ -102,6 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
         //   context,
         //   MaterialPageRoute(builder: (context) => const PurchaseHistory()),
         // );
+        Func().showDelete(context: context, submitCallback: () {});
       },
       () {
         Func().showLogoutDialog(
