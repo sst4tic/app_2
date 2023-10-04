@@ -64,7 +64,6 @@ class _ProfilePageState extends State<ProfilePage> {
     Icons.feedback: 'Мои отзывы',
     CupertinoIcons.headphones: 'Связаться с нами',
     Icons.computer: 'Активные устройства',
-    CupertinoIcons.moon: 'Темная тема',
     Icons.logout: 'Выйти из аккаунта',
   };
 
@@ -97,13 +96,6 @@ class _ProfilePageState extends State<ProfilePage> {
           context,
           MaterialPageRoute(builder: (context) => const Sessions()),
         );
-      },
-      () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const PurchaseHistory()),
-        // );
-        Func().showDelete(context: context, submitCallback: () {});
       },
       () {
         Func().showLogoutDialog(

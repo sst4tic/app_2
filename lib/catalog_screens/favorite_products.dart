@@ -119,11 +119,9 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
         itemCount: product.length,
         itemBuilder: (context, index) {
           final productItem = product[index];
-          final photos = product
-              .map((e) => e.media?.map((e) => e.links?.local.thumbnails.s350))
-              .where((element) => element != null)
-              .expand((element) => element!)
-              .toList();
+          final photo = productItem.media!.isEmpty
+              ? 'storage/warehouse/products/images/no-image-ru.jpg'
+              : productItem.media![0].links?.local.thumbnails.s350;
           return GestureDetector(
             onTap: () {
               Navigator.push(
@@ -150,9 +148,8 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                             borderRadius: BorderRadius.circular(10),
                             image: DecorationImage(
                               image: Image.network(
-                                photos.isNotEmpty
-                                    ? 'https://cdn.yiwumart.org/${photos[index]}'
-                                        .toString()
+                                photo != null
+                                    ? 'https://cdn.yiwumart.org/$photo'
                                     : noPhotoImage,
                                 errorBuilder: (BuildContext context,
                                     Object exception, StackTrace? stackTrace) {

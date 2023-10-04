@@ -81,29 +81,37 @@ Widget buildOrder(List<OrderList> order) => ListView.builder(
                     fontWeight: FontWeight.w500,
                   )),
               const SizedBox(height: 10),
-              ListView.separated(itemBuilder: (context, index) {
+              ListView.separated(
+                  itemBuilder: (context, index) {
+                    final product = orderItem.products[index];
                 return ListTile(
                   contentPadding: REdgeInsets.all(0),
                   leading: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg',
+                     product.imageThumb,
                       width: 43,
                       height: 43,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          FontAwesomeIcons.image,
+                          size: 32,
+                        );
+                      }
                     ),
                   ),
-                  title: const Text(
-                    'Морозильник типа "ларь"\nQ BC/BD 420L (1294*598*84)',
-                    style: TextStyle(
+                  title: Text(
+                    product.title,
+                    style: const TextStyle(
                       color: Color(0xFF181C32),
                       fontSize: 12,
                       fontFamily: 'Noto Sans',
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  trailing: const Text(
-                    '368 000 т',
-                    style: TextStyle(
+                  trailing: Text(
+                    product.price,
+                    style: const TextStyle(
                       color: Color(0xFF282E4D),
                       fontSize: 15,
                       fontFamily: 'Noto Sans',
@@ -115,7 +123,56 @@ Widget buildOrder(List<OrderList> order) => ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   separatorBuilder: (context, index) => const Divider(height: 0),
-                  itemCount: 2),
+                  itemCount: orderItem.products.length),
+              const Divider(),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: 'Итоговая сумма: ',
+                        style: TextStyle(
+                          color: Color(0xFF464646),
+                          fontSize: 12,
+                          fontFamily: 'Noto Sans',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      TextSpan(
+                        text: orderItem.total,
+                        style: const TextStyle(
+                          color: Color(0xFF282E4D),
+                          fontSize: 15,
+                          fontFamily: 'Noto Sans',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(onPressed: () =>  Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OrderDetails(
+                    id: orderItem.id,
+                  ),
+                ),
+              ),
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(10000, 38),
+                  ),
+                  child: const Text(
+                'Посмотреть детали',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontFamily: 'Noto Sans',
+                  fontWeight: FontWeight.w700,
+                ),
+              ))
             ],
           ),
         ),

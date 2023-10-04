@@ -139,9 +139,9 @@ class _SessionsState extends State<Sessions> {
                     onPressed: () {
                       sessionsBloc.add(DestroyAllSessions(context: context));
                     },
-                    child: Row(
+                    child: const Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
+                      children: [
                         SizedBox(width: 8.0),
                         Icon(
                           Icons.logout,
@@ -218,8 +218,7 @@ class _SessionsState extends State<Sessions> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         vertical: 8.0, horizontal: 8.0),
-                    child: Row(
-                    children: [
+                    child: Row(children: [
                       browserName.isEmpty
                           ? Container(
                               width: 22.5.w,

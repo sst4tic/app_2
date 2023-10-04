@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:yiwumart/bloc/bag_bloc/bag_repo.dart';
 import 'package:yiwumart/catalog_screens/product_screen.dart';
 import 'package:yiwumart/util/cart_list.dart';
 import 'package:yiwumart/util/function_class.dart';
@@ -159,7 +158,7 @@ class BagCartWidgetState extends State<BagCartWidget> {
                       builder: (context) => ProductScreen(
                         product: Product(
                           id: cartItem.id,
-                          name: cartItem.name,
+                          name: cartItem.name!,
                           price: cartItem.price,
                           is_favorite: null,
                           link: cartItem.link,
@@ -215,7 +214,7 @@ class BagCartWidgetState extends State<BagCartWidget> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(cartItem.name,
+                            Text(cartItem.name!,
                                 style: const TextStyle(fontSize: 15),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis),

@@ -38,68 +38,69 @@ class _MyFeedBackPageState extends State<MyFeedBackPage> {
                 child: CircularProgressIndicator(),
               );
             } else if (state is FeedbackLoaded) {
-              return state.feedback.isEmpty ?
-               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Center(
-                    child: Icon(
-                      Icons.comments_disabled_outlined,
-                      size: 75,
-                      color: Color.fromRGBO(94, 98, 120, 1),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    'Нет отзывов',
-                    style: TextStyle(
-                      color: Color(0xFF2C2D4F),
-                      fontSize: 18,
-                      fontFamily: 'Noto Sans',
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  const Text(
-                    'Оставьте свои впечатления о товарах, чтобы\nделиться своим опытом с другими',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(0xFF5E6278),
-                      fontSize: 15.20,
-                      fontFamily: 'Noto Sans',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size(MediaQuery.of(context).size.width * 0.65, 40),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'Назад',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontFamily: 'Noto Sans',
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
-              ) :
-              buildFeedback(feedback: state.feedback);
+              return state.feedback.isEmpty
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Center(
+                          child: Icon(
+                            Icons.comments_disabled_outlined,
+                            size: 75,
+                            color: Color.fromRGBO(94, 98, 120, 1),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text(
+                          'Нет отзывов',
+                          style: TextStyle(
+                            color: Color(0xFF2C2D4F),
+                            fontSize: 18,
+                            fontFamily: 'Noto Sans',
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        const Text(
+                          'Оставьте свои впечатления о товарах, чтобы\nделиться своим опытом с другими',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color(0xFF5E6278),
+                            fontSize: 15.20,
+                            fontFamily: 'Noto Sans',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: Size(
+                                MediaQuery.of(context).size.width * 0.65, 40),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            'Назад',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontFamily: 'Noto Sans',
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : buildFeedback(feedback: state.feedback);
             } else if (state is FeedbackLoadingFailure) {
               return Text(state.exception.toString());
             } else {
@@ -117,6 +118,9 @@ class _MyFeedBackPageState extends State<MyFeedBackPage> {
       itemCount: feedback.length,
       itemBuilder: (context, index) {
         final feedbackItem = feedback[index];
+        final photo = feedbackItem.product.media!.isEmpty
+            ? 'storage/warehouse/products/images/no-image-ru.jpg'
+            : feedbackItem.product.media![0].links?.local.thumbnails.s350;
         return Container(
           margin: const EdgeInsets.only(bottom: 8),
           padding: const EdgeInsets.all(8),
@@ -133,7 +137,7 @@ class _MyFeedBackPageState extends State<MyFeedBackPage> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      'https://cdn.yiwumart.org/${feedbackItem.product.media![0].links!.local.thumbnails.s350}',
+                      'https://cdn.yiwumart.org/$photo',
                       width: 91,
                       height: 65,
                       errorBuilder: (context, error, stackTrace) {

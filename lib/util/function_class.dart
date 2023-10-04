@@ -73,6 +73,14 @@ class Func {
     final body = jsonDecode(response.body);
     return body;
   }
+// for get user
+  static Future<User> getUser() async {
+    var url = '${Constants.API_URL_DOMAIN_V3}my';
+    final response =
+    await http.get(Uri.parse(url), headers: Constants.headers());
+    final body = jsonDecode(response.body);
+    return User.fromJson(body['data']);
+  }
 
   // func for change password
   Future changePassword({required pass, required newPass}) async {

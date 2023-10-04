@@ -50,6 +50,9 @@ dependencies:
   group_button: ^5.3.3
   flutter_multi_formatter: ^2.11.9
   loader_overlay: ^2.3.2
+  another_stepper: ^1.2.2
+  im_stepper: ^1.0.1+1
+  easy_stepper: ^0.8.1
 
 dev_dependencies:
   flutter_test:
