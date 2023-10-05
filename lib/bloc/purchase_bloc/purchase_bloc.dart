@@ -64,8 +64,9 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
         }
 
         var resp = await checkoutPost();
+        print(resp);
         // ignore: use_build_context_synchronously
-        if(resp['success']) {
+        if(resp['success'] != null) {
           Func().showSuccessPurchase(context: event.context);
         } else
         Func().showSnackbar(event.context, resp['success'] != null

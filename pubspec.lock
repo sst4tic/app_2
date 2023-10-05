@@ -520,6 +520,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  icon_forest:
+    dependency: "direct main"
+    description:
+      name: icon_forest
+      sha256: "132eb91f72dea9e0eef15c4914e068cd79f9683c6efe890c43044ba8452eda62"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.8"
+  iconsax:
+    dependency: "direct main"
+    description:
+      name: iconsax
+      sha256: fb0144c61f41f3f8a385fadc27783ea9f5359670be885ed7f35cef32565d5228
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.8"
   im_stepper:
     dependency: "direct main"
     description:
@@ -560,6 +576,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.5"
+  line_icons:
+    dependency: "direct main"
+    description:
+      name: line_icons
+      sha256: "249d781d922f5437ac763d9c8f5a02cf5b499a6dc3f85e4b92e074cff0a932ab"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
   lints:
     dependency: transitive
     description:

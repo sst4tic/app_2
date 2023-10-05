@@ -30,10 +30,11 @@ class ChangeQuantity extends BagEvent {
 class SelectItem extends BagEvent {
   SelectItem({
     required this.id,
+    this.isSelectAll = false,
   });
 
   final int id;
-
+  final bool isSelectAll;
   List<Object?> get props => [id];
 }
 

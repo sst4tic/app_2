@@ -11,6 +11,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yiwumart/main.dart';
+import 'package:yiwumart/models/posts_model.dart';
 import 'package:yiwumart/util/order_list.dart';
 import 'package:yiwumart/util/popular_catalog.dart';
 import 'package:http/http.dart' as http;
@@ -32,6 +33,7 @@ class Func {
     final response =
         await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
+    print(body);
     return body['data']
         .map<PopularCategories>(PopularCategories.fromJson)
         .toList();
@@ -117,12 +119,23 @@ class Func {
     final response =
         await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
+    print(body);
     return List.from(body['data']?.map!((e) => Product.fromJson(e)).toList());
   }
 
+  //  func for getting posts
+  static Future<List<PostsModel>> getPosts() async {
+    var url = '${Constants.API_URL_DOMAIN_V3}posts';
+    final response =
+    await http.get(Uri.parse(url), headers: Constants.headers());
+    final body = jsonDecode(response.body);
+    print(body);
+    return List.from(body['data']?.map!((e) => PostsModel.fromJson(e)).toList());
+  }
+
   // func for searching products
-  static Future<Search> searchProducts(search) async {
-    var url = '${Constants.API_URL_DOMAIN_V3}search?q=$search';
+  static Future<Search> searchProducts({required String search, int? productId}) async {
+    var url = '${Constants.API_URL_DOMAIN_V3}search?query_text=$search${productId != null ? '&product_id=$productId' : ''}';
     final response =
         await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);

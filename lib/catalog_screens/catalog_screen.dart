@@ -16,9 +16,6 @@ class CatalogPage extends StatefulWidget {
 class _CatalogPageState extends State<CatalogPage> {
   late Future<List<Catalog>> cacheCatalog;
 
-
-
-
   @override
   void initState() {
     cacheCatalog = Func().getCatalog();
@@ -55,9 +52,9 @@ class _CatalogPageState extends State<CatalogPage> {
                     color: Colors.grey,
                   ),
                   filled: true,
-                    fillColor: Theme.of(context).scaffoldBackgroundColor,
+                  fillColor: Theme.of(context).scaffoldBackgroundColor,
                   contentPadding: const EdgeInsets.all(8),
-                  enabledBorder:  const OutlineInputBorder(
+                  enabledBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
@@ -76,17 +73,18 @@ class _CatalogPageState extends State<CatalogPage> {
         centerTitle: false,
       ),
       body: FutureBuilder(
-                future: cacheCatalog,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return buildCatalogShimmer();
-                  } else if (snapshot.hasData) {
-                    final catalog = snapshot.data!;
-                    return buildCatalog(catalog);
-                  } else {
-                    return const Text("No widget to build");
-                  }
-                }),
+          future: cacheCatalog,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return buildCatalogShimmer();
+            } else if (snapshot.hasData) {
+              final catalog = snapshot.data!;
+              return buildCatalog(catalog);
+            } else {
+              print(snapshot.error);
+              return const Text("No widget to build");
+            }
+          }),
     );
   }
 
@@ -108,21 +106,27 @@ class _CatalogPageState extends State<CatalogPage> {
             elevation: 0,
             child: ListTile(
               leading: Image.network(
-                'https://cdn.yiwumart.org/storage/warehouse/products/images/10754/zJ8H9PD8nUID6cFSy9Qq9t9jWMnNOWTaT0ZQ021K.png'
+                  catalogItem.image ?? 'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg',
+              width: 55,
+                height: 55,
               ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ExpandableCategories(
-                              name: catalogItem.name, id: catalogItem.id)));
-                },
-                title: Text(
-                  catalogItem.name,
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16,),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ExpandableCategories(
+                            name: catalogItem.name, id: catalogItem.id)));
+              },
+              title: Text(
+                catalogItem.name,
+                style:
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
               ),
+              trailing: const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+              ),
+            ),
           ),
         );
       });

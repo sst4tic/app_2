@@ -12,6 +12,7 @@ import 'package:yiwumart/screens/my_feedback_screen.dart';
 import 'package:yiwumart/screens/purchase_history.dart';
 import 'package:http/http.dart' as http;
 import 'package:yiwumart/screens/seissions_page.dart';
+import 'package:yiwumart/screens/settings_page.dart';
 import 'package:yiwumart/util/function_class.dart';
 import '../bloc/auth_bloc/auth_bloc.dart';
 import '../models/build_user.dart';
@@ -77,10 +78,10 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       },
       () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const PurchaseHistory()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SettingsPage()),
+        );
       },
       () {
         Navigator.push(

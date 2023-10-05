@@ -66,7 +66,7 @@ Widget buildOrderDetails({required OrderDetail details, context}) {
                         MaterialPageRoute(
                           builder: (context) => ProductScreen(
                             product: Product(
-                              reviewCount: 0,
+                              reviewCount: '0 отзывов',
                               rating: 0,
                               id: cartItem.id,
                               name: cartItem.title,

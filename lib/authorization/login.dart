@@ -124,7 +124,7 @@ class _LoginState extends State<Login> {
                                 fontFamily: 'Noto Sans'),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         const Text(
@@ -144,7 +144,7 @@ class _LoginState extends State<Login> {
                                 InputDecorations(hintText: 'Поиск')
                                     .loginDecoration
                                     .copyWith(
-                                        prefixIcon: Icon(
+                                        prefixIcon: const Icon(
                                       Icons.search,
                                       color: Colors.grey,
                                     )),
@@ -391,7 +391,7 @@ class _LoginState extends State<Login> {
                             passVisible
                                 ? 'Войти с SMS кодом'
                                 : 'Войти с паролем',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Color.fromRGBO(73, 73, 73, 1),
                               fontSize: 14,
                               fontFamily: 'Noto Sans',
@@ -399,7 +399,7 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                       ],
                     ),
                   ),

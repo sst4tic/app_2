@@ -8,7 +8,7 @@ class Product {
     required this.link,
     this.media,
     this.rating,
-    this.reviewCount,
+    required this.reviewCount,
   });
 
   late final int id;
@@ -19,7 +19,7 @@ class Product {
   late final String link;
   List<Media>? media;
   late final rating;
-  late final int? reviewCount;
+  late final String reviewCount;
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];

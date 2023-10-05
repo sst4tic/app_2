@@ -93,7 +93,7 @@ class SearchModel extends SearchDelegate {
       prefs.setString("history", jsonHistory);
     });
     return FutureBuilder<Search>(
-        future: Func.searchProducts(query),
+        future: Func.searchProducts(search: query),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return buildSearchShimmer();
@@ -219,57 +219,117 @@ class SearchModel extends SearchDelegate {
                   ),
                 )
               : Container(),
-          _history.isEmpty
-              ? Container()
-              : Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(color: Colors.white),
-                  padding: REdgeInsets.all(12),
-                  child: GroupButton(
-                    options: const GroupButtonOptions(
-                      mainGroupAlignment: MainGroupAlignment.start,
-                    ),
-                    onSelected: (name, index, isSelected) {
-                      query = name;
-                      showResults(context);
-                    },
-                    buttons: _history.toList().reversed.toList(),
-                    buttonBuilder: (isSelected, index, context) => Container(
-                      padding:
-                          REdgeInsets.symmetric(vertical: 4, horizontal: 9),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF1F1F1),
-                        borderRadius: BorderRadius.circular(20),
+          if (_history.isNotEmpty) ...[
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(color: Colors.white),
+              padding: REdgeInsets.all(12),
+              child: GroupButton(
+                options: const GroupButtonOptions(
+                  mainGroupAlignment: MainGroupAlignment.start,
+                ),
+                onSelected: (name, index, isSelected) {
+                  query = name;
+                  showResults(context);
+                },
+                buttons: _history.toList().reversed.toList(),
+                buttonBuilder: (isSelected, index, context) => Container(
+                  padding: REdgeInsets.symmetric(vertical: 4, horizontal: 9),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F1F1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        index,
+                        style: const TextStyle(
+                          color: Color(0xFF494949),
+                          fontSize: 13,
+                          fontFamily: 'Noto Sans',
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            index,
-                            style: const TextStyle(
-                              color: Color(0xFF494949),
-                              fontSize: 13,
-                              fontFamily: 'Noto Sans',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _history.remove(index);
-                                  _saveHistory();
-                                });
-                              },
-                              child: const Icon(
-                                Icons.close,
-                                size: 12,
-                              ))
-                        ],
-                      ),
-                    ),
+                      const SizedBox(width: 2),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _history.remove(index);
+                              _saveHistory();
+                            });
+                          },
+                          child: const Icon(
+                            Icons.close,
+                            size: 12,
+                          ))
+                    ],
                   ),
                 ),
+              ),
+            ),
+            ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: const BoxDecoration(color: Colors.white),
+                    padding: REdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.access_time_outlined,
+                          color: Colors.grey,
+                        ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Container(
+                            padding: REdgeInsets.all(2),
+                            child: Image.network(
+                              'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg',
+                              width: 63,
+                              height: 45,
+                            ),
+                          ),
+                        ),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Морозильник типа "ларь" CI-1 asdsdasdasdsadsad ad',
+                                maxLines: 1,
+                                style: TextStyle(
+                                  color: Color(0xFF181C32),
+                                  fontSize: 12,
+                                  fontFamily: 'Noto Sans',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                '365 000',
+                                maxLines: 1,
+                                style: TextStyle(
+                                  color: Color(0xFF181C32),
+                                  fontSize: 13,
+                                  fontFamily: 'Noto Sans',
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Spacer(),
+                        const Icon(
+                          Icons.close,
+                          size: 12,
+                        )
+                      ],
+                    ),
+                  );
+                })
+          ]
         ],
       );
     });
@@ -289,6 +349,7 @@ class SearchModel extends SearchDelegate {
           final photo = searchItem.media?[0].links.local.thumbnails.s350;
           return GestureDetector(
             onTap: () {
+              Func.searchProducts(search: query, productId: searchItem.id);
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -300,7 +361,7 @@ class SearchModel extends SearchDelegate {
                               price: searchItem.price,
                               is_favorite: null,
                               link: searchItem.link,
-                              reviewCount: 0,
+                              reviewCount: '0 отзывов',
                             ),
                           )));
             },
@@ -356,7 +417,7 @@ class SearchModel extends SearchDelegate {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      '(${searchItem.reviewCount} отзывов)',
+                      '(${searchItem.reviewCount})',
                       style: const TextStyle(
                         color: Color(0xFF7B7B7B),
                         fontSize: 12,

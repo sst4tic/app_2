@@ -94,7 +94,6 @@ class BagCartWidgetState extends State<BagCartWidget> {
                     checkColor: Colors.white,
                     activeColor: Colors.blue,
                     value: isSelectAll,
-                    // make circle color red
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100),
                     ),
@@ -105,8 +104,12 @@ class BagCartWidgetState extends State<BagCartWidget> {
                     onChanged: (val) {
                       for (var element in cartList) {
                         // make check if element is selected
-
-                        bagBloc.add(SelectItem(id: element.id));
+                        // if(!selectedValues.contains(element.id)) {
+                        // selectedValues.add(element.id);
+                        // bagBloc.add(SelectItem(id: element.id));
+                        // }
+                        bagBloc
+                            .add(SelectItem(id: element.id, isSelectAll: true));
                       }
                     },
                   ),
@@ -120,13 +123,13 @@ class BagCartWidgetState extends State<BagCartWidget> {
                       onPressed: () {
                         if (selectedValues.isNotEmpty) {
                           Func().showDeleteCart(
-                            context: context,
-                            submitCallback: () {
-                              if (selectedValues.isNotEmpty) {
-                                bagBloc
-                                    .add(DeleteSelected(ids: selectedValues));
-                              }
-                            });
+                              context: context,
+                              submitCallback: () {
+                                if (selectedValues.isNotEmpty) {
+                                  bagBloc
+                                      .add(DeleteSelected(ids: selectedValues));
+                                }
+                              });
                         }
                       },
                       child: Text('Удалить выбранное',
@@ -162,6 +165,7 @@ class BagCartWidgetState extends State<BagCartWidget> {
                           price: cartItem.price,
                           is_favorite: null,
                           link: cartItem.link,
+                          reviewCount: '0',
                         ),
                       ),
                     ),

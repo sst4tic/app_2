@@ -53,7 +53,9 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
-                readOnly: true,
+                onChanged: (value) {
+                  // _searchBloc.add(SearchEvent(query: value));
+                },
                 decoration: InputDecoration(
                   hintText: 'Поиск',
                   hintStyle: const TextStyle(color: Colors.grey),
@@ -96,7 +98,6 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                   ),
                 );
               }
-              // print(product.map((e) => e.media?.map((e) => e.links?.local.thumbnails.s350).toList()));
               return buildFavorites(product);
             } else if (state is FavoritesLoadingFailure) {
               return Center(

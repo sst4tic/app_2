@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/main.dart';
 import 'package:yiwumart/models/gridview_model.dart';
+import 'package:yiwumart/models/posts_model.dart';
 import 'package:yiwumart/models/search_model.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
 import 'package:yiwumart/screens/main_screen.dart';
@@ -48,7 +49,13 @@ class _AuthHomePageState extends State<AuthHomePage> {
             } else if (state is HomePageLoaded) {
               final categories = state.popularCategories;
               final products = state.productsOfDay;
-              return buildHomePage(categories: categories, products: products);
+              return buildHomePage(categories: categories, products: products, posts: state.posts);
+            } else if (state is HomePageError) {
+              return Scaffold(
+                body: Center(
+                  child: Text(state.e.toString()),
+                ),
+              );
             } else {
               return const Scaffold(
                 body: Center(
@@ -64,6 +71,7 @@ class _AuthHomePageState extends State<AuthHomePage> {
 
   Widget buildHomePage(
           {required List<PopularCategories> categories,
+            required List<PostsModel> posts,
           required List<Product> products}) =>
       CustomScrollView(
         slivers: [
@@ -176,11 +184,11 @@ class _AuthHomePageState extends State<AuthHomePage> {
                         SizedBox(
                           height: 99,
                           child: ListView.builder(
-                              itemCount: categories.length,
+                              itemCount: posts.length,
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
-                                final category = categories[index];
+                                final post = posts[index];
                                 return Stack(
                                   children: [
                                     Container(
@@ -193,7 +201,7 @@ class _AuthHomePageState extends State<AuthHomePage> {
                                         width: 92,
                                         decoration: ShapeDecoration(
                                           image: DecorationImage(
-                                            image: NetworkImage(category.image),
+                                            image: NetworkImage(post.image),
                                             fit: BoxFit.cover,
                                           ),
                                           shape: RoundedRectangleBorder(
@@ -225,13 +233,20 @@ class _AuthHomePageState extends State<AuthHomePage> {
                                       left: 2,
                                       right: 0,
                                       bottom: 2,
-                                      child: Text(
-                                        category.name,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontFamily: 'Noto Sans',
-                                          fontWeight: FontWeight.w700,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4),
+                                        child: Text(
+                                          // make text limit to 28 characters
+                                          post.content.length > 40
+                                              ? post.content.substring(0, 28) +
+                                                  '...'
+                                              : post.content,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                            fontFamily: 'Noto Sans',
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -266,6 +281,55 @@ class _AuthHomePageState extends State<AuthHomePage> {
                         SizedBox(
                             height: 165,
                             child: buildPopularCategories(categories)),
+                        // Container(
+                        //   height: 160,
+                        //   child: ListView.builder(
+                        //     scrollDirection: Axis.horizontal,
+                        //     itemCount: categories.length,
+                        //     itemBuilder: (context, index) {
+                        //       final category = categories[index];
+                        //       return GestureDetector(
+                        //         onTap: () {
+                        //           // Navigator.push(
+                        //           //     context,
+                        //           //     MaterialPageRoute(
+                        //           //         builder: (context) => CatalogItems(
+                        //           //               id: category.id,
+                        //           //               name: category.name,
+                        //           //             )));
+                        //         },
+                        //         child: SizedBox(
+                        //           width: 120,
+                        //           child: Column(
+                        //             mainAxisSize: MainAxisSize.min,
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: [
+                        //               Image.network(
+                        //                 category.image,
+                        //                 height: 30,
+                        //                 width: 30,
+                        //                 fit: BoxFit.cover,
+                        //               ),
+                        //               SizedBox(height: 5.h),
+                        //               Text(
+                        //                 category.name,
+                        //                 textAlign: TextAlign.center,
+                        //                 maxLines: 2,
+                        //                 overflow: TextOverflow.ellipsis,
+                        //                 style: const TextStyle(
+                        //                   color: Color(0xFF181C32),
+                        //                   fontSize: 9,
+                        //                   fontFamily: 'Noto Sans',
+                        //                   fontWeight: FontWeight.w500,
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       );
+                        //     },
+                        //   ),
+                        // ),
                         const SizedBox(height: 16),
                         const Text('Товары дня',
                             style: TextStyle(

@@ -30,7 +30,7 @@ class ReviewPostBloc extends Bloc<ReviewPostEvent, ReviewPostState> {
         Response response = await dio.post(url,
             data: data, options: Options(headers: Constants.headers()));
         if (response.data['success']) {
-          Func().showSuccessPurchase(context:
+          Func().showFeedbackSuccess(context:
               navKey.currentContext!);
         }
       } on DioError catch (e) {

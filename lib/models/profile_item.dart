@@ -6,7 +6,11 @@ import '../screens/profile_screen.dart';
 
 class ProfileModel extends StatelessWidget {
   ProfileModel(
-      {Key? key, required this.icon, required this.title, this.logout = false, required this.action})
+      {Key? key,
+      required this.icon,
+      required this.title,
+      this.logout = false,
+      required this.action})
       : super(key: key);
   final IconData icon;
   final String title;

@@ -9,10 +9,11 @@ class HomePageLoading extends HomePageState {}
 class HomePageLoaded extends HomePageState {
   final List<PopularCategories> popularCategories;
   final List<Product> productsOfDay;
-
+  final List<PostsModel> posts;
   HomePageLoaded({
     required this.popularCategories,
     required this.productsOfDay,
+    required this.posts,
       });
 }
 

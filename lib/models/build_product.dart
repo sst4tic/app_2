@@ -214,11 +214,12 @@ class _BuildProductState extends State<BuildProduct> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  GestureDetector(
+                 // if(product.reviewCount > 1)
+                   GestureDetector(
                     onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const FeedbackPage())),
+                            builder: (context) => FeedbackPage(reviews: product.reviews,))),
                     child: const Text(
                       'Все',
                       style: TextStyle(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:yiwumart/util/styles.dart';
 import '../catalog_screens/catalog_item.dart';
 import '../util/popular_catalog.dart';
 
@@ -38,10 +37,10 @@ Widget buildPopularCategories(List<PopularCategories> categories) =>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/img/test.png',
-                    height: 35.h,
-                    width: 55.w,
+                  Image.network(
+                    categoryItem.image,
+                    width: 55,
+                    height: 32,
                     fit: BoxFit.cover,
                   ),
                   SizedBox(height: 5.h),
@@ -63,4 +62,3 @@ Widget buildPopularCategories(List<PopularCategories> categories) =>
           );
         });
 
-//

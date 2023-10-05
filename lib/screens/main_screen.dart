@@ -146,10 +146,10 @@ class MainScreenState extends State<MainScreen> {
                 builder: (BuildContext context) => const CatalogPage(),
               );
             case 2:
-              return CupertinoTabView(
+              return currentIndex == 2 ? CupertinoTabView(
                 navigatorKey: tabNavKeys[index],
                 builder: (BuildContext context) => const FavoriteProducts(),
-              );
+              ) : Container();
             case 3:
               return currentIndex == 3
                   ? CupertinoTabView(
