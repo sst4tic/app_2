@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:yiwumart/util/product_item.dart';
 import '../models/build_order_details.dart';
 import '../models/shimmer_model.dart';
 import '../util/function_class.dart';
@@ -42,8 +41,6 @@ class _OrderDetailsState extends State<OrderDetails> {
             final order = snapshot.data!;
             return buildOrderDetails(details: order, context: context);
           } else {
-            print(snapshot.error);
-            print(snapshot.stackTrace);
             return const Text("No widget to build");
           }
         },

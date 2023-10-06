@@ -1,17 +1,12 @@
-import 'package:another_stepper/another_stepper.dart';
-import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:im_stepper/stepper.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:yiwumart/models/custom_stepper.dart';
 import 'package:yiwumart/models/status_progress_model.dart';
 import '../catalog_screens/product_screen.dart';
 import '../util/order_detail.dart';
-import '../util/product.dart';
-import '../util/product_item.dart';
 import '../util/styles.dart';
 
 Widget buildOrderDetails({required OrderDetail details, context}) {
@@ -64,17 +59,7 @@ Widget buildOrderDetails({required OrderDetail details, context}) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProductScreen(
-                            product: Product(
-                              reviewCount: '0 отзывов',
-                              rating: 0,
-                              id: cartItem.id,
-                              name: cartItem.title,
-                              price: cartItem.price,
-                              is_favorite: null,
-                              link: cartItem.link,
-                            ),
-                          ),
+                          builder: (context) => ProductScreen(id: cartItem.id,)
                         ),
                       );
                     },

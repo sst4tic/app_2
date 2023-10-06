@@ -42,12 +42,12 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['ip_address'] = ipAddress;
-    _data['user_agent'] = userAgent;
-    _data['last_activity'] = lastActivity;
-    _data['location'] = location;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['ip_address'] = ipAddress;
+    data['user_agent'] = userAgent;
+    data['last_activity'] = lastActivity;
+    data['location'] = location;
+    return data;
   }
 }

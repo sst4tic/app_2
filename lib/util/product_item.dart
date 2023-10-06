@@ -8,6 +8,7 @@ class ProductItem {
     required this.price,
     this.description,
     required this.is_favorite,
+    required this.link,
     this.media,
     required this.availability,
     required this.rating,
@@ -22,11 +23,12 @@ class ProductItem {
   late final String sku;
   late final String price;
   String? description;
-  late final bool is_favorite;
+   bool is_favorite = false;
+   late final String link;
   List<Media>? media;
   late final String availability;
   late final rating;
-  late final int reviewCount;
+  late final reviewCount;
   late final List<Reviews> reviews;
   late final bool reviewCheck;
 
@@ -39,6 +41,7 @@ class ProductItem {
     price = json['price'].toString();
     description = json['description'];
     is_favorite = json['is_favorite'];
+    link = json['link'];
     media =
         (json["media"] as List?)?.map((a) => Media.fromJson(a)).toList() ?? [];
     availability = json['availability'].toString();

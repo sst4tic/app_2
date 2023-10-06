@@ -21,9 +21,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
           productsOfDay: productsOfDay,
           posts: posts,
         ));
-        print('DONE !');
       } catch (e) {
-        print(e);
         emit(HomePageError(e: e));
       }
     });

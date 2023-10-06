@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yiwumart/screens/payment_screen.dart';
@@ -10,8 +7,6 @@ import 'package:yiwumart/util/function_class.dart';
 import '../../util/constants.dart';
 import '../../util/user.dart';
 import '../edit_profile_bloc/abstract_edit.dart';
-import 'package:http/http.dart' as http;
-
 part 'purchase_event.dart';
 
 part 'purchase_state.dart';
@@ -47,7 +42,6 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
             "city": "Алматы",
             "email": "aman@gmail.com",
           };
-          print(data);
           var url = '${Constants.API_URL_DOMAIN_V3}checkout';
           final Response response = await dio.post(url,
               options: Options(
@@ -64,16 +58,17 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
         }
 
         var resp = await checkoutPost();
-        print(resp);
-        // ignore: use_build_context_synchronously
         if(resp['success'] != null) {
+          // ignore: use_build_context_synchronously
           Func().showSuccessPurchase(context: event.context);
-        } else
-        Func().showSnackbar(event.context, resp['success'] != null
+        } else {
+          // ignore: use_build_context_synchronously
+          Func().showSnackbar(event.context, resp['success'] != null
             ? 'Успешно'
             : resp['errors'].toString(), resp['success'] != null ? true : false);
-        // ignore: use_build_context_synchronously
+        }
         if (resp['link'] != null) {
+          // ignore: use_build_context_synchronously
           Navigator.push(
               event.context,
               MaterialPageRoute(

@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:yiwumart/bloc/edit_profile_bloc/edit_profile_bloc.dart';
 import 'package:yiwumart/bloc/edit_profile_bloc/edit_repo.dart';
-import '../bloc/home_page_bloc/home_page_bloc.dart';
 import '../models/date_picker_model.dart';
 import '../models/shimmer_model.dart';
 import '../util/function_class.dart';
@@ -49,7 +48,6 @@ class _EditProfileState extends State<EditProfile> {
             } else if (state is EditProfileLoaded) {
               selectedGender =
                   state.user.gender == 'Мужчина' ? 'male' : 'female';
-              print('PHONE ${state.user.phone}');
               return buildEdit(state, context);
             } else if (state is EditProfileError) {
               return Center(

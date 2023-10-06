@@ -90,9 +90,6 @@ void main() async {
   var initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
   await messaging.requestPermission();
-  if (Platform.isIOS) {
-    var APNS = await messaging.getAPNSToken();
-  }
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MultiBlocProvider(providers: [
     BlocProvider<AuthBloc>(

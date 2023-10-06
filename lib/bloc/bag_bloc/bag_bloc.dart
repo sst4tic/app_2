@@ -30,8 +30,6 @@ class BagBloc extends Bloc<BagEvent, BagState> {
           } else {
             final bagList = await bagRepo.getBagList();
             if (bagList.items.isNotEmpty) {
-              // bagList.items.map((e) => selectedItems.add(e.id)).toList();
-              print(selectedItems);
               emit(BagLoaded(
                   cart: bagList,
                   selectedItems: selectedItems,

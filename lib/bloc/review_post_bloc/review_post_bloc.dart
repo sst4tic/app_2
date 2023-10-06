@@ -19,8 +19,6 @@ class ReviewPostBloc extends Bloc<ReviewPostEvent, ReviewPostState> {
       try {
         final Dio dio = Dio();
         var url = '${Constants.API_URL_DOMAIN_V3}products-review';
-        print('postReview called');
-        print(url);
         Map<String, dynamic> data = {
           "product_id": productId,
           "rating": rating,
@@ -36,7 +34,6 @@ class ReviewPostBloc extends Bloc<ReviewPostEvent, ReviewPostState> {
       } on DioError catch (e) {
         Func().showSnackbar(navKey.currentContext!,
             e.response!.data['errors'].toString(), false);
-        print(e);
       }
     }
 
@@ -48,7 +45,6 @@ class ReviewPostBloc extends Bloc<ReviewPostEvent, ReviewPostState> {
             rating: event.rating);
         event.completer?.complete();
       } catch (e) {
-        print(e);
         emit(ReviewPostError(error: e));
       }
     });

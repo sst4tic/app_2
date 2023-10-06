@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/models/size_tap_model.dart';
 
-import '../screens/profile_screen.dart';
-
 class ProfileModel extends StatelessWidget {
   ProfileModel(
       {Key? key,

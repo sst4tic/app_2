@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:yiwumart/models/star_rating.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
 import 'package:yiwumart/screens/create_feedback_page.dart';
@@ -214,7 +213,7 @@ class _BuildProductState extends State<BuildProduct> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                 // if(product.reviewCount > 1)
+                 if(!product.reviewCount.contains('0') && !product.reviewCount.contains('1'))
                    GestureDetector(
                     onTap: () => Navigator.push(
                         context,
@@ -232,7 +231,7 @@ class _BuildProductState extends State<BuildProduct> {
                   )
                 ],
               ),
-              if (product.reviewCount != 0) ...[
+              if (!product.reviewCount.contains('0')) ...[
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -263,7 +262,7 @@ class _BuildProductState extends State<BuildProduct> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          product.reviews![0].user!.fullName!,
+                          product.reviews.isNotEmpty ? product.reviews[0].user.fullName! : '',
                           style: const TextStyle(
                             color: Color(0xFF4A4E64),
                             fontSize: 16,
@@ -273,13 +272,13 @@ class _BuildProductState extends State<BuildProduct> {
                         ),
                         StarRating(
                           rating: double.parse(
-                              product.reviews![0].rating!.toString()),
+                              product.reviews.isNotEmpty ? product.reviews[0].rating.toString() : '0'),
                         ),
                       ],
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      product.reviews![0].date!,
+                      product.reviews.isNotEmpty ? product.reviews[0].date: '',
                       style: const TextStyle(
                         color: Color(0xFF7C7C7C),
                         fontSize: 13,
@@ -289,7 +288,7 @@ class _BuildProductState extends State<BuildProduct> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      product.reviews![0].body!,
+                      product.reviews.isNotEmpty ? product.reviews[0].body: '',
                       style: const TextStyle(
                         color: Color(0xFF333333),
                         fontSize: 14,
@@ -435,7 +434,6 @@ class _BuildProductState extends State<BuildProduct> {
                             if (snapshot.hasData) {
                               return buildSimilar(snapshot.data!);
                             } else if (snapshot.hasError) {
-                              print(snapshot.error);
                               return const Center(
                                 child: Text('Произошла ошибка'),
                               );
@@ -471,17 +469,13 @@ class _BuildProductState extends State<BuildProduct> {
                     .map((e) =>
                         'https://cdn.yiwumart.org/${e['links']['local']['thumbnails']['750']}')
                     .toList();
-                final fullImageUrl = media!
-                    .map((e) =>
-                        'https://cdn.yiwumart.org/${e['links']['local']['full']}')
-                    .toList();
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                             context,
                             CupertinoPageRoute(
                                 builder: (context) =>
-                                    ProductScreen(product: productItem)))
+                                    ProductScreen(id: productItem.id,)))
                         .then((product) => {
                               if (product != null)
                                 {

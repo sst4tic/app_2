@@ -19,7 +19,7 @@ class Product {
   late final String link;
   List<Media>? media;
   late final rating;
-  late final String reviewCount;
+  late final String? reviewCount;
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];

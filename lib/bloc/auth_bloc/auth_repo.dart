@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../util/constants.dart';
@@ -67,17 +66,14 @@ class AuthRepo implements AbstractAuth {
         url,
         data: FormData.fromMap(data),
       );
-      print(response);
       if (response.data['api_token'] != null) {
         SharedPreferences pref = await SharedPreferences.getInstance();
         await pref.setString('login', response.data['api_token']);
         Constants.USER_TOKEN = response.data['api_token'];
-        print('API TOKEN:  ${Constants.USER_TOKEN}');
         Constants.bearer = 'Bearer ${response.data['api_token']}';
       }
       return response;
     } on DioError catch (e, stacktrace) {
-      print("Exception occured: ${e.error} stackTrace: $stacktrace");
       return e.response;
     }
   }
@@ -85,7 +81,6 @@ class AuthRepo implements AbstractAuth {
   @override
   loginSms(String phone, context) async {
     const url = '${Constants.API_URL_DOMAIN_V3}login-sms';
-    print(phone);
     try {
       Dio dio = Dio();
       Map<String, dynamic> data = {
@@ -96,10 +91,8 @@ class AuthRepo implements AbstractAuth {
         url,
         data: FormData.fromMap(data),
       );
-      print(response);
       return response;
     } on DioError catch (e, stacktrace) {
-      print("Exception occured: ${e.error} stackTrace: $stacktrace");
       return e.response;
     }
   }

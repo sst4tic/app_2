@@ -81,7 +81,6 @@ class _CatalogPageState extends State<CatalogPage> {
               final catalog = snapshot.data!;
               return buildCatalog(catalog);
             } else {
-              print(snapshot.error);
               return const Text("No widget to build");
             }
           }),

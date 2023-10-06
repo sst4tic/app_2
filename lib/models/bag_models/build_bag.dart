@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yiwumart/catalog_screens/product_screen.dart';
 import 'package:yiwumart/util/cart_list.dart';
 import 'package:yiwumart/util/function_class.dart';
-import 'package:yiwumart/util/product.dart';
 import '../../bloc/bag_bloc/bag_bloc.dart';
 import '../../catalog_screens/purchase_screen.dart';
 
@@ -70,7 +69,6 @@ class BagCartWidgetState extends State<BagCartWidget> {
 
   Widget buildBagItems(CartItem cart, Set<int> selectedValues, BagBloc bagBloc,
       bool isSelectAll) {
-    print(isSelectAll);
     final cartList = cart.items;
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -158,16 +156,7 @@ class BagCartWidgetState extends State<BagCartWidget> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ProductScreen(
-                        product: Product(
-                          id: cartItem.id,
-                          name: cartItem.name!,
-                          price: cartItem.price,
-                          is_favorite: null,
-                          link: cartItem.link,
-                          reviewCount: '0',
-                        ),
-                      ),
+                      builder: (context) => ProductScreen(id: cartItem.id,)
                     ),
                   );
                 },
@@ -218,7 +207,7 @@ class BagCartWidgetState extends State<BagCartWidget> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(cartItem.name!,
+                            Text(cartItem.name,
                                 style: const TextStyle(fontSize: 15),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis),

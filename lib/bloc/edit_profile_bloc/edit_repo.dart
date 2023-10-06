@@ -21,9 +21,7 @@ class EditRepo implements AbstractEdit {
         Uri.parse('${Constants.API_URL_DOMAIN_V3}my'),
         headers: Constants.headers()
     );
-    print(response.body);
     final body = jsonDecode(response.body);
-    print(body);
     return body;
   }
   @override
@@ -41,8 +39,6 @@ class EditRepo implements AbstractEdit {
             "phone_code": user.phoneCode,
           },
           options: Options(headers: Constants.headers()));
-      print('DIO RESP: ${response.data}');
-
       return response.data;
     } on DioError catch (e) {
       return e.response?.data;

@@ -71,7 +71,7 @@ Widget buildUser(user) => ListView.builder(
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EditProfile(),
+                    builder: (context) => const EditProfile(),
                   ),
                 );
               },

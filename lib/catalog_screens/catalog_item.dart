@@ -198,7 +198,6 @@ class _CatalogItemsState extends State<CatalogItems> {
                       }
                       return buildCatalog(catalog);
                     } else {
-                      print(snapshot.error);
                       return const Text("No widget to build");
                     }
                   }),

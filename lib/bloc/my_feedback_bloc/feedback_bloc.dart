@@ -56,7 +56,6 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
         final feedback = await getFeedback();
         emit(FeedbackLoaded(feedback: feedback));
       } catch (e) {
-        print(e);
         emit(FeedbackLoadingFailure(exception: e));
       }
     });

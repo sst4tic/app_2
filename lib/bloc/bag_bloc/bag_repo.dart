@@ -54,7 +54,6 @@ class BagRepository implements AbstractBag {
       return body;
     } on DioError catch (e) {
       print(e.stackTrace);
-      print(e.response!.data);
     }
   }
 }

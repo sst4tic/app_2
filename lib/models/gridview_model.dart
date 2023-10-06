@@ -14,7 +14,8 @@ class BuildGridWidget extends StatefulWidget {
   final List<Product> products;
   final VoidCallback? bagCallback;
 
-  const BuildGridWidget({Key? key, required this.products, this.bagCallback}) : super(key: key);
+  const BuildGridWidget({Key? key, required this.products, this.bagCallback})
+      : super(key: key);
 
   @override
   BuildGridWidgetState createState() => BuildGridWidgetState();
@@ -93,21 +94,21 @@ class BuildGridWidgetState extends State<BuildGridWidget>
         return GestureDetector(
           onTap: () {
             Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (context) =>
-                            ProductScreen(product: productItem)))
-                .then((product) => {
-                      if (product != null)
-                        {
-                          setState(() {
-                            productItem.is_favorite = product.is_favorite;
-                            product.is_favorite
-                                ? _isFavLoading.add(index)
-                                : _isFavLoading.remove(index);
-                          })
-                        }
-                    });
+                context,
+                CupertinoPageRoute(
+                    builder: (context) => ProductScreen(
+                          id: productItem.id,
+                        ))).then((product) => {
+                  if (product != null)
+                    {
+                      setState(() {
+                        productItem.is_favorite = product.is_favorite;
+                        product.is_favorite
+                            ? _isFavLoading.add(index)
+                            : _isFavLoading.remove(index);
+                      })
+                    }
+                });
           },
           child: Container(
             padding: REdgeInsets.only(left: 7, right: 7, top: 6, bottom: 6),
@@ -118,32 +119,28 @@ class BuildGridWidgetState extends State<BuildGridWidget>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.195,
-                  child: ImageView(
-                    imageUrls: media.isNotEmpty
-                        ? allPhotos
-                        : [
-                            'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg'
-                          ],
-                  ),
-                ),
+                    height: MediaQuery.of(context).size.height * 0.19,
+                    child: ImageView(
+                      imageUrls: media.isNotEmpty
+                          ? allPhotos
+                          : [
+                              'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg'
+                            ],
+                    )),
                 const Spacer(),
                 Row(
                   children: [
                     Flexible(
-                      child: Text(
-                        '${productItem.name}\n'.toUpperCase(),
-                        textAlign: TextAlign.start,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Color(0xFF181C32),
-                          fontSize: 14,
-                          fontFamily: 'Noto Sans',
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
+                        child: Text('${productItem.name}\n'.toUpperCase(),
+                            textAlign: TextAlign.start,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Color(0xFF181C32),
+                              fontSize: 14,
+                              fontFamily: 'Noto Sans',
+                              fontWeight: FontWeight.w700,
+                            )))
                   ],
                 ),
                 const Spacer(),
@@ -156,7 +153,7 @@ class BuildGridWidgetState extends State<BuildGridWidget>
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        '(${productItem.reviewCount} отзыва)',
+                        '(${productItem.reviewCount})',
                         style: const TextStyle(
                           color: Color(0xFF7C7C7C),
                           fontSize: 10,
@@ -173,15 +170,13 @@ class BuildGridWidgetState extends State<BuildGridWidget>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      '${productItem.price} ₸',
-                      style: const TextStyle(
-                        color: Color(0xFF181C32),
-                        fontSize: 15,
-                        fontFamily: 'Noto Sans',
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+                    Text('${productItem.price} ₸',
+                        style: const TextStyle(
+                          color: Color(0xFF181C32),
+                          fontSize: 15,
+                          fontFamily: 'Noto Sans',
+                          fontWeight: FontWeight.w700,
+                        ))
                   ],
                 ),
                 const Spacer(),

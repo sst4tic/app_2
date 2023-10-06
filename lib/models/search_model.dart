@@ -1,39 +1,18 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:group_button/group_button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yiwumart/catalog_screens/catalog_item.dart';
+import 'package:yiwumart/models/search_history_model.dart';
 import 'package:yiwumart/models/star_rating.dart';
 import 'package:yiwumart/models/shimmer_model.dart';
 import 'package:yiwumart/screens/search_result.dart';
-import 'package:yiwumart/util/product.dart';
 import '../catalog_screens/product_screen.dart';
 import '../util/function_class.dart';
 import '../util/search.dart';
 
 class SearchModel extends SearchDelegate {
-  final Set<String> _history = {};
-  List<String> buttons = [];
+  late final searchFuture = Func().getHistorySearch();
 
-  SearchModel() {
-    _loadHistory();
-  }
-
-  _loadHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final history = prefs.getStringList('search_history');
-    if (history != null) {
-      _history.addAll(history);
-    }
-    buttons = await Func().getPopularSearch();
-  }
-
-  _saveHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('search_history', _history.toSet().toList());
-  }
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -71,7 +50,6 @@ class SearchModel extends SearchDelegate {
       highlightColor: Colors.transparent,
       icon: const Icon(Icons.arrow_back_ios),
       onPressed: () {
-        _saveHistory();
         Navigator.pop(context);
       },
     );
@@ -84,14 +62,6 @@ class SearchModel extends SearchDelegate {
         color: Theme.of(context).scaffoldBackgroundColor,
       );
     }
-    if (query.trim().isNotEmpty) {
-      _history.add(query);
-      _saveHistory();
-    }
-    SharedPreferences.getInstance().then((prefs) {
-      final jsonHistory = json.encode(_history.toList());
-      prefs.setString("history", jsonHistory);
-    });
     return FutureBuilder<Search>(
         future: Func.searchProducts(search: query),
         builder: (context, snapshot) {
@@ -123,126 +93,59 @@ class SearchModel extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return StatefulBuilder(builder: (context, setState) {
-      return Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 8.h,
-          ),
-          const Padding(
-            padding: EdgeInsets.only(left: 12.0),
-            child: Text(
-              'Популярные запросы',
-              style: TextStyle(
-                color: Color(0xFF7B7B7B),
-                fontSize: 14,
-                fontFamily: 'Noto Sans',
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 8.h,
-          ),
-          Container(
-            padding: REdgeInsets.symmetric(vertical: 8, horizontal: 12),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-            width: double.infinity,
-            child: GroupButton(
-              options: const GroupButtonOptions(
-                mainGroupAlignment: MainGroupAlignment.start,
-              ),
-              onSelected: (name, index, isSelected) {
-                query = name;
-                showResults(context);
-              },
-              buttons: buttons,
-              buttonBuilder: (isSelected, index, context) => Container(
-                padding: REdgeInsets.symmetric(vertical: 4, horizontal: 9),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF1F1F1),
-                  borderRadius: BorderRadius.circular(20),
+    return FutureBuilder<SearchResults>(
+      future: searchFuture,
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return buildSearchShimmer();
+        } else if (snapshot.hasData) {
+          final searchHistory = snapshot.data!;
+          return StatefulBuilder(builder: (context, setState) {
+            return Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 8.h,
                 ),
-                child: Text(
-                  index,
-                  style: const TextStyle(
-                    color: Color(0xFF494949),
-                    fontSize: 13,
-                    fontFamily: 'Noto Sans',
-                    fontWeight: FontWeight.w600,
+                const Padding(
+                  padding: EdgeInsets.only(left: 12.0),
+                  child: Text(
+                    'Популярные запросы',
+                    style: TextStyle(
+                      color: Color(0xFF7B7B7B),
+                      fontSize: 14,
+                      fontFamily: 'Noto Sans',
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-          _history.isNotEmpty
-              ? Container(
-                  padding: REdgeInsets.symmetric(horizontal: 12),
-                  child: Row(
-                    children: [
-                      const Text(
-                        'История поиска',
-                        style: TextStyle(
-                          color: Color(0xFF7B7B7B),
-                          fontSize: 14,
-                          fontFamily: 'Noto Sans',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Spacer(),
-                      TextButton(
-                          style: ButtonStyle(
-                            overlayColor:
-                                MaterialStateProperty.all(Colors.transparent),
-                            padding: MaterialStateProperty.all(EdgeInsets.zero),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _history.clear();
-                              _saveHistory();
-                            });
-                          },
-                          child: const Text(
-                            'Очистить',
-                            style: TextStyle(
-                              color: Color(0xFF0D6EFD),
-                              fontSize: 14,
-                              fontFamily: 'Noto Sans',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          )),
-                    ],
-                  ),
-                )
-              : Container(),
-          if (_history.isNotEmpty) ...[
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(color: Colors.white),
-              padding: REdgeInsets.all(12),
-              child: GroupButton(
-                options: const GroupButtonOptions(
-                  mainGroupAlignment: MainGroupAlignment.start,
+                SizedBox(
+                  height: 8.h,
                 ),
-                onSelected: (name, index, isSelected) {
-                  query = name;
-                  showResults(context);
-                },
-                buttons: _history.toList().reversed.toList(),
-                buttonBuilder: (isSelected, index, context) => Container(
-                  padding: REdgeInsets.symmetric(vertical: 4, horizontal: 9),
+                Container(
+                  padding: REdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF1F1F1),
-                    borderRadius: BorderRadius.circular(20),
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
+                  width: double.infinity,
+                  child: GroupButton(
+                    options: const GroupButtonOptions(
+                      mainGroupAlignment: MainGroupAlignment.start,
+                    ),
+                    onSelected: (name, index, isSelected) {
+                      query = name;
+                      showResults(context);
+                    },
+                    buttons: searchHistory.popularSearches,
+                    buttonBuilder: (isSelected, index, context) => Container(
+                      padding:
+                          REdgeInsets.symmetric(vertical: 4, horizontal: 9),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF1F1F1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
                         index,
                         style: const TextStyle(
                           color: Color(0xFF494949),
@@ -251,88 +154,203 @@ class SearchModel extends SearchDelegate {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(width: 2),
-                      GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _history.remove(index);
-                              _saveHistory();
-                            });
-                          },
-                          child: const Icon(
-                            Icons.close,
-                            size: 12,
-                          ))
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-            ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: const BoxDecoration(color: Colors.white),
-                    padding: REdgeInsets.symmetric(horizontal: 12),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.access_time_outlined,
-                          color: Colors.grey,
+                searchHistory.searchHistory.products.isNotEmpty ||
+                        searchHistory.searchHistory.texts.isNotEmpty
+                    ? Container(
+                        padding: REdgeInsets.symmetric(horizontal: 12),
+                        child: Row(
+                          children: [
+                            const Text(
+                              'История поиска',
+                              style: TextStyle(
+                                color: Color(0xFF7B7B7B),
+                                fontSize: 14,
+                                fontFamily: 'Noto Sans',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Spacer(),
+                            TextButton(
+                                style: ButtonStyle(
+                                  overlayColor: MaterialStateProperty.all(
+                                      Colors.transparent),
+                                  padding: MaterialStateProperty.all(
+                                      EdgeInsets.zero),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    searchHistory.searchHistory.texts.clear();
+                                    searchHistory.searchHistory.products.clear();
+                                  });
+                                  Func().deleteAllSearch();
+                                },
+                                child: const Text(
+                                  'Очистить',
+                                  style: TextStyle(
+                                    color: Color(0xFF0D6EFD),
+                                    fontSize: 14,
+                                    fontFamily: 'Noto Sans',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                )),
+                          ],
                         ),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
+                      )
+                    : Container(),
+
+                ///
+                if (searchHistory.searchHistory.texts.isNotEmpty || searchHistory.searchHistory.products.isNotEmpty) ...[
+                  Container(
+                    width: double.infinity,
+                    decoration: const BoxDecoration(color: Colors.white),
+                    padding: REdgeInsets.all(12),
+                    child: GroupButton(
+                      options: const GroupButtonOptions(
+                        mainGroupAlignment: MainGroupAlignment.start,
+                      ),
+                      onSelected: (name, index, isSelected) {
+                        query = name.query;
+                        showResults(context);
+                      },
+                      buttons: searchHistory.searchHistory.texts.reversed.toList(),
+                      buttonBuilder: (isSelected, index, context) => Container(
+                        padding:
+                            REdgeInsets.symmetric(vertical: 4, horizontal: 9),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF1F1F1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              index.query,
+                              style: const TextStyle(
+                                color: Color(0xFF494949),
+                                fontSize: 13,
+                                fontFamily: 'Noto Sans',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            GestureDetector(
+                                onTap: () {
+                                  Func().deleteSearch(id: index.id);
+                                  setState(() {
+                                    searchHistory.searchHistory.texts.remove(index);
+                                  });
+                                },
+                                child: const Icon(
+                                  Icons.close,
+                                  size: 12,
+                                ))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: searchHistory.searchHistory.products.length,
+                      itemBuilder: (context, index) {
+                        final searchItem =
+                            searchHistory.searchHistory.products[index].product;
+                        return GestureDetector(
+                          onTap: () {
+                            Func().searchProduct(searchItem.productId);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProductScreen(
+                                          id: searchItem.productId,
+                                        )));
+                          },
                           child: Container(
-                            padding: REdgeInsets.all(2),
-                            child: Image.network(
-                              'https://cdn.yiwumart.org/storage/warehouse/products/images/no-image-ru.jpg',
-                              width: 63,
-                              height: 45,
+                            decoration:
+                                const BoxDecoration(color: Colors.white),
+                            padding: REdgeInsets.symmetric(horizontal: 12),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.access_time_outlined,
+                                  color: Colors.grey,
+                                ),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Container(
+                                    padding: REdgeInsets.all(2),
+                                    child: Image.network(
+                                      searchItem.media,
+                                      width: 63,
+                                      height: 45,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        searchItem.name,
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          color: Color(0xFF181C32),
+                                          fontSize: 12,
+                                          fontFamily: 'Noto Sans',
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Text(
+                                        searchItem.price.toString(),
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          color: Color(0xFF181C32),
+                                          fontSize: 13,
+                                          fontFamily: 'Noto Sans',
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    Func().deleteSearch(
+                                        id: searchHistory.searchHistory.products[index].id);
+                                    setState(() {
+                                      searchHistory.searchHistory.products.removeAt(index);
+                                    });
+                                  },
+                                  child: const Icon(
+                                    Icons.close,
+                                    size: 12,
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                        ),
-                        const Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Морозильник типа "ларь" CI-1 asdsdasdasdsadsad ad',
-                                maxLines: 1,
-                                style: TextStyle(
-                                  color: Color(0xFF181C32),
-                                  fontSize: 12,
-                                  fontFamily: 'Noto Sans',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Text(
-                                '365 000',
-                                maxLines: 1,
-                                style: TextStyle(
-                                  color: Color(0xFF181C32),
-                                  fontSize: 13,
-                                  fontFamily: 'Noto Sans',
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Spacer(),
-                        const Icon(
-                          Icons.close,
-                          size: 12,
-                        )
-                      ],
-                    ),
-                  );
-                })
-          ]
-        ],
-      );
-    });
+                        );
+                      })
+                ]
+              ],
+            );
+          });
+        } else {
+          return const Center(
+              child: Text(
+            "Ничего не найдено",
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          ));
+        }
+      },
+    );
   }
 
   Widget buildProduct(List search) => GridView.builder(
@@ -349,20 +367,12 @@ class SearchModel extends SearchDelegate {
           final photo = searchItem.media?[0].links.local.thumbnails.s350;
           return GestureDetector(
             onTap: () {
-              Func.searchProducts(search: query, productId: searchItem.id);
+              Func().searchProduct(searchItem.id);
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ProductScreen(
-                            product: Product(
-                              rating: 0,
-                              id: searchItem.id,
-                              name: searchItem.name,
-                              price: searchItem.price,
-                              is_favorite: null,
-                              link: searchItem.link,
-                              reviewCount: '0 отзывов',
-                            ),
+                            id: searchItem.id,
                           )));
             },
             child: Container(

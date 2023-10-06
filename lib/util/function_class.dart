@@ -18,6 +18,7 @@ import 'package:http/http.dart' as http;
 import 'package:yiwumart/util/product.dart';
 import 'package:yiwumart/util/product_item.dart';
 import 'package:yiwumart/util/search.dart';
+import '../models/search_history_model.dart';
 import '../screens/main_screen.dart';
 import 'catalog.dart';
 import 'constants.dart';
@@ -33,7 +34,6 @@ class Func {
     final response =
         await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
-    print(body);
     return body['data']
         .map<PopularCategories>(PopularCategories.fromJson)
         .toList();
@@ -75,11 +75,12 @@ class Func {
     final body = jsonDecode(response.body);
     return body;
   }
+
 // for get user
   static Future<User> getUser() async {
     var url = '${Constants.API_URL_DOMAIN_V3}my';
     final response =
-    await http.get(Uri.parse(url), headers: Constants.headers());
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return User.fromJson(body['data']);
   }
@@ -119,7 +120,6 @@ class Func {
     final response =
         await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
-    print(body);
     return List.from(body['data']?.map!((e) => Product.fromJson(e)).toList());
   }
 
@@ -127,15 +127,15 @@ class Func {
   static Future<List<PostsModel>> getPosts() async {
     var url = '${Constants.API_URL_DOMAIN_V3}posts';
     final response =
-    await http.get(Uri.parse(url), headers: Constants.headers());
+        await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
-    print(body);
-    return List.from(body['data']?.map!((e) => PostsModel.fromJson(e)).toList());
+    return List.from(
+        body['data']?.map!((e) => PostsModel.fromJson(e)).toList());
   }
 
   // func for searching products
-  static Future<Search> searchProducts({required String search, int? productId}) async {
-    var url = '${Constants.API_URL_DOMAIN_V3}search?query_text=$search${productId != null ? '&product_id=$productId' : ''}';
+  static Future<Search> searchProducts({required String search}) async {
+    var url = '${Constants.API_URL_DOMAIN_V3}search?query_text=$search';
     final response =
         await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
@@ -146,6 +146,29 @@ class Func {
     }
   }
 
+  Future<SearchResults> getHistorySearch() async {
+    var url = '${Constants.API_URL_DOMAIN_V3}search/history';
+    final response =
+        await http.get(Uri.parse(url), headers: Constants.headers());
+    final popularSearches = await getPopularSearch();
+    final body = jsonDecode(response.body);
+    return SearchResults(
+      searchHistory: SearchHistory.fromJson(body),
+      popularSearches: popularSearches,
+    );
+  }
+
+
+  Future searchProduct(productId) async {
+    var url = '${Constants.API_URL_DOMAIN_V3}search';
+    Map<String, dynamic> data = {
+      "product_id": productId,
+    };
+    Response resp = await dio.post(url,
+        options: Options(headers: Constants.headers()), data: data);
+    dynamic body = resp.data;
+  }
+
 // func for showing snackbar
   showSnackbar(context, String text, bool success) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -154,7 +177,7 @@ class Func {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
         side:
-            BorderSide(color: success ? Color(0xFF7CB07F) : Color(0xFFD3B7B6)),
+            BorderSide(color: success ? const Color(0xFF7CB07F) : const Color(0xFFD3B7B6)),
       ),
       padding: REdgeInsets.symmetric(horizontal: 12),
       showCloseIcon: true,
@@ -164,10 +187,10 @@ class Func {
           Icon(
             success ? Icons.check_circle : Icons.error,
             color: success
-                ? Color.fromRGBO(56, 153, 72, 1)
-                : Color.fromRGBO(252, 47, 61, 1),
+                ? const Color.fromRGBO(56, 153, 72, 1)
+                : const Color.fromRGBO(252, 47, 61, 1),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,8 +199,8 @@ class Func {
                   text,
                   style: TextStyle(
                     color: success
-                        ? Color.fromRGBO(56, 153, 72, 1)
-                        : Color.fromRGBO(252, 47, 61, 1),
+                        ? const Color.fromRGBO(56, 153, 72, 1)
+                        : const Color.fromRGBO(252, 47, 61, 1),
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                   ),
@@ -190,8 +213,8 @@ class Func {
         ],
       ),
       backgroundColor: success
-          ? Color.fromRGBO(231, 243, 229, 1)
-          : Color.fromRGBO(255, 228, 225, 1),
+          ? const Color.fromRGBO(231, 243, 229, 1)
+          : const Color.fromRGBO(255, 228, 225, 1),
     ));
   }
 
@@ -468,7 +491,6 @@ class Func {
       }
     } on DioError catch (e) {
       Func().onSubmit(context: context);
-      print('dio error: ${e.response?.data}');
     }
   }
 
@@ -510,11 +532,27 @@ class Func {
   // func for load productItem data
   Future<ProductItem> getProduct({required int id}) async {
     var url = '${Constants.API_URL_DOMAIN_V3}products/$id';
-    print(url);
     final response =
         await http.get(Uri.parse(url), headers: Constants.headers());
     final body = jsonDecode(response.body);
     return ProductItem.fromJson(body['data']);
+  }
+
+  // for delete search
+  Future deleteSearch({required int id}) async {
+    var url = '${Constants.API_URL_DOMAIN_V3}search/delete/$id';
+    final response =
+        await http.delete(Uri.parse(url), headers: Constants.headers());
+    final body = jsonDecode(response.body);
+    return body;
+  }
+
+  Future deleteAllSearch() async {
+    var url = '${Constants.API_URL_DOMAIN_V3}search/delete-all';
+    final response =
+        await http.delete(Uri.parse(url), headers: Constants.headers());
+    final body = jsonDecode(response.body);
+    return body;
   }
 
   // func for load orderDetails
@@ -826,7 +864,7 @@ class Func {
                     height: 92,
                   ),
                   const SizedBox(height: 5),
-                  const Text('Удаление аккаунта',
+                  const Text('Удаление товара',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Color(0xFF414141),
@@ -892,14 +930,14 @@ class Func {
           });
 
   void showDeleteFeedback(
-      {required BuildContext context,
-        required VoidCallback submitCallback}) =>
+          {required BuildContext context,
+          required VoidCallback submitCallback}) =>
       showDialog(
           context: context,
           builder: (dialogContext) {
             return SimpleDialog(
               contentPadding:
-              REdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  REdgeInsets.symmetric(horizontal: 20, vertical: 10),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0)),
               title: Column(
@@ -975,7 +1013,6 @@ class Func {
             );
           });
 
-
   // for submit feedback success
   void showSuccessPurchase({required BuildContext context}) => showDialog(
       context: context,
@@ -1041,66 +1078,66 @@ class Func {
 
   /// for submit feedback success
   void showFeedbackSuccess({required BuildContext context}) => showDialog(
-        context: context,
-        builder: (dialogContext) {
-          return SimpleDialog(
-            contentPadding: REdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
-            title: Column(
-              children: [
-                SvgPicture.asset(
-                  'assets/icons/purchase_success.svg',
-                  width: 92,
-                  height: 92,
-                ),
-                const SizedBox(height: 5),
-                const Text('Спасибо за ваш отзыв!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(0xFF414141),
-                      fontSize: 22,
-                      fontFamily: 'Noto Sans',
-                      fontWeight: FontWeight.w700,
-                    )),
-                const SizedBox(height: 5),
-                const Text(
-                  'Ваш отзыв будет опубликован на странице товара',
+      context: context,
+      builder: (dialogContext) {
+        return SimpleDialog(
+          contentPadding: REdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+          title: Column(
+            children: [
+              SvgPicture.asset(
+                'assets/icons/purchase_success.svg',
+                width: 92,
+                height: 92,
+              ),
+              const SizedBox(height: 5),
+              const Text('Спасибо за ваш отзыв!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 15,
+                    color: Color(0xFF414141),
+                    fontSize: 22,
                     fontFamily: 'Noto Sans',
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w700,
+                  )),
+              const SizedBox(height: 5),
+              const Text(
+                'Ваш отзыв будет опубликован на странице товара',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'Noto Sans',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+          children: <Widget>[
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                    },
+                    child: const Text('ОК',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'Noto Sans',
+                          fontWeight: FontWeight.w700,
+                        )),
                   ),
                 ),
               ],
             ),
-            children: <Widget>[
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.of(dialogContext).pop();
-                      },
-                      child: const Text('ОК',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontFamily: 'Noto Sans',
-                            fontWeight: FontWeight.w700,
-                          )),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
-        });
+          ],
+        );
+      });
 
   String formatPhoneNumber(String phoneNumber) {
     if (phoneNumber.length != 12) {

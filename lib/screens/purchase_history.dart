@@ -46,8 +46,6 @@ class _PurchaseHistoryState extends State<PurchaseHistory> {
                   }
                   return buildOrder(order);
                 } else {
-                  print(snapshot.error);
-                  print(snapshot.stackTrace);
                   return const Text("No widget to build");
                 }
               }),

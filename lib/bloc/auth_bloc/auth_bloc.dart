@@ -45,7 +45,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                     resp.data['message'], resp.data['success']);
                 if (resp.statusCode == 200) {
                   Navigator.pop(navKey.currentContext!);
-                  print('API TOKEN:  ${resp.data['api_token']}');
                   emit(Authenticated(token: resp.data['api_token']));
                   Func().getInitParams();
                 }

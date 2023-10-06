@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../catalog_screens/catalog_item.dart';
 
 class FilterSliverList extends StatelessWidget {
   final VoidCallback onSortChanged;

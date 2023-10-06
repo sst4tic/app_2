@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:yiwumart/main.dart';
 import 'package:yiwumart/models/gridview_model.dart';
 import 'package:yiwumart/models/posts_model.dart';
 import 'package:yiwumart/models/search_model.dart';
@@ -238,8 +237,7 @@ class _AuthHomePageState extends State<AuthHomePage> {
                                         child: Text(
                                           // make text limit to 28 characters
                                           post.content.length > 40
-                                              ? post.content.substring(0, 28) +
-                                                  '...'
+                                              ? '${post.content.substring(0, 28)}...'
                                               : post.content,
                                           style: const TextStyle(
                                             color: Colors.white,
@@ -279,57 +277,8 @@ class _AuthHomePageState extends State<AuthHomePage> {
                         ),
                         const SizedBox(height: 12),
                         SizedBox(
-                            height: 165,
+                            height: MediaQuery.of(context).size.height * 0.187,
                             child: buildPopularCategories(categories)),
-                        // Container(
-                        //   height: 160,
-                        //   child: ListView.builder(
-                        //     scrollDirection: Axis.horizontal,
-                        //     itemCount: categories.length,
-                        //     itemBuilder: (context, index) {
-                        //       final category = categories[index];
-                        //       return GestureDetector(
-                        //         onTap: () {
-                        //           // Navigator.push(
-                        //           //     context,
-                        //           //     MaterialPageRoute(
-                        //           //         builder: (context) => CatalogItems(
-                        //           //               id: category.id,
-                        //           //               name: category.name,
-                        //           //             )));
-                        //         },
-                        //         child: SizedBox(
-                        //           width: 120,
-                        //           child: Column(
-                        //             mainAxisSize: MainAxisSize.min,
-                        //             mainAxisAlignment: MainAxisAlignment.center,
-                        //             children: [
-                        //               Image.network(
-                        //                 category.image,
-                        //                 height: 30,
-                        //                 width: 30,
-                        //                 fit: BoxFit.cover,
-                        //               ),
-                        //               SizedBox(height: 5.h),
-                        //               Text(
-                        //                 category.name,
-                        //                 textAlign: TextAlign.center,
-                        //                 maxLines: 2,
-                        //                 overflow: TextOverflow.ellipsis,
-                        //                 style: const TextStyle(
-                        //                   color: Color(0xFF181C32),
-                        //                   fontSize: 9,
-                        //                   fontFamily: 'Noto Sans',
-                        //                   fontWeight: FontWeight.w500,
-                        //                 ),
-                        //               ),
-                        //             ],
-                        //           ),
-                        //         ),
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
                         const SizedBox(height: 16),
                         const Text('Товары дня',
                             style: TextStyle(

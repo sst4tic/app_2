@@ -8,8 +8,6 @@ class PaymentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(url);
-
     return Scaffold(
         appBar: AppBar(
           title: const Text('Оплата'),

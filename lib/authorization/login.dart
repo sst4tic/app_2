@@ -34,12 +34,6 @@ class _LoginState extends State<Login> {
   late StreamController<int> _events;
   int _counter = 0;
 
-  void _fieldFocusChanged(
-      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
-    currentFocus.unfocus();
-    FocusScope.of(context).requestFocus(nextFocus);
-  }
-
   @override
   void dispose() {
     emailFocus.dispose();
@@ -67,7 +61,6 @@ class _LoginState extends State<Login> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_counter > 0) {
         _counter--;
-        print(_counter);
         _events.add(_counter);
       }
     });
@@ -284,8 +277,6 @@ class _LoginState extends State<Login> {
                           onPressed: () {
                             String cleanedNumber =
                                 completeNum.replaceAll(RegExp(r'[^\d+]'), '');
-                            print(cleanedNumber);
-                            print(_passController.text);
                             if (cleanedNumber.isEmpty) {
                               Func().showSnackbar(
                                   context, 'Введите номер телефона', false);

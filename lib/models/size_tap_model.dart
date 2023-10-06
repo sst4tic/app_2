@@ -30,6 +30,7 @@ class _SizeTapAnimationState extends State<SizeTapAnimation>
   final value = BehaviorSubject<AnimationController?>.seeded(null);
 
   AnimationController? get _animationController => value.value;
+
   set _animationController(AnimationController? val) {
     value.value = val;
   }

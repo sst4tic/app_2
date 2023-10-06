@@ -15,10 +15,10 @@ class StatusProgressModel {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['statusName'] = statusName;
-    _data['date'] = date;
-    _data['enabled'] = enabled;
-    return _data;
+    final data = <String, dynamic>{};
+    data['statusName'] = statusName;
+    data['date'] = date;
+    data['enabled'] = enabled;
+    return data;
   }
 }

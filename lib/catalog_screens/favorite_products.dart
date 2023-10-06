@@ -1,17 +1,12 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart' as http;
 import 'package:yiwumart/catalog_screens/product_screen.dart';
 import 'package:yiwumart/models/star_rating.dart';
-import 'package:yiwumart/util/styles.dart';
 import '../bloc/favorites_bloc/favorites_bloc.dart';
 import '../models/bag_models/bag_button_model.dart';
-import '../models/gridview_model.dart';
 import '../models/shimmer_model.dart';
-import '../util/constants.dart';
 import '../util/function_class.dart';
 import '../util/product.dart';
 
@@ -129,7 +124,7 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          ProductScreen(product: productItem)));
+                          ProductScreen(id: productItem.id,)));
             },
             child: Container(
                 margin: REdgeInsets.only(bottom: 8),
@@ -249,7 +244,7 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
                                     ),
                                     const SizedBox(width: 6),
                                     Text(
-                                      '(${productItem.reviewCount} отзыва)',
+                                      '(${productItem.reviewCount})',
                                       style: const TextStyle(
                                         color: Color(0xFF7C7C7C),
                                         fontSize: 8,
