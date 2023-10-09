@@ -94,45 +94,38 @@ class BagBloc extends Bloc<BagEvent, BagState> {
     on<SelectItem>((event, emit) {
       final id = event.id;
       var selectedItems = (state as BagLoaded).selectedItems;
-      if (event.isSelectAll) {
+      void selectAllItems() {
         selectedItems.clear();
         selectedItems
             .addAll((state as BagLoaded).cart.items.map((e) => e.id).toList());
         isSelectAll = true;
-      } else if (selectedItems.contains(id)) {
-        selectedItems.remove(id);
-        isSelectAll = false;
-      } else {
-        selectedItems.add(id);
+      }
+
+      void unselectAllItems() {
+        selectedItems.clear();
         isSelectAll = false;
       }
 
+      if(event.isSelectAll) {
+        if(selectedItems.length == (state as BagLoaded).cart.items.length) {
+          unselectAllItems();
+        } else {
+          selectAllItems();
+        }
+      } else {
+        if (selectedItems.contains(id)) {
+          selectedItems.remove(id);
+          isSelectAll = false;
+        } else {
+          selectedItems.add(id);
+          isSelectAll = false;
+        }
+      }
       emit(BagLoaded(
           cart: (state as BagLoaded).cart,
           selectedItems: selectedItems,
           allSelected: isSelectAll));
     });
-
-    // on<SelectItem>((event, emit) {
-    //   final id = event.id;
-    //   var selectedItems = (state as BagLoaded).selectedItems;
-    //   if (selectedItems.contains(id)) {
-    //     selectedItems.remove(id);
-    //   } else {
-    //     selectedItems.add(id);
-    //   }
-    //
-    //   if (selectedItems.length == (state as BagLoaded).cart.items.length) {
-    //     isSelectAll = true;
-    //   } else {
-    //     isSelectAll = false;
-    //   }
-    //   print(isSelectAll);
-    //   emit(BagLoaded(
-    //       cart: (state as BagLoaded).cart,
-    //       selectedItems: selectedItems,
-    //       allSelected: isSelectAll));
-    // });
 
     on<DeleteSelected>((event, emit) async {
       try {

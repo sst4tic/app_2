@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yiwumart/util/product.dart';
-
 import '../../models/posts_model.dart';
 import '../../util/function_class.dart';
 import '../../util/popular_catalog.dart';

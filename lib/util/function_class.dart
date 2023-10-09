@@ -158,7 +158,6 @@ class Func {
     );
   }
 
-
   Future searchProduct(productId) async {
     var url = '${Constants.API_URL_DOMAIN_V3}search';
     Map<String, dynamic> data = {
@@ -166,7 +165,6 @@ class Func {
     };
     Response resp = await dio.post(url,
         options: Options(headers: Constants.headers()), data: data);
-    dynamic body = resp.data;
   }
 
 // func for showing snackbar
@@ -176,8 +174,8 @@ class Func {
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        side:
-            BorderSide(color: success ? const Color(0xFF7CB07F) : const Color(0xFFD3B7B6)),
+        side: BorderSide(
+            color: success ? const Color(0xFF7CB07F) : const Color(0xFFD3B7B6)),
       ),
       padding: REdgeInsets.symmetric(horizontal: 12),
       showCloseIcon: true,

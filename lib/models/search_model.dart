@@ -200,8 +200,6 @@ class SearchModel extends SearchDelegate {
                         ),
                       )
                     : Container(),
-
-                ///
                 if (searchHistory.searchHistory.texts.isNotEmpty || searchHistory.searchHistory.products.isNotEmpty) ...[
                   Container(
                     width: double.infinity,
@@ -278,6 +276,7 @@ class SearchModel extends SearchDelegate {
                               children: [
                                 const Icon(
                                   Icons.access_time_outlined,
+                                  size: 16,
                                   color: Colors.grey,
                                 ),
                                 ClipRRect(

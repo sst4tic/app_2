@@ -13,13 +13,13 @@ class Product {
 
   late final int id;
   late final String name;
-  String? categoryName;
+  dynamic categoryName;
   late final String price;
   bool? is_favorite;
   late final String link;
   List<Media>? media;
   late final rating;
-  late final String? reviewCount;
+  late final reviewCount;
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];

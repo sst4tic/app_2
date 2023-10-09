@@ -48,7 +48,10 @@ class _AuthHomePageState extends State<AuthHomePage> {
             } else if (state is HomePageLoaded) {
               final categories = state.popularCategories;
               final products = state.productsOfDay;
-              return buildHomePage(categories: categories, products: products, posts: state.posts);
+              return buildHomePage(
+                  categories: categories,
+                  products: products,
+                  posts: state.posts);
             } else if (state is HomePageError) {
               return Scaffold(
                 body: Center(
@@ -70,7 +73,7 @@ class _AuthHomePageState extends State<AuthHomePage> {
 
   Widget buildHomePage(
           {required List<PopularCategories> categories,
-            required List<PostsModel> posts,
+          required List<PostsModel> posts,
           required List<Product> products}) =>
       CustomScrollView(
         slivers: [
@@ -233,17 +236,21 @@ class _AuthHomePageState extends State<AuthHomePage> {
                                       right: 0,
                                       bottom: 2,
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4),
-                                        child: Text(
-                                          // make text limit to 28 characters
-                                          post.content.length > 40
-                                              ? '${post.content.substring(0, 28)}...'
-                                              : post.content,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 10,
-                                            fontFamily: 'Noto Sans',
-                                            fontWeight: FontWeight.w700,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 2.0, vertical: 4),
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 20),
+                                          child: Text(
+                                            post.content.length > 40
+                                                ? '${post.content.substring(0, 28)}...'
+                                                : post.content,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontFamily: 'Noto Sans',
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
                                       ),
